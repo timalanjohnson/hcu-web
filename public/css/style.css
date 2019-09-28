@@ -1,0 +1,72 @@
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,700&display=swap');
+
+body {
+	margin: 0;
+	font-family: 'Open Sans', sans-serif;
+}
+
+.app {
+	display: grid;
+	grid-template-columns: 300px 1fr;
+}
+
+.panel {
+	padding: 16px;
+}
+
+.side-panel {
+	background: #414b64;
+	height: 100vh;
+	color: #f29e74;
+}
+
+.logo {
+	color: #f29e74;
+	text-align: center;
+	font-weight: 700;
+}
+
+nav .button-group {
+	display: flex;
+	flex-direction: column;
+}
+
+nav .button-group .btn {
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+.main-panel {
+	background: #f7f7f7;
+}
+
+.content {
+	background: #fff;
+	border: 1px solid #ddd;
+	border-radius: 8px;
+}
+
+.area {
+	border: 1px solid #ddd;
+	border-radius: 8px;
+	padding: 16px;
+	margin: 16px;
+}
+
+.login {
+	background: #414b64;
+}
+
+.login-area {
+	max-width: 400px;
+	margin: auto;
+	margin-top: 5%;
+	color: #fff;
+}
+
+.login-area h1 {
+	text-align: center;
+	font-weight: 700;
+	padding: 24px;
+	color: #f29e74;
+}

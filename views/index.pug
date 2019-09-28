@@ -1,0 +1,20 @@
+extends layout
+
+block content
+	div.area
+		h2 Horses
+
+		table.table.table-striped
+			thead.thead-dark
+				th Horse ID
+				th Description
+				th Date
+				th
+
+			each horse in horses
+				tr
+					td= horse.id
+					td= horse.description
+					td= horse.date
+					td 
+						a(href="horse/"+horse.id) Details

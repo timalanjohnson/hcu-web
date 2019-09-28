@@ -1,0 +1,22 @@
+extends layout
+
+block content
+	div.area
+		h2 Add Horse
+		form(action="." method="POST")
+			div.form-group
+				label(for="name") Name:
+				input(
+					type="text"
+					id="name"
+					name="name"
+				).form-control
+			div.form-group
+				label(for="email") Email:
+				input(
+					type="email"
+					id="email"
+					name="email"
+				).form-control
+
+			input(type="submit" value="Submit").btn.btn-primary

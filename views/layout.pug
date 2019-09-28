@@ -1,0 +1,26 @@
+doctype html
+html
+	head
+		title= `${title}`
+		link(rel='stylesheet', href='/css/bootstrap.css')
+		link(rel='stylesheet', href='/css/style.css')
+		meta(name='viewport', content='width=device-width, initial-scale=1.0')
+
+	body
+		div.app
+			div.panel.side-panel
+				h1.logo HCU Admin
+
+				nav
+					div.button-group
+						a.btn.btn-light(href="/") Horses
+						a.btn.btn-light(href="/add-horse") Add Horse
+						a.btn.btn-light(href="/reports") Reports
+						a.btn.btn-light(href="/settings") Settings
+						a.btn.btn-light(href="/login") Login
+
+			div.panel.main-panel
+
+				div.content
+
+					block content
