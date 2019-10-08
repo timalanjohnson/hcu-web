@@ -52,6 +52,11 @@ router.get('/add-horse', (req, res) => {
 	res.render('add-horse', {title: 'Add Horse'});
 });
 
+// Add Horse Page
+router.get('/edit-horse', (req, res) => {
+	res.render('edit-horse', {title: 'Edit Horse'});
+});
+
 // Settings Page
 router.get('/settings', (req, res) => {
 	res.render('settings', {title: 'Settings', users: users});

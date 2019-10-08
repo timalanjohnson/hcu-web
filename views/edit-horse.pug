@@ -1,0 +1,101 @@
+extends layout
+
+block content
+	div.area
+		h2 Add Horse
+		form(action="." method="POST").horse-sub-grid
+			div.area
+				h3 Details
+				div.form-group
+					label(for="breed") Breed:
+					input(
+						type="text"
+						id="breed"
+						name="breed"
+					).form-control
+				div.form-group
+					label(for="colour") Colour:
+					input(
+						type="text"
+						id="colour"
+						name="colour"
+					).form-control
+				div.form-group
+					label(for="gender") Gender:
+					input(
+						type="text"
+						id="gender"
+						name="gender"
+					).form-control
+				div.form-group
+					label(for="age") Age:
+					input(
+						type="text"
+						id="age"
+						name="age"
+					).form-control
+				div.form-group
+					label(for="weight") Weight:
+					input(
+						type="text"
+						id="weight"
+						name="weight"
+					).form-control
+				div.form-group
+					label(for="height") Height:
+					input(
+						type="text"
+						id="height"
+						name="height"
+					).form-control
+				div.form-group
+					label(for="chip-data") Chip-data:
+					input(
+						type="text"
+						id="chip-data"
+						name="chip-data"
+					).form-control
+			div.area
+				h3 Admission
+				div.form-group
+					label(for="date") Admission Date:
+					input(
+						type="text"
+						id="date"
+						name="date"
+						readonly
+					).form-control
+				div.form-group
+					label(for="finder") Found by:
+					input(
+						type="text"
+						id="finder"
+						name="finder"
+						readonly
+					).form-control
+				div.form-group
+					label(for="initial-condition") Initial Condition:
+					input(
+						type="text"
+						id="initial-condition"
+						name="initial-condition"
+						readonly
+					).form-control
+				div.form-group
+					label(for="current-condition") Current Condition:
+					input(
+						type="text"
+						id="current-condition"
+						name="current-condition"
+					).form-control
+				div.form-group
+					label(for="notes") Notes:
+					input(
+						type="textarea"
+						id="notes"
+						name="notes"
+					).form-control
+
+			div.right-align.button-group
+				a.btn.btn-light(href="/") Cancel
+				input(type="submit" value="Submit").btn.btn-primary
