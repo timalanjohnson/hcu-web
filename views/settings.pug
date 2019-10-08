@@ -1,4 +1,46 @@
 extends layout
 
 block content
-	p Nothing here yet.
+	div.area
+		h2 Users
+
+		table.table.table-striped
+			thead.thead-dark
+				th User ID
+				th Name
+				th Email
+				th Phone Number
+
+			each user in users
+				tr
+					td= user.id
+					td= user.name
+					td= user.email
+					td= user.phone
+
+	div.area
+		h2 Add User
+		form(action="." method="POST")
+			div.form-group
+				label(for="name") Name:
+				input(
+					type="text"
+					id="name"
+					name="name"
+				).form-control
+			div.form-group
+				label(for="email") Email:
+				input(
+					type="email"
+					id="email"
+					name="email"
+				).form-control
+			div.form-group
+				label(for="phone") Phone Number:
+				input(
+					type="text"
+					id="phone"
+					name="phone"
+				).form-control
+
+			input(type="submit" value="Submit").btn.btn-primary

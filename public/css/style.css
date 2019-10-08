@@ -26,14 +26,36 @@ body {
 	font-weight: 700;
 }
 
+.button-group {
+	display: flex;
+	flex-direction: row;
+}
+
+.button-group > * {
+	margin-left: 8px;
+	margin-right: 8px;
+}
+
+.button-group > *:last-child {
+	margin-left: 8px;
+	margin-right: 0;
+}
+
 nav .button-group {
 	display: flex;
 	flex-direction: column;
 }
 
 nav .button-group .btn {
+	margin-left: 0;
+	margin-right: 0;
 	margin-top: 8px;
 	margin-bottom: 8px;
+}
+
+nav .button-group > *:last-child {
+	margin-left: 0;
+	margin-right: 0;
 }
 
 .main-panel {
@@ -46,11 +68,26 @@ nav .button-group .btn {
 	border-radius: 8px;
 }
 
+.horse-sub-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-gap: 16px;
+}
+
+.horse-sub-grid .right-align {
+	grid-column: 2 / -1;
+	justify-self: flex-end;
+}
+
 .area {
 	border: 1px solid #ddd;
 	border-radius: 8px;
 	padding: 16px;
 	margin: 16px;
+}
+
+.horse-sub-grid .area {
+	margin: 0;
 }
 
 .login {

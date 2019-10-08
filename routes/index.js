@@ -9,6 +9,10 @@ var horses = [
 		{id: '12344', description: 'Brown male', date: '12-September-2019'}
 	];
 
+var users = [
+		{id: '1234443', name: 'Tim Johnson', email: 'timjohnson.za@gmail.com', phone: '071 555 5342'}
+	];	
+
 // Index Page
 router.get('/', (req, res) => {
 	res.render('index', {title: 'HCU Web', horses: horses});
@@ -50,7 +54,7 @@ router.get('/add-horse', (req, res) => {
 
 // Settings Page
 router.get('/settings', (req, res) => {
-	res.render('settings', {title: 'Settings'});
+	res.render('settings', {title: 'Settings', users: users});
 });
 
 // Reports Page
