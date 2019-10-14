@@ -53,19 +53,18 @@ router.get('/edit-horse', (req, res) => {
 // Settings Page
 router.get('/settings', (req, res) => {
 	res.render('settings', {title: 'Settings', users: users});
-	console.log('GET');
 });
 
 router.post('/settings', (req, res) => {
 	res.render('settings', {title: 'HCU Web', users: users});
 
-	var sql = require('../db.js');
+	var db = require('../db.js');
 
-	sql.query("INSERT INTO `tbl_users` (`uid`, `name`, `email`, `pass`, `phone`) VALUES (NULL, '" + req.body.name + "', '" + req.body.email + "', '" + req.body.password + "', '" + req.body.phone + "');", function (err, rows, fields) {
+	db.query("INSERT INTO `tbl_users` (`uid`, `name`, `email`, `pass`, `phone`) VALUES (NULL, '" + req.body.name + "', '" + req.body.email + "', '" + req.body.password + "', '" + req.body.phone + "');", function (err) {
 		if (err) throw err
 	})
 
-	sql.end();
+	db.end();
 
 });
 
