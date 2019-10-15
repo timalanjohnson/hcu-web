@@ -98,8 +98,6 @@ router.get('/users', (req, res) => {
 		if (err) throw err;
 
 		res.render('users', {title: 'Users', data: result});
-
-		// db.end();
 	});
 
 });
@@ -121,11 +119,7 @@ router.post('/users', (req, res) => {
 		if (err) throw err;
 
 		res.render('users', {title: 'Users', data: result});
-
-		// db.end();
 	});
-
-	db.end();
 
 });
 
