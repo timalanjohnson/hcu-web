@@ -11,16 +11,16 @@ block content
 				th Email
 				th Phone Number
 
-			each user in users
+			each row in data
 				tr
-					td= user.id
-					td= user.name
-					td= user.email
-					td= user.phone
+					td= row.uid
+					td= row.name
+					td= row.email
+					td= row.phone
 
 	div.area
 		h2 Add User
-		form(action="settings" method="POST")
+		form(action="users" method="POST")
 			div.form-group
 				label(for="name") Name:
 				input(

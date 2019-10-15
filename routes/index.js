@@ -89,13 +89,25 @@ router.get('/edit-horse', (req, res) => {
 
 
 
-// Settings Page
-router.get('/settings', (req, res) => {
-	res.render('settings', {title: 'Settings', users: users});
+// users Page
+router.get('/users', (req, res) => {
+
+	var db = require('../db.js');
+
+	db.query("SELECT * FROM tbl_users", function(err, result, fields) {
+		if (err) throw err;
+
+		res.render('users', {title: 'Users', data: result});
+
+		// db.end();
+	});
+
 });
 
-router.post('/settings', (req, res) => {
-	res.render('settings', {title: 'HCU Web', users: users});
+
+
+router.post('/users', (req, res) => {
+	//res.render('users', {title: 'HCU Web'});
 
 	console.log(req.body);
 
@@ -104,6 +116,14 @@ router.post('/settings', (req, res) => {
 	db.query("INSERT INTO `tbl_users` (`uid`, `name`, `email`, `pass`, `phone`) VALUES (NULL, '" + req.body.name + "', '" + req.body.email + "', '" + req.body.password + "', '" + req.body.phone + "');", function (err) {
 		if (err) throw err
 	})
+
+	db.query("SELECT * FROM tbl_users", function(err, result, fields) {
+		if (err) throw err;
+
+		res.render('users', {title: 'Users', data: result});
+
+		// db.end();
+	});
 
 	db.end();
 
