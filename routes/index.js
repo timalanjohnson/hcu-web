@@ -13,10 +13,24 @@ var users = [
 		{id: '1234443', name: 'Tim Johnson', email: 'timjohnson.za@gmail.com', phone: '071 555 5342'}
 	];	
 
+
+
+
+
+
+
+
 // Index Page
 router.get('/', (req, res) => {
 	res.render('index', {title: 'HCU Web', horses: horses});
 });
+
+
+
+
+
+
+
 
 // Horse Details Page
 router.get('/horse/:horseID', function(req, res) {
@@ -40,15 +54,40 @@ router.get('/horse/:horseID', function(req, res) {
 	});
 });
 
+
+
+
+
+
+
+
 // Add Horse Page
 router.get('/add-horse', (req, res) => {
 	res.render('add-horse', {title: 'Add Horse'});
 });
 
-// Add Horse Page
+
+router.post('/add-horse', (req, res) => {
+	res.render('add-horse', {title: 'HCU Web'});
+
+	console.log(req.body);
+
+});
+
+
+
+
+
+// Edit Horse Page
 router.get('/edit-horse', (req, res) => {
 	res.render('edit-horse', {title: 'Edit Horse'});
 });
+
+
+
+
+
+
 
 // Settings Page
 router.get('/settings', (req, res) => {
@@ -57,6 +96,8 @@ router.get('/settings', (req, res) => {
 
 router.post('/settings', (req, res) => {
 	res.render('settings', {title: 'HCU Web', users: users});
+
+	console.log(req.body);
 
 	var db = require('../db.js');
 
@@ -68,10 +109,24 @@ router.post('/settings', (req, res) => {
 
 });
 
+
+
+
+
+
+
+
 // Reports Page
 router.get('/reports', (req, res) => {
 	res.render('reports', {title: 'Reports'});
 });
+
+
+
+
+
+
+
 
 // Login Page
 router.get('/login', (req, res) => {
