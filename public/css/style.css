@@ -80,6 +80,7 @@ nav .button-group > *:last-child {
 }
 
 .area {
+	display: grid;
 	border: 1px solid #ddd;
 	border-radius: 8px;
 	padding: 16px;
@@ -106,4 +107,9 @@ nav .button-group > *:last-child {
 	font-weight: 700;
 	padding: 24px;
 	color: #f29e74;
+}
+
+.search-form {
+	padding-bottom: 16px;
+	justify-self: flex-end;
 }

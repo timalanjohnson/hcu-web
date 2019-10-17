@@ -4,6 +4,18 @@ block content
 	div.area
 		h2 Horses
 
+		form(action="search" method="POST").form-inline.search-form
+			div.form-group
+				input(
+					type="text"
+					id="search"
+					name="search"
+					placeholder="Search"
+				).form-control
+			
+			input(type="submit" value="Search").btn.btn-primary
+
+
 		table.table.table-striped
 			thead.thead-dark
 				th Horse ID
