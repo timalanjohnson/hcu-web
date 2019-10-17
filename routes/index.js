@@ -2,12 +2,7 @@ const express = require('express');
 
 const router = express.Router();
 
-var horses = [
-		{id: '12341', description: 'Brown male', date: '17-June-2019'},
-		{id: '12342', description: 'Brown male', date: '6-August-2019'},
-		{id: '12343', description: 'Brown female', date: '5-September-2019'},
-		{id: '12344', description: 'Brown male', date: '12-September-2019'}
-	];
+
 
 var users = [
 		{id: '1234443', name: 'Tim Johnson', email: 'timjohnson.za@gmail.com', phone: '071 555 5342'}
@@ -22,7 +17,16 @@ var users = [
 
 // Index Page
 router.get('/', (req, res) => {
-	res.render('index', {title: 'HCU Web', horses: horses});
+	
+	var db = require('../db.js');
+
+	db.query("SELECT * FROM tbl_horse", function(err, result, fields) {
+		if (err) throw err;
+
+		console.log(result);
+	
+	res.render('index', {title: 'HCU Web', horses: result});
+	});
 });
 
 
@@ -68,6 +72,12 @@ router.get('/add-horse', (req, res) => {
 
 
 router.post('/add-horse', (req, res) => {
+			var db = require('../db.js');																																													//`HorseID`, `Age`,`Note`, 											`AdmissionDate`, 		`mircochipCode` ,					 `Breed`, 				`Colour`,					  `Gender`, 					`Weight`,  					`Height`, 					`FoundBy`,			`HorseCondition`, 			`treatment`
+	db.query("INSERT INTO `tbl_horse` (`HorseID`, `Age`,`Note`, `AdmissionDate`, `mircochipCode` , `Breed`, `Colour`,  `Gender`, `Weight`,  `Height`, `FoundBy`, `HorseCondition`, `treatment`) VALUES (NULL, '" + req.body.age + "', '" + req.body.notes + "', '" + req.body.date + "', '" + req.body.chipData + "', '" + req.body.breed + "', '" + req.body.colour + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height + "', '" + req.body.finder + "', '" + req.body.condition + "', '" + req.body.treatment + "');", function (err) {
+		if (err) throw err
+	})
+	
+	
 	res.render('add-horse', {title: 'HCU Web'});
 
 	console.log(req.body);
