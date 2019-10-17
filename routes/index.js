@@ -97,6 +97,8 @@ router.get('/users', (req, res) => {
 	db.query("SELECT * FROM tbl_users", function(err, result, fields) {
 		if (err) throw err;
 
+		console.log(result);
+
 		res.render('users', {title: 'Users', data: result});
 	});
 
