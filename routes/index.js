@@ -2,16 +2,9 @@ const express = require('express');
 
 const router = express.Router();
 
-
-
-var users = [
-		{id: '1234443', name: 'Tim Johnson', email: 'timjohnson.za@gmail.com', phone: '071 555 5342'}
+var blankUser = [
+		{uid: '', name: '', email: '', phone: ''}
 	];	
-
-
-
-
-
 
 
 
@@ -28,11 +21,6 @@ router.get('/', (req, res) => {
 	res.render('index', {title: 'HCU Web', horses: result});
 	});
 });
-
-
-
-
-
 
 
 
@@ -102,15 +90,20 @@ router.get('/edit-horse', (req, res) => {
 // users Page
 router.get('/users', (req, res) => {
 
-	var db = require('../db.js');
+	try {
+		var db = require('../db.js');
 
-	db.query("SELECT * FROM tbl_users", function(err, result, fields) {
-		if (err) throw err;
+		db.query("SELECT * FROM tbl_user", function(err, result, fields) {
+			if (err) throw err;
 
-		console.log(result);
+			console.log(result);
 
-		res.render('users', {title: 'Users', data: result});
-	});
+			res.render('users', {title: 'Users', data: result});
+		});
+	} catch (error) {
+		console.log(error);
+		res.render('404', {title: 'Users'});
+	}
 
 });
 
