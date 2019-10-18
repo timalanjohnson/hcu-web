@@ -13,7 +13,7 @@ router.get('/', (req, res) => {
 	
 	var db = require('../db.js');
 
-	db.query("SELECT * FROM tbl_horse", function(err, result, fields) {
+	db.query("SELECT HorseID, Name, Age, Note, HorseCondition, DATE_FORMAT(AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse", function(err, result, fields) {
 		if (err) throw err;
 
 		console.log(result);
@@ -26,11 +26,11 @@ router.get('/', (req, res) => {
 
 // Horse Details Page
 router.get('/horse/:horseID', function(req, res) {
-	
+	var db = require('../db.js');
 	var horseID = req.params.horseID;
 
 	// Select * where horseID = the value
-	var horseInfo = {
+/*	var horseInfo = {
 		id: horseID,
 		description: 'Brown male',
 		date: '17-June-2019',
@@ -39,11 +39,20 @@ router.get('/horse/:horseID', function(req, res) {
 		carer: 'Tim Johnson',
 		notes: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
 	};
-
+*/
+	db.query("SELECT HorseID, Name, Age, Note,Owner, DATE_FORMAT(AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(DischargeDate,'%D-%M-%Y') as DischargeDate, isDesceased, mircochipCode, Breed, Colour, Gender, Weight, Height, FoundBy, HorseCondition, treatment FROM tbl_horse where HorseID = '"+ horseID +"';", function(err, result, fields) {
+		if (err) throw err;
+		console.log("Getting horse details");
+		console.log(result);
 	res.render('horse', {
 		title: "Horse "+horseID,
-		horse: horseInfo
+		horse: result
 	});
+	//res.render('index', {title: 'HCU Web', horses: result});
+	});
+	
+	
+	
 });
 
 
@@ -60,8 +69,8 @@ router.get('/add-horse', (req, res) => {
 
 
 router.post('/add-horse', (req, res) => {
-			var db = require('../db.js');																																													//`HorseID`, `Age`,`Note`, 											`AdmissionDate`, 		`mircochipCode` ,					 `Breed`, 				`Colour`,					  `Gender`, 					`Weight`,  					`Height`, 					`FoundBy`,			`HorseCondition`, 			`treatment`
-	db.query("INSERT INTO `tbl_horse` (`HorseID`, `Age`,`Note`, `AdmissionDate`, `mircochipCode` , `Breed`, `Colour`,  `Gender`, `Weight`,  `Height`, `FoundBy`, `HorseCondition`, `treatment`) VALUES (NULL, '" + req.body.age + "', '" + req.body.notes + "', '" + req.body.date + "', '" + req.body.chipData + "', '" + req.body.breed + "', '" + req.body.colour + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height + "', '" + req.body.finder + "', '" + req.body.condition + "', '" + req.body.treatment + "');", function (err) {
+			var db = require('../db.js');
+	db.query("INSERT INTO `tbl_horse` (`HorseID`, `Age`,`Note`, `AdmissionDate`, `mircochipCode` , `Breed`, `Colour`,  `Gender`, `Weight`,  `Height`, `FoundBy`, `HorseCondition`, `treatment`, `Name`, `Owner`) VALUES (NULL, '" + req.body.age + "', '" + req.body.notes + "', '" + req.body.date + "', '" + req.body.chipData + "', '" + req.body.breed + "', '" + req.body.colour + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height + "', '" + req.body.finder + "', '" + req.body.condition + "', '" + req.body.treatment  + "', '" + req.body.name  + "', '" + req.body.owner + "');", function (err) {
 		if (err) throw err
 	})
 	

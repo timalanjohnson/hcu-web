@@ -1,25 +1,54 @@
 extends layout
 
 block content
-	table.table.table-striped
-		tr
-			th ID
-			td= horse.id
-		tr
-			th Description
-			td= horse.description
-		tr
-			th Date
-			td= horse.date
-		tr
-			th Condition
-			td= horse.condition
-		tr
-			th Treatment
-			td= horse.treatment
-		tr
-			th Carer
-			td= horse.carer
-		tr
-			th Notes
-			td= horse.notes
+	each hors in horse
+		table.table.table-striped
+
+				tr
+					th ID
+					td= hors.HorseID
+				tr
+					th Name
+					td= hors.Name
+				tr
+					th Owner
+					td= hors.Owner
+				tr
+					th Micro-Chip
+					td= hors.mircochipCode
+				tr
+					th Breed
+					td= hors.Breed	
+				tr
+					th Colour
+					td= hors.Colour
+				tr
+					th Gender
+					td= hors.Gender
+				tr
+					th Weight
+					td= hors.Weight
+				tr
+					th Height
+					td= hors.Height
+				tr
+					th Description
+					td= hors.Note
+				tr
+					th Admission Date
+					td= hors.AdmissionDate
+				tr
+					th Condition
+					td= hors.HorseCondition
+				tr
+					th Treatment
+					td= hors.treatment
+				tr
+					th Carer
+					td= hors.carer
+				tr
+					th Notes
+					td= hors.Note
+				tr
+					th Treatment
+					td= hors.treatment
