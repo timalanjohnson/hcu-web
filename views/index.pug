@@ -11,6 +11,7 @@ block content
 					id="search"
 					name="search"
 					placeholder="Search"
+					onKeyPress="Search"
 				).form-control
 			
 			input(type="submit" value="Search").btn.btn-primary
@@ -36,3 +37,5 @@ block content
 					td= horse.DischargeDate
 					td 
 						a(href="horse/"+horse.HorseID) Details
+						
+						
