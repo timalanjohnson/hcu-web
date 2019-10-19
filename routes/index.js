@@ -122,7 +122,7 @@ router.get('/users', (req, res) => {
 
 
 router.post('/users', (req, res) => {
--
+
 	var db = require('../db.js');
 
 	db.query("INSERT INTO `tbl_users` (`uid`, `name`, `email`, `pass`, `phone`) VALUES (NULL, '" + req.body.name + "', '" + req.body.email + "', '" + req.body.password + "', '" + req.body.phone + "');", function (err) {
