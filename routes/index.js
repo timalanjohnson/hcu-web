@@ -2,6 +2,10 @@ const express = require('express');
 
 const router = express.Router();
 
+var session = [
+		{active: 'true', user: 'Tom', userType: 'admin'}
+	];
+
 var blankUser = [
 		{uid: '', name: '', email: '', phone: ''}
 	];	
@@ -11,17 +15,55 @@ var blankUser = [
 // Index Page
 router.get('/', (req, res) => {
 	
-	var db = require('../db.js');
+	if (session.active == "true") {
+		console.log(session);
 
-	db.query("SELECT * FROM tbl_horse", function(err, result, fields) {
-		if (err) throw err;
+		var db = require('../db.js');
 
-		console.log(result);
-	
-	res.render('index', {title: 'HCU Web', horses: result});
-	});
+		db.query("SELECT * FROM tbl_horse", function(err, result, fields) {
+			if (err) throw err;
+
+			//console.log(result);
+
+			res.render('index', {title: 'HCU Web', horses: result});
+		});
+	} else {
+		res.redirect('/login');
+	}
+
 });
 
+
+
+router.post('/login', (req, res) => {
+
+	console.log(req.body);
+
+	var username = req.body.username;
+	var password = req.body.password;
+
+	var dbResult = 0;
+
+	//connect to Db
+	var db = require('../db.js');
+
+	//Query Db based on user and pass parameters
+	db.query("SELECT COUNT(*) AS count FROM tbl_user where username = ? AND password = ?",[username, password], function (err, result, fields) {
+		if (err) throw err;
+			console.log(result);
+			dbResult = result[0].count;
+			console.log(dbResult);
+
+		//check if result is 1
+		if (dbResult == 1) {
+			session.active = "true";
+			session.user = req.body.username;
+			res.redirect('/');
+		} else {
+			res.render('login', {title: 'HCU Web'});
+		}
+	});
+});
 
 
 // Horse Details Page
@@ -60,7 +102,7 @@ router.get('/add-horse', (req, res) => {
 
 
 router.post('/add-horse', (req, res) => {
-			var db = require('../db.js');																																													//`HorseID`, `Age`,`Note`, 											`AdmissionDate`, 		`mircochipCode` ,					 `Breed`, 				`Colour`,					  `Gender`, 					`Weight`,  					`Height`, 					`FoundBy`,			`HorseCondition`, 			`treatment`
+	var db = require('../db.js');																																													//`HorseID`, `Age`,`Note`, 											`AdmissionDate`, 		`mircochipCode` ,					 `Breed`, 				`Colour`,					  `Gender`, 					`Weight`,  					`Height`, 					`FoundBy`,			`HorseCondition`, 			`treatment`
 	db.query("INSERT INTO `tbl_horse` (`HorseID`, `Age`,`Note`, `AdmissionDate`, `mircochipCode` , `Breed`, `Colour`,  `Gender`, `Weight`,  `Height`, `FoundBy`, `HorseCondition`, `treatment`) VALUES (NULL, '" + req.body.age + "', '" + req.body.notes + "', '" + req.body.date + "', '" + req.body.chipData + "', '" + req.body.breed + "', '" + req.body.colour + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height + "', '" + req.body.finder + "', '" + req.body.condition + "', '" + req.body.treatment + "');", function (err) {
 		if (err) throw err
 	})
@@ -150,6 +192,15 @@ router.get('/reports', (req, res) => {
 // Login Page
 router.get('/login', (req, res) => {
 	res.render('login', {title: 'Login'});
+});
+
+
+
+
+// Logout
+router.get('/logout', (req, res) => {
+	session.active = "false"
+	res.redirect('/login');
 });
 
 module.exports = router;
