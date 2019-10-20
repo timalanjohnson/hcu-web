@@ -11,8 +11,6 @@ var blankUser = [
 	];	
 
 
-
-// Index Page
 // Index Page
 router.get('/', (req, res) => {
 	
@@ -176,6 +174,10 @@ router.get('/reports', (req, res) => {
 router.get('/login', (req, res) => {
 	res.render('login', {title: 'Login'});
 });
+
+
+// IMPORTANT: You will need to add a user to the database 
+
 
 router.post('/login', (req, res) => {
 
