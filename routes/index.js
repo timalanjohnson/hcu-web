@@ -13,6 +13,7 @@ var blankUser = [
 
 
 // Index Page
+// Index Page
 router.get('/', (req, res) => {
 	
 	if (session.active == "true") {
@@ -34,83 +35,70 @@ router.get('/', (req, res) => {
 });
 
 
-
-router.post('/login', (req, res) => {
-
-	console.log(req.body);
-
-	var username = req.body.username;
-	var password = req.body.password;
-
-	var dbResult = 0;
-
-	//connect to Db
+//search Function
+router.post('/search', (req, res) => {
 	var db = require('../db.js');
+	var UserSearch = req.body.search;
 
-	//Query Db based on user and pass parameters
-	db.query("SELECT COUNT(*) AS count FROM tbl_user where username = ? AND password = ?",[username, password], function (err, result, fields) {
-		if (err) throw err;
-			console.log(result);
-			dbResult = result[0].count;
-			console.log(dbResult);
+	if (UserSearch == '') {
+		db.query("SELECT HorseID, Name, Age, Note, HorseCondition, DATE_FORMAT(AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse", function(err, result, fields) {
+			if (err) throw err;
+		res.render('index', {title: 'HCU Web', horses: result});
+		});
+	
+	} else {
+		db.query("SELECT HorseID, Name, Age, Note, HorseCondition, DATE_FORMAT(AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse where HorseID LIKE '%"+ UserSearch+"%' OR Name LIKE '%"+ UserSearch+"%' OR Age LIKE '%"+ UserSearch+"%' OR Note LIKE '%"+ UserSearch+"%' OR HorseCondition LIKE '%"+ UserSearch+"%';", function(err, result, fields) {
+			if (err) throw err;
+			res.render('index', {title: 'HCU Web', horses: result});
+		});
+}
+	
 
-		//check if result is 1
-		if (dbResult == 1) {
-			session.active = "true";
-			session.user = req.body.username;
-			res.redirect('/');
-		} else {
-			res.render('login', {title: 'HCU Web'});
-		}
-	});
 });
+
+
 
 
 // Horse Details Page
 router.get('/horse/:horseID', function(req, res) {
-	
+	var db = require('../db.js');
 	var horseID = req.params.horseID;
 
-	// Select * where horseID = the value
-	var horseInfo = {
-		id: horseID,
-		description: 'Brown male',
-		date: '17-June-2019',
-		condition: 'Recovering from a broken ankle.',
-		treatment: '2 shots of HorsePanado at 9am every other day.',
-		carer: 'Tim Johnson',
-		notes: 'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
-	};
+	db.query("SELECT HorseID, Name, Age, Note,Owner, DATE_FORMAT(AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(DischargeDate,'%D-%M-%Y') as DischargeDate, isDesceased, mircochipCode, Breed, Colour, Gender, Weight, Height, FoundBy, HorseCondition, treatment FROM tbl_horse where HorseID = '"+ horseID +"';", function(err, result, fields) {
+		if (err) throw err;
 
 	res.render('horse', {
 		title: "Horse "+horseID,
-		horse: horseInfo
+		horse: result
 	});
+	//res.render('index', {title: 'HCU Web', horses: result});
+	});
+	
+	
+	
 });
-
-
-
-
-
-
-
 
 // Add Horse Page
 router.get('/add-horse', (req, res) => {
 	res.render('add-horse', {title: 'Add Horse'});
 });
 
-
+// Add Horse to the database
 router.post('/add-horse', (req, res) => {
-	var db = require('../db.js');																																													//`HorseID`, `Age`,`Note`, 											`AdmissionDate`, 		`mircochipCode` ,					 `Breed`, 				`Colour`,					  `Gender`, 					`Weight`,  					`Height`, 					`FoundBy`,			`HorseCondition`, 			`treatment`
-	db.query("INSERT INTO `tbl_horse` (`HorseID`, `Age`,`Note`, `AdmissionDate`, `mircochipCode` , `Breed`, `Colour`,  `Gender`, `Weight`,  `Height`, `FoundBy`, `HorseCondition`, `treatment`) VALUES (NULL, '" + req.body.age + "', '" + req.body.notes + "', '" + req.body.date + "', '" + req.body.chipData + "', '" + req.body.breed + "', '" + req.body.colour + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height + "', '" + req.body.finder + "', '" + req.body.condition + "', '" + req.body.treatment + "');", function (err) {
+	var db = require('../db.js');
+	db.query("INSERT INTO `tbl_horse` (`HorseID`, `Age`,`Note`, `AdmissionDate`, `mircochipCode` , `Breed`, `Colour`,  `Gender`, `Weight`,  `Height`, `FoundBy`, `HorseCondition`, `treatment`, `Name`, `Owner`) VALUES (NULL, '" + req.body.age + "', '" + req.body.notes + "', '" + req.body.date + "', '" + req.body.chipData + "', '" + req.body.breed + "', '" + req.body.colour + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height + "', '" + req.body.finder + "', '" + req.body.condition + "', '" + req.body.treatment  + "', '" + req.body.name  + "', '" + req.body.owner + "');", function (err) {
 		if (err) throw err
 	})
 	
 	
-	res.render('add-horse', {title: 'HCU Web'});
-
-	console.log(req.body);
+	//Goes to Index page after adding a horse
+	var db = require('../db.js');
+	db.query("SELECT HorseID, Name, Age, Note, HorseCondition, DATE_FORMAT(AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse", function(err, result, fields) {
+		if (err) throw err;
+	res.render('index', {title: 'HCU Web', horses: result});
+	});
+	
+	//res.render('add-horse', {title: 'HCU Web'});
 
 });
 
@@ -138,8 +126,6 @@ router.get('/users', (req, res) => {
 		db.query("SELECT * FROM tbl_user", function(err, result, fields) {
 			if (err) throw err;
 
-			console.log(result);
-
 			res.render('users', {title: 'Users', data: result});
 		});
 	} catch (error) {
@@ -152,9 +138,6 @@ router.get('/users', (req, res) => {
 
 
 router.post('/users', (req, res) => {
-	//res.render('users', {title: 'HCU Web'});
-
-	console.log(req.body);
 
 	var db = require('../db.js');
 
@@ -194,8 +177,35 @@ router.get('/login', (req, res) => {
 	res.render('login', {title: 'Login'});
 });
 
+router.post('/login', (req, res) => {
 
+	console.log(req.body);
 
+	var username = req.body.username;
+	var password = req.body.password;
+
+	var dbResult = 0;
+
+	//connect to Db
+	var db = require('../db.js');
+
+	//Query Db based on user and pass parameters
+	db.query("SELECT COUNT(*) AS count FROM tbl_user where username = ? AND password = ?",[username, password], function (err, result, fields) {
+		if (err) throw err;
+			console.log(result);
+			dbResult = result[0].count;
+			console.log(dbResult);
+
+		//check if result is 1
+		if (dbResult == 1) {
+			session.active = "true";
+			session.user = req.body.username;
+			res.redirect('/');
+		} else {
+			res.render('login', {title: 'HCU Web'});
+		}
+	});
+});
 
 // Logout
 router.get('/logout', (req, res) => {
