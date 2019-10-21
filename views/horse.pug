@@ -1,6 +1,8 @@
 extends layout
 
 block content
+
+
 	div.area.horse-sub-grid
 		table.table.table-striped
 			each horse in horses
@@ -25,18 +27,14 @@ block content
 				tr
 					th Gender
 					td= horse.Gender
-				tr
-					th Weight
-					td= horse.Weight
-				tr
-					th Height
-					td= horse.Height
+				
+
 
 		form(action="update" method="POST")
 			table.table.table-striped
 				each horse in horses
 					tr
-						th Description
+						th Notes
 						td
 							input(
 								type="text"
@@ -49,20 +47,59 @@ block content
 						th Admission Date
 						td= horse.AdmissionDate
 					tr
-						th Condition
-						td= horse.HorseCondition
+					
+					th Condition
+						td
+							input(
+								type="text"
+								id="Condition"
+								name="Condition"
+								value= horse.HorseCondition
+							).form-control
+						
 					tr
 						th Treatment
-						td= horse.treatment
+						td
+							input(
+								type="text"
+								id="Treatment"
+								name="Treatment"
+								value= horse.treatment
+							).form-control
+						
 					tr
 						th Carer
-						td= horse.carer
+						td
+							input(
+								type="text"
+								id="Carer"
+								name="Carer"
+								value= horse.carer
+							).form-control
+						
 					tr
-						th Notes
-						td= horse.Note
+						th Weight
+						td
+							input(
+								type="text"
+								id="Weight"
+								name="Weight"
+								value= horse.Weight
+							).form-control
+							
 					tr
-						th Treatment
-						td= horse.treatment
+						th Height
+						td
+							input(
+								type="text"
+								id="Height"
+								name="Height"
+								value= horse.Height
+							).form-control
+				
+
+					
+					
 			div.right-align.button-group
 				a.btn.btn-light(href="/") Cancel
 				input(type="submit" value="Update").btn.btn-primary
