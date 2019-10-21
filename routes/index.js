@@ -11,30 +11,38 @@ var blankUser = [
 	];	
 
 
-// Index Page
-router.get('/', (req, res) => {
-	
-	if (session.active == "true") {
-		console.log(session);
+function isAuthenticated(req, res, next) {
+	// Do checks
 
-		var db = require('../db.js');
-
-		db.query("SELECT * FROM tbl_horse", function(err, result, fields) {
-			if (err) throw err;
-
-			//console.log(result);
-
-			res.render('index', {title: 'HCU Web', horses: result});
-		});
-	} else {
-		res.redirect('/login');
+	if (session.active == "true"){
+		return next();
 	}
 
+	res.redirect('/login');
+}
+
+
+
+// Index Page
+router.get('/', isAuthenticated, (req, res) => {
+	
+	console.log(session);
+
+	var db = require('../db.js');
+
+	db.query("SELECT * FROM tbl_horse", function(err, result, fields) {
+		if (err) throw err;
+
+		//console.log(result);
+
+		res.render('index', {title: 'HCU Web', horses: result});
+	});
+	
 });
 
 
 //search Function
-router.post('/search', (req, res) => {
+router.post('/search', isAuthenticated, (req, res) => {
 	var db = require('../db.js');
 	var UserSearch = req.body.search;
 
@@ -49,7 +57,7 @@ router.post('/search', (req, res) => {
 			if (err) throw err;
 			res.render('index', {title: 'HCU Web', horses: result});
 		});
-}
+	}
 	
 
 });
@@ -58,7 +66,7 @@ router.post('/search', (req, res) => {
 
 
 // Horse Details Page
-router.get('/horse/:horseID', function(req, res) {
+router.get('/horse/:horseID', isAuthenticated, function(req, res) {
 	var db = require('../db.js');
 	var horseID = req.params.horseID;
 
@@ -77,7 +85,7 @@ router.get('/horse/:horseID', function(req, res) {
 });
 
 // Add Horse Page
-router.get('/add-horse', (req, res) => {
+router.get('/add-horse', isAuthenticated, (req, res) => {
 	res.render('add-horse', {title: 'Add Horse'});
 });
 
@@ -105,7 +113,7 @@ router.post('/add-horse', (req, res) => {
 
 
 // Edit Horse Page
-router.get('/edit-horse', (req, res) => {
+router.get('/edit-horse', isAuthenticated, (req, res) => {
 	res.render('edit-horse', {title: 'Edit Horse'});
 });
 
@@ -116,7 +124,7 @@ router.get('/edit-horse', (req, res) => {
 
 
 // users Page
-router.get('/users', (req, res) => {
+router.get('/users', isAuthenticated, (req, res) => {
 
 	try {
 		var db = require('../db.js');
@@ -135,7 +143,7 @@ router.get('/users', (req, res) => {
 
 
 
-router.post('/users', (req, res) => {
+router.post('/users', isAuthenticated, (req, res) => {
 
 	var username = req.body.username;
 	var password = req.body.password;
@@ -168,7 +176,7 @@ router.post('/users', (req, res) => {
 
 
 // Reports Page
-router.get('/reports', (req, res) => {
+router.get('/reports', isAuthenticated, (req, res) => {
 	res.render('reports', {title: 'Reports'});
 });
 
