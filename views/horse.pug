@@ -6,7 +6,7 @@ block content
 			each horse in horses
 				tr
 					th ID
-					td= horse.HorseeID
+					td= horse.HorseID
 				tr
 					th Name
 					td= horse.Name
@@ -32,29 +32,37 @@ block content
 					th Height
 					td= horse.Height
 
-		table.table.table-striped
-			each horse in horsee
-				tr
-					th Description
-					td= horse.Note
-				tr
-					th Admission Date
-					td= horse.AdmissionDate
-				tr
-					th Condition
-					td= horse.HorseCondition
-				tr
-					th Treatment
-					td= horse.treatment
-				tr
-					th Carer
-					td= horse.carer
-				tr
-					th Notes
-					td= horse.Note
-				tr
-					th Treatment
-					td= horse.treatment
-		div.right-align.button-group
-			a.btn.btn-light(href="/") Cancel
-			input(type="submit" value="Update").btn.btn-primary
+		form(action="update" method="POST")
+			table.table.table-striped
+				each horse in horses
+					tr
+						th Description
+						td
+							input(
+								type="text"
+								id="note"
+								name="note"
+								value= horse.Note
+							).form-control
+							
+					tr
+						th Admission Date
+						td= horse.AdmissionDate
+					tr
+						th Condition
+						td= horse.HorseCondition
+					tr
+						th Treatment
+						td= horse.treatment
+					tr
+						th Carer
+						td= horse.carer
+					tr
+						th Notes
+						td= horse.Note
+					tr
+						th Treatment
+						td= horse.treatment
+			div.right-align.button-group
+				a.btn.btn-light(href="/") Cancel
+				input(type="submit" value="Update").btn.btn-primary
