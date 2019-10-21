@@ -16,7 +16,7 @@ body {
 
 .side-panel {
 	background: #414b64;
-	height: 100vh;
+	min-height: 100vh;
 	color: #f29e74;
 }
 
@@ -56,6 +56,12 @@ nav .button-group .btn {
 nav .button-group > *:last-child {
 	margin-left: 0;
 	margin-right: 0;
+}
+
+.fixed {
+	position: fixed;
+	margin: auto;
+	width: 268px;
 }
 
 .main-panel {
@@ -101,6 +107,14 @@ nav .button-group > *:last-child {
 
 .horse-sub-grid .area {
 	margin: 0;
+}
+
+.sub-grid .area {
+	margin: 0;
+}
+
+.area-alt {
+	padding: 16px;	
 }
 
 .login {
