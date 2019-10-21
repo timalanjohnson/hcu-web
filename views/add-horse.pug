@@ -1,10 +1,9 @@
 extends layout
 
 block content
-
 	div.area
 		h2 Add Horse
-		form(action="add-horse" method="POST").sub-grid
+		form(action="add-horse" method="POST").horse-sub-grid
 			div.area
 				h3 Details
 				div.form-group
@@ -63,7 +62,6 @@ block content
 						id="chipData"
 						name="chipData"
 					).form-control
-
 			div.area
 				h3 Admission
 				div.form-group
@@ -72,7 +70,6 @@ block content
 						type="date"
 						id="date"
 						name="date"
-						value=today
 					).form-control
 				div.form-group
 					label(for="finder") Found by:
@@ -81,7 +78,7 @@ block content
 						id="finder"
 						name="finder"
 					).form-control
-				div.form-group
+					div.form-group
 					label(for="owner") Owner:
 					input(
 						type="text"
@@ -103,13 +100,12 @@ block content
 						name="notes"
 					).form-control
 				div.form-group
-					label(for="treatment") Treatment:
+					label(for="treatment") treatment:
 					input(
 						type="text"
 						id="treatment"
 						name="treatment"
 					).form-control
-			
-				div.right-align.button-group
-					a.btn.btn-light(href="/") Cancel
-					input(type="submit" value="Submit").btn.btn-primary
+			div.right-align.button-group
+				a.btn.btn-light(href="/") Cancel
+				input(type="submit" value="Submit").btn.btn-primary

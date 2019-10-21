@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 21, 2019 at 11:40 AM
+-- Generation Time: Oct 21, 2019 at 01:42 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.2.18
 
@@ -39,14 +39,14 @@ CREATE TABLE IF NOT EXISTS `tbl_horse` (
   `Colour` varchar(255) DEFAULT NULL,
   `FoundBy` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`HorseID`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_horse`
 --
 
 INSERT INTO `tbl_horse` (`HorseID`, `Name`, `Age`, `isDesceased`, `mircochipCode`, `Breed`, `Colour`, `FoundBy`) VALUES
-(6, NULL, '8', 0, '123456789', 'hanoverian', 'bay', 'thomas');
+(14, 'Takkies', '6', 0, '123456789', 'Horse Breed', 'Brown', 'James');
 
 -- --------------------------------------------------------
 
@@ -72,7 +72,14 @@ CREATE TABLE IF NOT EXISTS `tbl_horse_history` (
   KEY `HorseID` (`HorseID`),
   KEY `HorseID_2` (`HorseID`),
   KEY `UserIDFK` (`UserID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `tbl_horse_history`
+--
+
+INSERT INTO `tbl_horse_history` (`HorseHistoryID`, `HorseID`, `UserID`, `AdmissionDate`, `DischargeDate`, `Note`, `Owner`, `Gender`, `Weight`, `Height`, `HorseCondition`, `treatment`) VALUES
+(1, 14, 1, '2019-10-21', NULL, 'Pay Boet', 'Tim', 'Horse Gender', 500, 175, 'Poor', 'Money');
 
 -- --------------------------------------------------------
 
@@ -138,7 +145,7 @@ CREATE TABLE IF NOT EXISTS `tbl_user` (
   `UserType` varchar(45) NOT NULL,
   `Address` varchar(45) NOT NULL,
   PRIMARY KEY (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_user`

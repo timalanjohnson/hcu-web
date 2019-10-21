@@ -61,6 +61,7 @@ router.get('/horse/:horseID', isAuthenticated, function(req, res) {
 
 	db.query("SELECT ho.HorseID, ho.Name, ho.Age,his.Note,his.Owner, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate, ho.isDesceased, ho.mircochipCode, ho.Breed, ho.Colour, his.Gender, his.Weight, his.Height, ho.FoundBy, his.HorseCondition, his.treatment FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and ho.HorseID = '"+ horseID +"';", function(err, result, fields) {
 		if (err) throw err;
+		console.log(result)
 		res.render('horse', {
 			title: "Horse "+horseID,
 			horses: result
@@ -72,15 +73,7 @@ router.get('/horse/:horseID', isAuthenticated, function(req, res) {
 
 // Add Horse Page
 router.get('/add-horse', isAuthenticated, (req, res) => {
-
-	var today = new Date();
-	var dd = String(today.getDate()).padStart(2, '0');
-	var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-	var yyyy = today.getFullYear();
-	today = yyyy + '-' + mm + '-' + dd; 
-	console.log(today);
-
-	res.render('add-horse', {title: 'Add Horse', today: today});
+	res.render('add-horse', {title: 'Add Horse'});
 });
 
 
@@ -88,18 +81,22 @@ router.get('/add-horse', isAuthenticated, (req, res) => {
 // Add Horse to the database
 router.post('/add-horse', (req, res) => {
 	var db = require('../db.js');
-	var UserID = ''
-db.query("SELECT UserID from tbl_user where Username= '"+ session.user +"';", function(err, result, fields) {
+	var UserID = ""
+	db.query("SELECT UserID from tbl_user where Username= '"+ session.user +"';", function(err, result, fields) {
 		if (err) throw err;
-		each user in result
-			UserID = user.UserID
-		db.query("INSERT INTO `tbl_horse` (`HorseID`, `Age`, `mircochipCode` , `Breed`, `Colour`,`FoundBy`, `Name`) VALUES (NULL, '" + req.body.age + "', '" + req.body.chipData + "', '" + req.body.breed + "', '" + req.body.colour + "', '" + req.body.finder + "', '" + req.body.name  + "');", function (err) {
-		if (err) throw err
-			db.query("INSERT INTO `tbl_horse` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + req.body.notes + "', '" + req.body.date + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height +  "', '" + req.body.condition + "', '" + req.body.treatment  + "', '" + req.body.owner + "');", function (err) {
+			console.log(result);
+			result.forEach(function(userDetail) { 
+													UserID = userDetail.UserID;
+													});
+		//console.log("INSERT INTO `tbl_horse` (`HorseID`, `Age`, `mircochipCode` , `Breed`, `Colour`,`FoundBy`, `Name`) VALUES (NULL, '" + req.body.age + "', '" + req.body.chipData + "', '" + req.body.breed + "', '" + req.body.colour + "', '" + req.body.finder + "', '" + req.body.name  + "');");
+		db.query("INSERT INTO `tbl_horse` (`HorseID`, `Age`, `mircochipCode` , `Breed`, `Colour`,`FoundBy`, `Name`) VALUES (NULL, '" + req.body.age + "', '" + req.body.chipData + "', '" + req.body.breed + "', '" + req.body.colour + "', '" + req.body.finder + "', '" + req.body.name  + "');", function (err, result) {
 			if (err) throw err
+				//console.log("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + req.body.notes + "', '" + req.body.date + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height +  "', '" + req.body.condition + "', '" + req.body.treatment  + "', '" + req.body.owner + "');");
+				db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + req.body.notes + "', '" + req.body.date + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height +  "', '" + req.body.condition + "', '" + req.body.treatment  + "', '" + req.body.owner + "');", function (err) {
+					if (err) throw err
+				
 			
-			
-			})
+				})
 	})
 	
 	});
