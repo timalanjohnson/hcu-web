@@ -1,8 +1,6 @@
 extends layout
 
 block content
-
-
 	div.area.horse-sub-grid
 		table.table.table-striped
 			each horse in horses
@@ -33,7 +31,6 @@ block content
 				tr
 					th Height
 					td= horse.Height
-
 
 		form(action="update" method="POST")
 			table.table.table-striped

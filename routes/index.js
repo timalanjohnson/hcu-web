@@ -1,85 +1,81 @@
 const express = require('express');
-
 const router = express.Router();
 
 var session = [
 		{active: 'true', user: 'Tom', userType: 'admin'}
 	];
 
-var blankUser = [
-		{uid: '', name: '', email: '', phone: ''}
-	];	
+
+
+function isAuthenticated(req, res, next) {
+	// Do checks
+
+	if (session.active == "true"){
+		return next();
+	}
+
+	res.redirect('/login');
+}
+
 
 
 // Index Page
-router.get('/', (req, res) => {
+router.get('/', isAuthenticated, (req, res) => {
 	
-	if (session.active == "true") {
-		console.log(session);
+	console.log(session);
 
-		var db = require('../db.js');
+	var db = require('../db.js');
 
-		db.query("SELECT HorseID, Name, Age, Note, HorseCondition, DATE_FORMAT(AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse", function(err, result, fields) {
-			if (err) throw err;
-
-			//console.log(result);
-
-			res.render('index', {title: 'HCU Web', horses: result});
-		});
-	} else {
-		res.redirect('/login');
-	}
-
+	db.query("SELECT * FROM tbl_horse", function(err, result, fields) {
+		if (err) throw err;
+		res.render('index', {title: 'HCU Web', horses: result});
+	});
+	
 });
 
 
+
 //search Function
-router.post('/search', (req, res) => {
+router.post('/search', isAuthenticated, (req, res) => {
 	var db = require('../db.js');
 	var UserSearch = req.body.search;
-
 	if (UserSearch == '') {
 		db.query("SELECT HorseID, Name, Age, Note, HorseCondition, DATE_FORMAT(AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse", function(err, result, fields) {
 			if (err) throw err;
 		res.render('index', {title: 'HCU Web', horses: result});
 		});
-	
 	} else {
 		db.query("SELECT HorseID, Name, Age, Note, HorseCondition, DATE_FORMAT(AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse where HorseID LIKE '%"+ UserSearch+"%' OR Name LIKE '%"+ UserSearch+"%' OR Age LIKE '%"+ UserSearch+"%' OR Note LIKE '%"+ UserSearch+"%' OR HorseCondition LIKE '%"+ UserSearch+"%';", function(err, result, fields) {
 			if (err) throw err;
 			res.render('index', {title: 'HCU Web', horses: result});
 		});
-}
-	
-
+	}
 });
 
 
 
-
 // Horse Details Page
-router.get('/horse/:horseID', function(req, res) {
+router.get('/horse/:horseID', isAuthenticated, function(req, res) {
 	var db = require('../db.js');
 	var horseID = req.params.horseID;
 
 	db.query("SELECT HorseID, Name, Age, Note,Owner, DATE_FORMAT(AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(DischargeDate,'%D-%M-%Y') as DischargeDate, isDesceased, mircochipCode, Breed, Colour, Gender, Weight, Height, FoundBy, HorseCondition, treatment FROM tbl_horse where HorseID = '"+ horseID +"';", function(err, result, fields) {
 		if (err) throw err;
-
-	res.render('horse', {
-		title: "Horse "+horseID,
-		horses: result
+		res.render('horse', {
+			title: "Horse "+horseID,
+			horses: result
+		});
 	});
-	//res.render('index', {title: 'HCU Web', horses: result});
-	});
-	
-	
-	
 });
+
+
 
 // Add Horse Page
-router.get('/add-horse', (req, res) => {
+router.get('/add-horse', isAuthenticated, (req, res) => {
 	res.render('add-horse', {title: 'Add Horse'});
 });
+
+
 
 // Add Horse to the database
 router.post('/add-horse', (req, res) => {
@@ -88,36 +84,25 @@ router.post('/add-horse', (req, res) => {
 		if (err) throw err
 	})
 	
-	
 	//Goes to Index page after adding a horse
 	var db = require('../db.js');
 	db.query("SELECT HorseID, Name, Age, Note, HorseCondition, DATE_FORMAT(AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse", function(err, result, fields) {
 		if (err) throw err;
 	res.render('index', {title: 'HCU Web', horses: result});
 	});
-	
-	//res.render('add-horse', {title: 'HCU Web'});
-
 });
 
 
 
-
-
 // Edit Horse Page
-router.get('/edit-horse', (req, res) => {
+router.get('/edit-horse', isAuthenticated, (req, res) => {
 	res.render('edit-horse', {title: 'Edit Horse'});
 });
 
 
 
-
-
-
-
 // users Page
-router.get('/users', (req, res) => {
-
+router.get('/users', isAuthenticated, (req, res) => {
 	try {
 		var db = require('../db.js');
 
@@ -130,13 +115,11 @@ router.get('/users', (req, res) => {
 		console.log(error);
 		res.render('404', {title: 'Users'});
 	}
-
 });
 
 
 
-router.post('/users', (req, res) => {
-
+router.post('/users', isAuthenticated, (req, res) => {
 	var username = req.body.username;
 	var password = req.body.password;
 	var firstname = req.body.firstname;
@@ -154,28 +137,16 @@ router.post('/users', (req, res) => {
 
 	db.query("SELECT * FROM tbl_user", function(err, result, fields) {
 		if (err) throw err;
-
 		res.render('users', {title: 'Users', data: result});
 	});
-
 });
-
-
-
-
-
 
 
 
 // Reports Page
-router.get('/reports', (req, res) => {
+router.get('/reports', isAuthenticated, (req, res) => {
 	res.render('reports', {title: 'Reports'});
 });
-
-
-
-
-
 
 
 
@@ -185,9 +156,8 @@ router.get('/login', (req, res) => {
 });
 
 
-// IMPORTANT: You will need to add a user to the database 
-router.post('/login', (req, res) => {
 
+router.post('/login', (req, res) => {
 	console.log(req.body);
 
 	var username = req.body.username;
@@ -215,6 +185,8 @@ router.post('/login', (req, res) => {
 		}
 	});
 });
+
+
 
 // Logout
 router.get('/logout', (req, res) => {
