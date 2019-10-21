@@ -19,7 +19,7 @@ router.get('/', (req, res) => {
 
 		var db = require('../db.js');
 
-		db.query("SELECT * FROM tbl_horse", function(err, result, fields) {
+		db.query("SELECT HorseID, Name, Age, Note, HorseCondition, DATE_FORMAT(AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse", function(err, result, fields) {
 			if (err) throw err;
 
 			//console.log(result);
@@ -67,7 +67,7 @@ router.get('/horse/:horseID', function(req, res) {
 
 	res.render('horse', {
 		title: "Horse "+horseID,
-		horse: result
+		horses: result
 	});
 	//res.render('index', {title: 'HCU Web', horses: result});
 	});
@@ -177,8 +177,6 @@ router.get('/login', (req, res) => {
 
 
 // IMPORTANT: You will need to add a user to the database 
-
-
 router.post('/login', (req, res) => {
 
 	console.log(req.body);

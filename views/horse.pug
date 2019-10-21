@@ -1,12 +1,14 @@
 extends layout
 
 block content
+
+
 	div.area.horse-sub-grid
 		table.table.table-striped
 			each horse in horses
 				tr
 					th ID
-					td= horse.HorseeID
+					td= horse.HorseID
 				tr
 					th Name
 					td= horse.Name
@@ -31,17 +33,15 @@ block content
 				tr
 					th Height
 					td= horse.Height
-
-		table.table.table-striped
-			each horse in horsee
-				tr
-					th Description
-					td= horse.Note
 				tr
 					th Admission Date
 					td= horse.AdmissionDate
+
+		table.table.table-striped
+			each horse in horses
+				
 				tr
-					th Condition
+					
 					td= horse.HorseCondition
 				tr
 					th Treatment
