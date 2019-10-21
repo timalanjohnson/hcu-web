@@ -2,17 +2,9 @@ extends layout
 
 block content
 
-	script.
-		var today = new Date();
-		var dd = String(today.getDate()).padStart(2, '0');
-		var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
-		var yyyy = today.getFullYear();
-		today = yyyy + '-' + mm + '-' + dd; 
-		console.log(today);
-
 	div.area
 		h2 Add Horse
-		form(action="add-horse" method="POST").horse-sub-grid
+		form(action="add-horse" method="POST").sub-grid
 			div.area
 				h3 Details
 				div.form-group
@@ -71,6 +63,7 @@ block content
 						id="chipData"
 						name="chipData"
 					).form-control
+
 			div.area
 				h3 Admission
 				div.form-group
@@ -79,7 +72,7 @@ block content
 						type="date"
 						id="date"
 						name="date"
-						value=""
+						value=today
 					).form-control
 				div.form-group
 					label(for="finder") Found by:
@@ -116,6 +109,7 @@ block content
 						id="treatment"
 						name="treatment"
 					).form-control
-			div.right-align.button-group
-				a.btn.btn-light(href="/") Cancel
-				input(type="submit" value="Submit").btn.btn-primary
+			
+				div.right-align.button-group
+					a.btn.btn-light(href="/") Cancel
+					input(type="submit" value="Submit").btn.btn-primary
