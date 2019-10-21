@@ -137,13 +137,22 @@ router.get('/users', (req, res) => {
 
 router.post('/users', (req, res) => {
 
-	var db = require('../db.js');
+	var username = req.body.username;
+	var password = req.body.password;
+	var firstname = req.body.firstname;
+	var lastname = req.body.lastname;
+	var email = req.body.email;
+	var status = ' ';
+	var level = req.body.level;
+	var address = ' ';
 
-	db.query("INSERT INTO `tbl_users` (`uid`, `name`, `email`, `pass`, `phone`) VALUES (NULL, '" + req.body.name + "', '" + req.body.email + "', '" + req.body.password + "', '" + req.body.phone + "');", function (err) {
+	var db = require('../db.js');
+																																				// UserID, username, password, fname, lname, email, status, level, address	
+	db.query("INSERT INTO `tbl_user` (`UserID`, `Username`, `Password`, `firstName`, `lastName`, `emailAddress`, `Status`, `UserType`, `Address`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?);", [username, password, firstname, lastname, email, status, level, address], function(err){
 		if (err) throw err
 	})
 
-	db.query("SELECT * FROM tbl_users", function(err, result, fields) {
+	db.query("SELECT * FROM tbl_user", function(err, result, fields) {
 		if (err) throw err;
 
 		res.render('users', {title: 'Users', data: result});

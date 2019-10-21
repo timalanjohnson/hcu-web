@@ -79,6 +79,18 @@ nav .button-group > *:last-child {
 	justify-self: flex-end;
 }
 
+.sub-grid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	grid-gap: 16px;
+	align-items: flex-start;
+}
+
+.sub-grid .right-align {
+	grid-column: 2 / -1;
+	justify-self: flex-end;
+}
+
 .area {
 	display: grid;
 	border: 1px solid #ddd;
