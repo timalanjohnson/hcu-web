@@ -16,7 +16,7 @@ body {
 
 .side-panel {
 	background: #414b64;
-	height: 100vh;
+	min-height: 100vh;
 	color: #f29e74;
 }
 
@@ -58,6 +58,12 @@ nav .button-group > *:last-child {
 	margin-right: 0;
 }
 
+.fixed {
+	position: fixed;
+	margin: auto;
+	width: 268px;
+}
+
 .main-panel {
 	background: #f7f7f7;
 }
@@ -72,6 +78,7 @@ nav .button-group > *:last-child {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
 	grid-gap: 16px;
+	align-items: flex-start;
 }
 
 .horse-sub-grid .right-align {
@@ -101,6 +108,14 @@ nav .button-group > *:last-child {
 
 .horse-sub-grid .area {
 	margin: 0;
+}
+
+.sub-grid .area {
+	margin: 0;
+}
+
+.area-alt {
+	padding: 16px;	
 }
 
 .login {
