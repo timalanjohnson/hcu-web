@@ -6,17 +6,17 @@ block content
 
 		table.table.table-striped
 			thead.thead-dark
-				th User ID
+				th Username
 				th Name
 				th Email
-				th Phone Number
+				th Level
 
 			each row in data
 				tr
-					td= row.uid
-					td= row.name
-					td= row.email
-					td= row.phone
+					td= row.Username
+					td= row.firstName + " " + row.lastName
+					td= row.emailAddress
+					td= row.UserType
 
 	div.area
 		h2 Add User
