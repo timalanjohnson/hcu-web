@@ -26,7 +26,9 @@ router.get('/', isAuthenticated, (req, res) => {
 
 	var db = require('../db.js');
 
-	db.query("SELECT * FROM tbl_horse", function(err, result, fields) {
+
+	db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID ORDER BY his.HorseHistoryID DESC LIMIT 1",function(err, result, fields) {
+
 		if (err) throw err;
 		res.render('index', {title: 'HCU Web', horses: result});
 	});
@@ -40,12 +42,16 @@ router.post('/search', isAuthenticated, (req, res) => {
 	var db = require('../db.js');
 	var UserSearch = req.body.search;
 	if (UserSearch == '') {
-		db.query("SELECT HorseID, Name, Age, Note, HorseCondition, DATE_FORMAT(AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse", function(err, result, fields) {
+
+		db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID GROUP BY ho.HorseID ORDER BY his.HorseHistoryID DESC LIMIT 1", function(err, result, fields) {
+
 			if (err) throw err;
 		res.render('index', {title: 'HCU Web', horses: result});
 		});
 	} else {
-		db.query("SELECT HorseID, Name, Age, Note, HorseCondition, DATE_FORMAT(AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse where HorseID LIKE '%"+ UserSearch+"%' OR Name LIKE '%"+ UserSearch+"%' OR Age LIKE '%"+ UserSearch+"%' OR Note LIKE '%"+ UserSearch+"%' OR HorseCondition LIKE '%"+ UserSearch+"%';", function(err, result, fields) {
+
+		db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where  ho.HorseID = his.HorseID and ho.HorseID LIKE '%"+ UserSearch+"%' OR ho.Name LIKE '%"+ UserSearch+"%' OR ho.Age LIKE '%"+ UserSearch+"%' OR his.Note LIKE '%"+ UserSearch+"%' OR his.HorseCondition LIKE '%"+ UserSearch+"%' ORDER BY his.HorseHistoryID DESC LIMIT 1;", function(err, result, fields) {
+
 			if (err) throw err;
 			res.render('index', {title: 'HCU Web', horses: result});
 		});
@@ -59,13 +65,82 @@ router.get('/horse/:horseID', isAuthenticated, function(req, res) {
 	var db = require('../db.js');
 	var horseID = req.params.horseID;
 
-	db.query("SELECT HorseID, Name, Age, Note,Owner, DATE_FORMAT(AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(DischargeDate,'%D-%M-%Y') as DischargeDate, isDesceased, mircochipCode, Breed, Colour, Gender, Weight, Height, FoundBy, HorseCondition, treatment FROM tbl_horse where HorseID = '"+ horseID +"';", function(err, result, fields) {
+
+	//console.log("SELECT ho.HorseID, ho.Name, ho.Age,  ho.isDesceased, ho.mircochipCode, ho.Breed, ho.Colour, ho.FoundBy FROM tbl_horse ho where ho.HorseID = '"+ horseID +"';")
+	db.query("SELECT ho.HorseID, ho.Name, ho.Age,  ho.isDesceased, ho.mircochipCode, ho.Breed, ho.Colour, ho.FoundBy FROM tbl_horse ho where ho.HorseID = '"+ horseID +"';", function(err, horseTable, fields) {
 		if (err) throw err;
-		res.render('horse', {
-			title: "Horse "+horseID,
-			horses: result
+		//console.log("SELECT his.HorseID,his.Note,his.Owner, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate, his.Gender, his.Weight, his.Height, his.HorseCondition, his.treatment FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and ho.HorseID = '"+ horseID +"';")
+		db.query("SELECT his.HorseID, his.Note,his.Owner, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate, his.Gender, his.Weight, his.Height, his.HorseCondition, his.treatment, his.Carer, DATE_FORMAT(his.UpdateTimeStamp,'%D-%M-%Y %H:%i') as UpdateTimeStamp FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and ho.HorseID = '"+ horseID +"' ORDER BY his.HorseHistoryID DESC;", function(err, horseHistory, fields) {
+		if (err) throw err;
+			console.log(horseTable)
+			console.log(horseHistory)
+			res.render('horse', {
+				title: "Horse "+horseID,
+				horses: horseTable,
+				horsesHis: horseHistory
+			});
+		
 		});
+		
 	});
+});
+
+
+
+// Update horse details
+router.post('/horse/:horseID/update-horse', (req, res) => {
+	var db = require('../db.js');
+	var horseID = req.params.horseID;
+	var AdmissionDate = '';
+	var UserID = "";
+	//console.log(req);
+	console.log("SELECT DATE_FORMAT(AdmissionDate,'%Y-%m-%d') as AdmissionDate from tbl_horse_history where HorseID= '"+ horseID +"' GROUP BY HorseID ORDER BY HorseHistoryID DESC");
+	db.query("SELECT DATE_FORMAT(AdmissionDate,'%Y-%m-%d') as AdmissionDate from tbl_horse_history where HorseID= '"+ horseID +"' GROUP BY HorseID ORDER BY HorseHistoryID DESC", function(err, result, fields) {
+		if (err) throw err;
+			result.forEach(function(horse) {
+			console.log(result);
+			AdmissionDate = horse.AdmissionDate;
+			db.query("SELECT UserID from tbl_user where Username= '"+ session.user +"';", function(err, result, fields) {
+			if (err) throw err;
+				//console.log(result);
+				result.forEach(function(userDetail) { 
+						UserID = userDetail.UserID;
+						console.log(userDetail);
+						console.log("Horse Updating...");
+						if(req.body.DischargeDate == ""){
+							console.log("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + horseID + "','" + UserID + "' ,'" + req.body.notes + "', '" + AdmissionDate + "', '" + req.body.Gender + "', '" + req.body.Weight + "', '" + req.body.Height +  "', '" + req.body.Condition + "', '" + req.body.Treatment  + "', '" + req.body.Owner + "', '" + req.body.Carer + "');")
+							db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + horseID + "','" + UserID + "' ,'" + req.body.notes + "', '" + AdmissionDate + "', '" + req.body.Gender + "', '" + req.body.Weight + "', '" + req.body.Height +  "', '" + req.body.Condition + "', '" + req.body.Treatment  + "', '" + req.body.Owner + "', '" + req.body.Carer + "');", function (err) {
+											if (err) throw err
+											
+										})
+						}else{
+							console.log("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `DischargeDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + horseID + "','" + UserID + "' ,'" + req.body.notes + "', '" + AdmissionDate + "', '" + req.body.DischargeDate + "', '" + req.body.Gender + "', '" + req.body.Weight + "', '" + req.body.Height +  "', '" + req.body.Condition + "', '" + req.body.Treatment  + "', '" + req.body.Owner + "', '" + req.body.Carer + "');")
+							db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `DischargeDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + horseID + "','" + UserID + "' ,'" + req.body.notes + "', '" + AdmissionDate + "', '" + req.body.DischargeDate + "', '" + req.body.Gender + "', '" + req.body.Weight + "', '" + req.body.Height +  "', '" + req.body.Condition + "', '" + req.body.Treatment  + "', '" + req.body.Owner + "', '" + req.body.Carer + "');", function (err) {
+											if (err) throw err
+											
+										})
+						}
+					console.log("Horse Updated.");
+					
+				});
+			});
+			
+			
+			
+		});
+	
+	});
+	
+	
+	
+	
+	
+	//Takes you to the index page when you done updating
+	db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID", function(err, result, fields) {
+		if (err) throw err;
+	res.render('index', {title: 'HCU Web', horses: result});
+	});
+	
 });
 
 
@@ -138,7 +213,7 @@ router.post('/users', isAuthenticated, (req, res) => {
 	var address = ' ';
 
 	var db = require('../db.js');
-																																				// UserID, username, password, fname, lname, email, status, level, address	
+
 	db.query("INSERT INTO `tbl_user` (`UserID`, `Username`, `Password`, `firstName`, `lastName`, `emailAddress`, `Status`, `UserType`, `Address`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?);", [username, password, firstname, lastname, email, status, level, address], function(err){
 		if (err) throw err
 	})

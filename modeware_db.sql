@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 21, 2019 at 01:42 PM
+-- Generation Time: Oct 22, 2019 at 01:44 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.2.18
 
@@ -68,18 +68,22 @@ CREATE TABLE IF NOT EXISTS `tbl_horse_history` (
   `Height` int(11) NOT NULL,
   `HorseCondition` varchar(255) NOT NULL,
   `treatment` varchar(255) NOT NULL,
+  `Carer` varchar(255) NOT NULL,
+  `UpdateTimeStamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`HorseHistoryID`),
   KEY `HorseID` (`HorseID`),
   KEY `HorseID_2` (`HorseID`),
   KEY `UserIDFK` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_horse_history`
 --
 
-INSERT INTO `tbl_horse_history` (`HorseHistoryID`, `HorseID`, `UserID`, `AdmissionDate`, `DischargeDate`, `Note`, `Owner`, `Gender`, `Weight`, `Height`, `HorseCondition`, `treatment`) VALUES
-(1, 14, 1, '2019-10-21', NULL, 'Pay Boet', 'Tim', 'Horse Gender', 500, 175, 'Poor', 'Money');
+INSERT INTO `tbl_horse_history` (`HorseHistoryID`, `HorseID`, `UserID`, `AdmissionDate`, `DischargeDate`, `Note`, `Owner`, `Gender`, `Weight`, `Height`, `HorseCondition`, `treatment`, `Carer`, `UpdateTimeStamp`) VALUES
+(1, 14, 1, '2019-10-21', NULL, 'Pay Boet', 'Tim', 'Horse Gender', 500, 175, 'Poor', 'Money', '', '2019-10-22 11:45:40'),
+(3, 14, 1, '2019-10-21', NULL, 'Pay Boet', 'Tim', 'Horse Gender', 500, 175, 'Better', 'Money', 'James', '2019-10-22 14:42:37'),
+(65, 14, 1, '2019-10-21', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 500, 175, 'Fixed', 'Money', 'James', '2019-10-22 15:08:02');
 
 -- --------------------------------------------------------
 

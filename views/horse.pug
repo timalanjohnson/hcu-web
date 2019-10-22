@@ -12,12 +12,18 @@ block content
 				tr
 					th Name
 					td= horse.Name
+				
 				tr
-					th Owner
-					td= horse.Owner
+					th Age
+					td= horse.Age
+					
 				tr
 					th Micro-Chip
 					td= horse.mircochipCode
+				tr
+					th Is Desceased
+					td= horse.isDesceased
+					
 				tr
 					th Breed
 					td= horse.Breed	
@@ -25,81 +31,163 @@ block content
 					th Colour
 					td= horse.Colour
 				tr
-					th Gender
-					td= horse.Gender
+					th Found By:
+					td= horse.FoundBy
 				
 
-
-		form(action="update" method="POST")
-			table.table.table-striped
-				each horse in horses
-					tr
-						th Notes
-						td
-							input(
-								type="text"
-								id="note"
-								name="note"
-								value= horse.Note
-							).form-control
+		each his, index in horsesHis
+			if(index === 0)
+				form(action=his.HorseID+"/update-horse" method="POST")
+					table.table.table-striped
+						tr
+							th ID
+							td
+								input(
+									type="text"
+									id="HorseID"
+									name="HorseID"
+									value= his.HorseID
+								).form-control
+						tr
+							th Owner
+							td
+								input(
+									type="text"
+									id="Owner"
+									name="Owner"
+									value= his.Owner
+								).form-control
 							
-					tr
-						th Admission Date
-						td= horse.AdmissionDate
-					tr
+						tr
+							th Notes
+							td
+								input(
+									type="text"
+									id="notes"
+									name="notes"
+									value= his.Note
+								).form-control
+								
+						
+						tr
+							th Admission Date
+							td= his.AdmissionDate
+						tr
+							th Condition
+							td
+								input(
+									type="text"
+									id="Condition"
+									name="Condition"
+									value= his.HorseCondition
+								).form-control
+							
+						tr
+							th Treatment
+							td
+								input(
+									type="text"
+									id="Treatment"
+									name="Treatment"
+									value= his.treatment
+								).form-control
+							
+						tr
+							th Carer
+							td
+								input(
+									type="text"
+									id="Carer"
+									name="Carer"
+									value= his.Carer
+								).form-control
+							
+						tr
+							th Weight
+							td
+								input(
+									type="text"
+									id="Weight"
+									name="Weight"
+									value= his.Weight
+								).form-control
+								
+						tr
+							th Height
+							td
+								input(
+									type="text"
+									id="Height"
+									name="Height"
+									value= his.Height
+								).form-control
+						tr
+							th Discharge Date:
+							td
+								label(for="date") 
+								input(
+									type="date"
+									id="DischargeDate"
+									name="DischargeDate"
+									value= his.DischargeDate
+								).form-control
+
+						tr
+							th Gender
+							td
+								input(
+									type="text"
+									id="Gender"
+									name="Gender"
+									value= his.Gender
+								).form-control
+						
+					div.right-align.button-group
+						a.btn.btn-light(href="/") Cancel
+						input(type="submit" value="Update").btn.btn-primary
+			
+		each his in horsesHis
+			table(style='width:100%', border='1')
+			
+				tr
+					th Updated On: 
+					td=his.UpdateTimeStamp
+				tr
+					th Owner
+					td=his.Owner
+						
+				tr
+					th Notes
+					td=his.Note
 					
+				tr
+					th Admission Date
+					td=his.AdmissionDate
+				tr
 					th Condition
-						td
-							input(
-								type="text"
-								id="Condition"
-								name="Condition"
-								value= horse.HorseCondition
-							).form-control
+					td=his.HorseCondition
 						
-					tr
-						th Treatment
-						td
-							input(
-								type="text"
-								id="Treatment"
-								name="Treatment"
-								value= horse.treatment
-							).form-control
+				tr
+					th Treatment
+					td=his.treatment
 						
-					tr
-						th Carer
-						td
-							input(
-								type="text"
-								id="Carer"
-								name="Carer"
-								value= horse.carer
-							).form-control
+				tr
+					th Carer
+					td=his.Carer
 						
-					tr
-						th Weight
-						td
-							input(
-								type="text"
-								id="Weight"
-								name="Weight"
-								value= horse.Weight
-							).form-control
-							
-					tr
-						th Height
-						td
-							input(
-								type="text"
-								id="Height"
-								name="Height"
-								value= horse.Height
-							).form-control
-				
-
+				tr
+					th Weight
+					td=his.Weight
 					
+				tr
+					th Height
+					td=his.Height
+						
+				tr
+					th Discharge Date:
+					td=his.DischargeDate
+						
+				tr
+					th Gender
+					td=his.Gender
 					
-			div.right-align.button-group
-				a.btn.btn-light(href="/") Cancel
-				input(type="submit" value="Update").btn.btn-primary
