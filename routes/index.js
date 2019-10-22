@@ -228,7 +228,14 @@ router.post('/users', isAuthenticated, (req, res) => {
 
 // Reports Page
 router.get('/reports', isAuthenticated, (req, res) => {
-	res.render('reports', {title: 'Reports'});
+	  data = [12,8,18,9,7,15];
+	
+	
+	
+	//data: result
+	res.render('reports', {title: 'Reports',
+							datai: JSON.stringify(data)
+							});
 });
 
 
