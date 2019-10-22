@@ -11,6 +11,7 @@ block content
 					label(for="name") Name:
 					input(
 						type="text"
+						required
 						id="name"
 						name="name"
 					).form-control
@@ -18,6 +19,7 @@ block content
 					label(for="breed") Breed:
 					input(
 						type="text"
+						required
 						id="breed"
 						name="breed"
 					).form-control
@@ -25,6 +27,7 @@ block content
 					label(for="colour") Colour:
 					input(
 						type="text"
+						required
 						id="colour"
 						name="colour"
 					).form-control
@@ -32,6 +35,7 @@ block content
 					label(for="gender") Gender:
 					input(
 						type="text"
+						required
 						id="gender"
 						name="gender"
 					).form-control
@@ -39,6 +43,7 @@ block content
 					label(for="age") Age:
 					input(
 						type="text"
+						required
 						id="age"
 						name="age"
 					).form-control
@@ -46,6 +51,7 @@ block content
 					label(for="weight") Weight:
 					input(
 						type="text"
+						required
 						id="weight"
 						name="weight"
 					).form-control
@@ -53,6 +59,7 @@ block content
 					label(for="height") Height:
 					input(
 						type="text"
+						required
 						id="height"
 						name="height"
 					).form-control
@@ -69,13 +76,16 @@ block content
 					label(for="date") Admission Date:
 					input(
 						type="date"
+						required
 						id="date"
 						name="date"
+						min="1900-01-01" 
 					).form-control
 				div.form-group
 					label(for="finder") Found by:
 					input(
 						type="text"
+						required
 						id="finder"
 						name="finder"
 					).form-control
@@ -90,6 +100,7 @@ block content
 					label(for="condition") Condition:
 					input(
 						type="text"
+						required
 						id="condition"
 						name="condition"
 					).form-control
@@ -110,3 +121,17 @@ block content
 			div.right-align.button-group
 				a.btn.btn-light(href="/") Cancel
 				input(type="submit" value="Submit").btn.btn-primary
+	script.
+		var today = new Date();
+		var dd = today.getDate();
+		var mm = today.getMonth()+1; //January is 0!
+		var yyyy = today.getFullYear();
+		if(dd<10){
+		dd='0'+dd
+		}
+		if(mm<10){
+		mm='0'+mm
+		}
+		today = yyyy+'-'+mm+'-'+dd;
+		document.getElementById("date").setAttribute("max", today);
+		document.getElementById("date").setAttribute("value", today);
