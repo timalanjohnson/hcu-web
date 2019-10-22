@@ -1,11 +1,19 @@
 extends layout
 
 block content
-	div.area
+
+	div.area-alt
 		h2 Add Horse
 		form(action="add-horse" method="POST").horse-sub-grid
 			div.area
 				h3 Details
+				div.form-group
+					label(for="name") Name:
+					input(
+						type="text"
+						id="name"
+						name="name"
+					).form-control
 				div.form-group
 					label(for="breed") Breed:
 					input(
@@ -70,6 +78,13 @@ block content
 						type="text"
 						id="finder"
 						name="finder"
+					).form-control
+					div.form-group
+					label(for="owner") Owner:
+					input(
+						type="text"
+						id="owner"
+						name="owner"
 					).form-control
 				div.form-group
 					label(for="condition") Condition:

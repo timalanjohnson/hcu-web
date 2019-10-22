@@ -11,6 +11,7 @@ block content
 					id="search"
 					name="search"
 					placeholder="Search"
+					onKeyPress="Search"
 				).form-control
 			
 			input(type="submit" value="Search").btn.btn-primary
@@ -18,15 +19,23 @@ block content
 
 		table.table.table-striped
 			thead.thead-dark
-				th Horse ID
+				th Name
+				th Age
 				th Description
-				th Date
+				th Condition
+				th Admission Date
+				th Discharge Date
 				th
 
 			each horse in horses
 				tr
-					td= horse.HorseID
+					td= horse.Name
+					td= horse.Age
 					td= horse.Note
+					td= horse.HorseCondition
 					td= horse.AdmissionDate
+					td= horse.DischargeDate
 					td 
 						a(href="horse/"+horse.HorseID) Details
+						
+						

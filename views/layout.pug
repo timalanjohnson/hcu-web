@@ -9,15 +9,16 @@ html
 	body
 		div.app
 			div.panel.side-panel
-				h1.logo HCU Admin
+				div.fixed
+					h1.logo HCU Admin
 
-				nav
-					div.button-group
-						a.btn.btn-light(href="/") Horses
-						a.btn.btn-light(href="/add-horse") Add Horse
-						a.btn.btn-light(href="/reports") Reports
-						a.btn.btn-light(href="/users") Users
-						a.btn.btn-light(href="/login") Login
+					nav
+						div.button-group
+							a.btn.btn-primary(href="/add-horse") Add Horse
+							a.btn.btn-light(href="/") Browse Horses
+							a.btn.btn-light(href="/reports") Reports
+							a.btn.btn-light(href="/users") Users
+							a.btn.btn-danger(href="/logout") Logout
 
 			div.panel.main-panel
 
