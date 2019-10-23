@@ -255,6 +255,7 @@ router.get('/login', (req, res) => {
 router.post('/login', (req, res) => {
 	console.log(req.body);
 
+	// Get user entered values for username and password
 	var username = req.body.username;
 	var password = req.body.password;
 
