@@ -176,14 +176,8 @@ router.post('/add-horse', (req, res) => {
 					
 				})
 			});
-		
-	
-	//Goes to Index page after adding a horse
-	db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID )", function(err, result, fields) {
-		if (err) throw err;
-	res.render('index', {title: 'HCU Web', horses: result});
+		res.redirect('/');
 	});
-});
 });
 
 
