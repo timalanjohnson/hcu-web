@@ -2,8 +2,7 @@ extends layout
 
 block content
 
-
-	div.area.horse-sub-grid
+	div.area.sub-grid
 		table.table.table-striped
 			each horse in horses
 				tr
@@ -44,7 +43,6 @@ block content
 					th Found By:
 					td= horse.FoundBy
 				
-
 		each his, index in horsesHis
 			if(index === 0)
 				form(action=his.HorseID+"/update-horse" method="POST")
@@ -272,55 +270,57 @@ block content
 					div.right-align.button-group
 						a.btn.btn-light(href="/") Cancel
 						input(type="submit" value="Update").btn.btn-primary
-							
+
+	div.area
+		h3(style="padding-left: 16px;") History
 		each his in horsesHis
-			table(style='width:100%', border='1')
-			
-				tr
-					th Updated On: 
-					td=his.UpdateTimeStamp
-					
-				tr
-					th Edited By: 
-					td=his.name
-				tr
-					th Owner
-					td=his.Owner
+
+
+
+			div.area
+				table.table.table-striped
+					thead.thead-dark
+						th Updated On: 
+						th=his.UpdateTimeStamp
+
+					tr
+						th Owner
+						td=his.Owner
+							
+					tr
+						th Notes
+						td=his.Note
 						
-				tr
-					th Notes
-					td=his.Note
-					
-				tr
-					th Admission Date
-					td=his.AdmissionDate
-				tr
-					th Condition
-					td=his.HorseCondition
+					tr
+						th Admission Date
+						td=his.AdmissionDate
+					tr
+						th Condition
+						td=his.HorseCondition
+							
+					tr
+						th Treatment
+						td=his.treatment
+							
+					tr
+						th Carer
+						td=his.Carer
+							
+					tr
+						th Weight
+						td=his.Weight
 						
-				tr
-					th Treatment
-					td=his.treatment
-						
-				tr
-					th Carer
-					td=his.Carer
-						
-				tr
-					th Weight
-					td=his.Weight
-					
-				tr
-					th Height
-					td=his.Height
-						
-				tr
-					th Discharge Date:
-					td=his.DischargeDate
-						
-				tr
-					th Gender
-					td=his.Gender
+					tr
+						th Height
+						td=his.Height
+							
+					tr
+						th Discharge Date:
+						td=his.DischargeDate
+							
+					tr
+						th Gender
+						td=his.Gender
 					
 		script.
 			var today = new Date();
@@ -328,10 +328,11 @@ block content
 			var mm = today.getMonth()+1; //January is 0!
 			var yyyy = today.getFullYear();
 			if(dd<10){
-			dd='0'+dd
+
+				dd='0'+dd
 			}
 			if(mm<10){
-			mm='0'+mm
+				mm='0'+mm
 			}
 			today = yyyy+'-'+mm+'-'+dd;
 			document.getElementById("AdmissionDate").setAttribute("max", today);

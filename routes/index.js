@@ -2,14 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 var session = [
-		{active: 'true', user: 'Tom', userType: 'admin'}
+		{active: 'false', user: 'Tom', userType: 'admin'}
 	];
 
 
 
 function isAuthenticated(req, res, next) {
 	// Do checks
-
 	if (session.active == "true"){
 		return next();
 	}
@@ -189,14 +188,8 @@ router.post('/add-horse', (req, res) => {
 					
 				})
 			});
-		
-	
-	//Goes to Index page after adding a horse
-	db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID )", function(err, result, fields) {
-		if (err) throw err;
-	res.render('index', {title: 'HCU Web', horses: result});
+		res.redirect('/');
 	});
-});
 });
 
 
@@ -274,6 +267,7 @@ router.get('/login', (req, res) => {
 router.post('/login', (req, res) => {
 	console.log(req.body);
 
+	// Get user entered values for username and password
 	var username = req.body.username;
 	var password = req.body.password;
 
