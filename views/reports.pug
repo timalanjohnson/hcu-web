@@ -3,26 +3,29 @@ extends layout
 block content
 	div.area
 		h2 Reports
-		p Nothing here yet.
-		
-		h1 My Web Page
+
+			div.area
+				
 		block content
 	script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js")
+	
+
 	canvas#myChart
 	script.
 			
 			var ctx = document.getElementById('myChart').getContext('2d');
 			var idata = JSON.parse('!{datai}');  
 			var myChart = new Chart(ctx, {
-				type: 'bar',
+				type: 'line',
 				data: {
-					labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+					labels: ['January', 'February ', 'March', 'April', 'May', 'June','July', 'August', 'September', 'October', 'November', 'December'],
 					datasets: [{
-						label: '# of Votes',
-						data: idata,
+						label: '# of Horses',
+						data: [idata],
 						backgroundColor: [
 
-							'rgba(255, 159, 64, 1)'
+							//'rgba(255, 159, 64, 1)'
+
 						],
 						borderColor: [
 							'rgba(255, 99, 132, 1)',

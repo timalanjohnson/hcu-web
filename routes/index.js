@@ -244,15 +244,54 @@ router.post('/users', isAuthenticated, (req, res) => {
 
 // Reports Page
 router.get('/reports', isAuthenticated, (req, res) => {
+	var db = require('../db.js');
+	//var UserSearch = req.body.search;
+	//if (UserSearch == '') {
+	/*
+	const generateMonths = (count) => {
+
+let
+  date = moment(),
+  month = date.month(),
+  months = 12 + count,
+  result = [];
+
+  while (month < months) {
+    result.push( date.format("MMMM YYYY") );
+    date.add(1 ,'month');
+    month++;
+  }
+  return result;
+}
+
+console.log(generateMonths(24));
+
 	
-	  data = [12,8,18,9,7,15];
-	
-	
-	
+	  //data = [12];
+	 // SELECT @HorsePopulation := @HorsePopulation + 1 HorsePopulation, UpdateTimeStamp FROM (
+
+
+	 // db.query("SELECT ho.HorseID, his.UpdateTimeStamp FROM `tbl_horse` ho, tbl_horse_history his, (SELECT @HorsePopulation := 0) m where ho.HorseID = his.HorseID group by ho.HorseID) as NumberOfHorses GROUP BY HorseID", function(err, result, fields) {
+	//	  });	
+	*/	  
+	db.query("SELECT Count(HorseID) as number FROM tbl_horse", function(err, result, fields) {
+		
+		if (err) throw err;
+		
+		result.forEach(function(horseNumber) {
+			
+		//data = [result];
+		console.log(horseNumber.number)
+		res.render('reports', {title: 'Reports',
+							datai: JSON.stringify(horseNumber.number)
+							});	
+		});
+	})
+	//}	
 	//data: result
-	res.render('reports', {title: 'Reports',
-							datai: JSON.stringify(data)
-							});
+	//res.render('index', {title: 'HCU Web', horses: result});
+	
+
 });
 
 
