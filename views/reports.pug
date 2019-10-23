@@ -10,7 +10,7 @@ block content
 				h4=horseDurationPoint[horseDurationPoint.length - 2]
 			div.area
 				h3 Average Duration
-				h4=horseDurationPoint[horseDurationPoint.length - 2]
+				h4=HorseAverageStay[1] + ' Days'
 		h1 My Web Page
 		block content
 	script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js")
@@ -28,7 +28,7 @@ block content
 			var myChart = new Chart(ctx, {
 				type: 'line',
 				data: {
-					
+
 					labels: TimePoint,
 					datasets: [{
 						label: 'Number of horses',
@@ -36,7 +36,7 @@ block content
 
 						backgroundColor: [
 
-							//'rgba(255, 159, 64, 1)'
+							'rgba(255, 159, 64, 1)'
 
 						],
 						borderColor: [
