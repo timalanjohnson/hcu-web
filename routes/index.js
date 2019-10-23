@@ -407,13 +407,16 @@ function GetAverageDuration(DurationArray) {
 	var timeDifference = [];
 	
 	var i;
+	//get the date differnece (admission and discharge) with the same HorseID
 	for (i = 0; i < DurationArray.length; i++) {
 		if(DurationArray[i][2] == 1){
 			if(i < DurationArray.length-1){
+				//checks if the ID is the same & checks that the dates are from admission to dischare
 					if(DurationArray[i][0] == DurationArray[i+1][0] && DurationArray[i][2] != DurationArray[i+1][2]){
 						var firstDate = new Date(DurationArray[i][1])
 						var secondDate = new Date(DurationArray[i+1][1])
 						
+						//adds the time diff to the array
 						timeDifference.push(Math.abs(secondDate.getTime() - firstDate.getTime()));
 					}else{
 						var firstDate = new Date(DurationArray[i][1])
