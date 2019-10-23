@@ -112,11 +112,14 @@ block content
 								th Weight
 								td
 									input(
+										
 										required
-										type="text"
+										type="number"
 										id="Weight"
 										name="Weight"
 										value= his.Weight
+										max="1600"
+										min="30"
 									).form-control
 									
 							tr
@@ -124,20 +127,24 @@ block content
 								td
 									input(
 										required
-										type="text"
+										type="number"
 										id="Height"
 										name="Height"
 										value= his.Height
+										max="300"
+										min="30"
 									).form-control
 							tr
 								th Discharge Date:
 								td
 									label(for="date") 
 									input(
+										required
 										type="date"
 										id="DischargeDate"
 										name="DischargeDate"
 										value= his.DischargeDate
+										min = his.AdmissionDate
 									).form-control
 
 							tr
@@ -186,7 +193,8 @@ block content
 											type="date"
 											id="AdmissionDate"
 											name="AdmissionDate"
-											value= his.AdmissionDate
+											
+											min = his.DischargeDate
 										).form-control
 							tr
 								th Condition
@@ -225,10 +233,12 @@ block content
 								td
 									input(
 										required
-										type="text"
+										type="number"
 										id="Weight"
 										name="Weight"
 										value= his.Weight
+										max="1600"
+										min="30"
 									).form-control
 									
 							tr
@@ -236,10 +246,12 @@ block content
 								td
 									input(
 										required
-										type="text"
+										type="number"
 										id="Height"
 										name="Height"
 										value= his.Height
+										max="300"
+										min="30"
 									).form-control
 							tr
 								th Discharge Date:
@@ -267,6 +279,10 @@ block content
 				tr
 					th Updated On: 
 					td=his.UpdateTimeStamp
+					
+				tr
+					th Edited By: 
+					td=his.name
 				tr
 					th Owner
 					td=his.Owner
@@ -307,16 +323,16 @@ block content
 					td=his.Gender
 					
 		script.
-		var today = new Date();
-		var dd = today.getDate();
-		var mm = today.getMonth()+1; //January is 0!
-		var yyyy = today.getFullYear();
-		if(dd<10){
-		dd='0'+dd
-		}
-		if(mm<10){
-		mm='0'+mm
-		}
-		today = yyyy+'-'+mm+'-'+dd;
-		document.getElementById("AdmissionDate").setAttribute("max", today);
-		document.getElementById("DischargeDate").setAttribute("max", today);
+			var today = new Date();
+			var dd = today.getDate();
+			var mm = today.getMonth()+1; //January is 0!
+			var yyyy = today.getFullYear();
+			if(dd<10){
+			dd='0'+dd
+			}
+			if(mm<10){
+			mm='0'+mm
+			}
+			today = yyyy+'-'+mm+'-'+dd;
+			document.getElementById("AdmissionDate").setAttribute("max", today);
+			document.getElementById("DischargeDate").setAttribute("max", today);
