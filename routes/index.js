@@ -69,7 +69,7 @@ router.get('/horse/:horseID', isAuthenticated, function(req, res) {
 	db.query("SELECT ho.HorseID, ho.Name, ho.Age,  ho.isDesceased, ho.mircochipCode, ho.Breed, ho.Colour, ho.FoundBy FROM tbl_horse ho where ho.HorseID = '"+ horseID +"';", function(err, horseTable, fields) {
 		if (err) throw err;
 		//console.log("SELECT his.HorseID,his.Note,his.Owner, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate, his.Gender, his.Weight, his.Height, his.HorseCondition, his.treatment FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and ho.HorseID = '"+ horseID +"';")
-		db.query("SELECT his.HorseID, his.Note,his.Owner, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate, his.Gender, his.Weight, his.Height, his.HorseCondition, his.treatment, his.Carer, DATE_FORMAT(his.UpdateTimeStamp,'%D-%M-%Y %H:%i') as UpdateTimeStamp FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and ho.HorseID = '"+ horseID +"' ORDER BY his.HorseHistoryID DESC;", function(err, horseHistory, fields) {
+db.query("SELECT concat(us.firstName ,' ', us.lastName) as name , his.HorseID, his.Note,his.Owner, DATE_FORMAT(his.AdmissionDate,'%Y-%m-%d') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%Y-%m-%d') as DischargeDate, his.Gender, his.Weight, his.Height, his.HorseCondition, his.treatment, his.Carer, DATE_FORMAT(his.UpdateTimeStamp,'%D-%M-%Y %H:%i') as UpdateTimeStamp FROM tbl_horse ho,tbl_user us, tbl_horse_history his where us.UserID = his.UserID and ho.HorseID = his.HorseID and ho.HorseID = '"+ horseID +"' ORDER BY his.HorseHistoryID DESC;", function(err, horseHistory, fields) {
 		if (err) throw err;
 			console.log(horseTable)
 			console.log(horseHistory)
@@ -109,10 +109,23 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 											
 										})
 						}else{
-							db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `DischargeDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + horseID + "','" + UserID + "' ,'" + req.body.notes + "', '" + AdmissionDate + "', '" + req.body.DischargeDate + "', '" + req.body.Gender + "', '" + req.body.Weight + "', '" + req.body.Height +  "', '" + req.body.Condition + "', '" + req.body.Treatment  + "', '" + req.body.Owner + "', '" + req.body.Carer + "');", function (err) {
+							if(req.body.DischargeDate == null){
+								console.log("DischargeDate = null");
+								console.log("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + horseID + "','" + UserID + "' ,'" + req.body.notes + "', '" + req.body.AdmissionDate + "', '" + req.body.Gender + "', '" + req.body.Weight + "', '" + req.body.Height +  "', '" + req.body.Condition + "', '" + req.body.Treatment  + "', '" + req.body.Owner + "', '" + req.body.Carer + "');");
+								db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + horseID + "','" + UserID + "' ,'" + req.body.notes + "', '" + req.body.AdmissionDate + "', '" + req.body.Gender + "', '" + req.body.Weight + "', '" + req.body.Height +  "', '" + req.body.Condition + "', '" + req.body.Treatment  + "', '" + req.body.Owner + "', '" + req.body.Carer + "');", function (err) {
 											if (err) throw err
 											
 										})
+							}else{
+								console.log("DischargeDate = NOTTT null");
+								console.log("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `DischargeDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + horseID + "','" + UserID + "' ,'" + req.body.notes + "', '" + AdmissionDate + "', '" + req.body.DischargeDate + "', '" + req.body.Gender + "', '" + req.body.Weight + "', '" + req.body.Height +  "', '" + req.body.Condition + "', '" + req.body.Treatment  + "', '" + req.body.Owner + "', '" + req.body.Carer + "');");
+								db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `DischargeDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + horseID + "','" + UserID + "' ,'" + req.body.notes + "', '" + AdmissionDate + "', '" + req.body.DischargeDate + "', '" + req.body.Gender + "', '" + req.body.Weight + "', '" + req.body.Height +  "', '" + req.body.Condition + "', '" + req.body.Treatment  + "', '" + req.body.Owner + "', '" + req.body.Carer + "');", function (err) {
+											if (err) throw err
+											
+										})	
+							}
+								//AdmissionDate		req.body.DischargeDate  
+							
 						}
 					//console.log("Horse Updated.");
 					
@@ -128,13 +141,13 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 	
 	
 	
-	
-	//Takes you to the index page when you done updating
+	res.redirect('/');
+	/*Takes you to the index page when you done updating
 	db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID", function(err, result, fields) {
 		if (err) throw err;
 	res.render('index', {title: 'HCU Web', horses: result});
 	});
-	
+	*/
 });
 
 
@@ -232,51 +245,71 @@ router.post('/users', isAuthenticated, (req, res) => {
 // Reports Page
 router.get('/reports', isAuthenticated, (req, res) => {
 	var db = require('../db.js');
-	//var UserSearch = req.body.search;
-	//if (UserSearch == '') {
-	/*
-	const generateMonths = (count) => {
-
-let
-  date = moment(),
-  month = date.month(),
-  months = 12 + count,
-  result = [];
-
-  while (month < months) {
-    result.push( date.format("MMMM YYYY") );
-    date.add(1 ,'month');
-    month++;
-  }
-  return result;
-}
-
-console.log(generateMonths(24));
-
-	
-	  //data = [12];
-	 // SELECT @HorsePopulation := @HorsePopulation + 1 HorsePopulation, UpdateTimeStamp FROM (
-
-
-	 // db.query("SELECT ho.HorseID, his.UpdateTimeStamp FROM `tbl_horse` ho, tbl_horse_history his, (SELECT @HorsePopulation := 0) m where ho.HorseID = his.HorseID group by ho.HorseID) as NumberOfHorses GROUP BY HorseID", function(err, result, fields) {
-	//	  });	
-	*/	  
-	db.query("SELECT Count(HorseID) as number FROM tbl_horse", function(err, result, fields) {
+	var items = [];
+	var horseIdentify = '-999'
+	var oldData = '-999'
+	var population = 0
+	var rowNumber = 0
+	console.log("select UpdateTimeStamp, HorseID, HorseHistoryID, DischargeDate from tbl_horse_history Order by HorseID")
+	db.query("select DATE_FORMAT(UpdateTimeStamp,'%d-%m-%y') as UpdateTimeStamp, HorseID, HorseHistoryID, DischargeDate from tbl_horse_history Order by HorseID", function(err, result, fields) {
+		if (err) throw err
 		
-		if (err) throw err;
-		
-		result.forEach(function(horseNumber) {
+		result.forEach(function(userDetail) {
 			
-		//data = [result];
-		console.log(horseNumber.number)
-		res.render('reports', {title: 'Reports',
-							datai: JSON.stringify([4,5,6,8,9,10])
-							});	
+			//console.log(userDetail.DischargeDate);
+			if(userDetail.DischargeDate != oldData || userDetail.HorseID != horseIdentify )
+			{
+				
+				if(userDetail.DischargeDate == null){
+					population =  1;
+				}else{
+					population = - 1;	
+				}
+				
+				items.push([]);
+				items[rowNumber][0] = userDetail.HorseID;
+				items[rowNumber][1] = userDetail.UpdateTimeStamp;
+				items[rowNumber][2] = population;
+				rowNumber = rowNumber + 1;
+				oldData = userDetail.DischargeDate;
+				horseIdentify = userDetail.HorseID;
+			}
+			});
+		
+		console.log(items)
+		
+		items.sort(function(x, y){
+			return x.timestamp - y.timestamp;
+		})
+		//items.sort(sortFunction);
+		//console.log(items)
+		
+		horsePopulation = items
+		var NumberOfHorses = [];
+		var TimeForNumberOfHorses = [];
+		var count = 0
+		horsePopulation.forEach(function(population, index) {
+			if(index >0){
+				count = count + population[2]
+				NumberOfHorses.push(count);
+			}else{
+				NumberOfHorses.push(population[2]);
+				count = population[2];
+			}
+			TimeForNumberOfHorses.push(population[1]);	
 		});
+	
+		//console.log(NumberOfHorses);
+		//console.log(TimeForNumberOfHorses);
+		res.render('reports', {title: 'Reports',
+
+							horseDurationPoint: JSON.stringify(NumberOfHorses),
+							horseTimePoint: JSON.stringify(TimeForNumberOfHorses)
+							});	
 	})
-	//}	
-	//data: result
-	//res.render('index', {title: 'HCU Web', horses: result});
+	
+	
+	
 	
 
 });
@@ -328,4 +361,9 @@ router.get('/logout', (req, res) => {
 	res.redirect('/login');
 });
 
+
+function functionName() {
+   // function body
+   // optional return; 
+} 
 module.exports = router;

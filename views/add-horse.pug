@@ -42,18 +42,22 @@ block content
 				div.form-group
 					label(for="age") Age:
 					input(
-						type="text"
+						type="number"
 						required
 						id="age"
 						name="age"
+						max="80"
+						min="0"
 					).form-control
 				div.form-group
 					label(for="weight") Weight:
 					input(
-						type="text"
+						type="number"
 						required
 						id="weight"
 						name="weight"
+						max="1600"
+						min="30"
 					).form-control
 				div.form-group
 					label(for="height") Height:
@@ -62,6 +66,8 @@ block content
 						required
 						id="height"
 						name="height"
+						max="300"
+						min="30"
 					).form-control
 				div.form-group
 					label(for="chipData") Chip-data:
@@ -79,7 +85,7 @@ block content
 						required
 						id="date"
 						name="date"
-						min="1900-01-01" 
+						min="1900-01-01"
 					).form-control
 				div.form-group
 					label(for="finder") Found by:
