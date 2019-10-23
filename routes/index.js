@@ -2,14 +2,13 @@ const express = require('express');
 const router = express.Router();
 
 var session = [
-		{active: 'true', user: 'Tom', userType: 'admin'}
+		{active: 'false', user: 'Tom', userType: 'admin'}
 	];
 
 
 
 function isAuthenticated(req, res, next) {
 	// Do checks
-
 	if (session.active == "true"){
 		return next();
 	}
