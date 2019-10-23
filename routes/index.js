@@ -253,10 +253,9 @@ router.get('/reports', isAuthenticated, (req, res) => {
 	var population = 0
 	var rowNumber = 0
 	console.log("select UpdateTimeStamp, HorseID, HorseHistoryID, DischargeDate from tbl_horse_history Order by HorseID")
-	db.query("select UpdateTimeStamp, HorseID, HorseHistoryID, DischargeDate from tbl_horse_history Order by HorseID", function(err, result, fields) {
-	//db.query("select UpdateTimeStamp, HorseID, HorseHistoryID, DischargeDate from tbl_horse_history Order by HorseID", function(err, result){
+	db.query("select DATE_FORMAT(UpdateTimeStamp,'%d-%m-%y') as UpdateTimeStamp, HorseID, HorseHistoryID, DischargeDate from tbl_horse_history Order by HorseID", function(err, result, fields) {
 		if (err) throw err
-		console.log(result);
+		
 		result.forEach(function(userDetail) {
 			
 			//console.log(userDetail.DischargeDate);
@@ -264,41 +263,55 @@ router.get('/reports', isAuthenticated, (req, res) => {
 			{
 				
 				if(userDetail.DischargeDate == null){
-					//console.log("NULL");
 					population =  1;
 				}else{
-					//console.log("NOT NULL");
 					population = - 1;	
 				}
-				//console.log("____________________________");
-				//console.log(rowNumber);
-				//console.log(userDetail.HorseID);
-				//console.log(userDetail.UpdateTimeStamp);
-				//console.log(population);
 				
 				items.push([]);
 				items[rowNumber][0] = userDetail.HorseID;
 				items[rowNumber][1] = userDetail.UpdateTimeStamp;
 				items[rowNumber][2] = population;
-				//console.log(items)
 				rowNumber = rowNumber + 1;
 				oldData = userDetail.DischargeDate;
 				horseIdentify = userDetail.HorseID;
 			}
 			});
+		
+		console.log(items)
+		
 		items.sort(function(x, y){
 			return x.timestamp - y.timestamp;
 		})
 		//items.sort(sortFunction);
-		console.log(items)
+		//console.log(items)
+		
+		horsePopulation = items
+		var NumberOfHorses = [];
+		var TimeForNumberOfHorses = [];
+		var count = 0
+		horsePopulation.forEach(function(population, index) {
+			if(index >0){
+				count = count + population[2]
+				NumberOfHorses.push(count);
+			}else{
+				NumberOfHorses.push(population[2]);
+				count = population[2];
+			}
+			TimeForNumberOfHorses.push(population[1]);	
+		});
+	
+		//console.log(NumberOfHorses);
+		//console.log(TimeForNumberOfHorses);
+		res.render('reports', {title: 'Reports',
+							horseDurationPoint: JSON.stringify(NumberOfHorses),
+							horseTimePoint: JSON.stringify(TimeForNumberOfHorses)
+							});	
 	})
 	
 	
 	
-	//data: result
-	res.render('reports', {title: 'Reports',
-							datai: JSON.stringify(data)
-							});
+	
 });
 
 
@@ -349,5 +362,8 @@ router.get('/logout', (req, res) => {
 });
 
 
-
+function functionName() {
+   // function body
+   // optional return; 
+} 
 module.exports = router;
