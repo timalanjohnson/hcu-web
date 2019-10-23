@@ -245,51 +245,70 @@ router.post('/users', isAuthenticated, (req, res) => {
 // Reports Page
 router.get('/reports', isAuthenticated, (req, res) => {
 	var db = require('../db.js');
-	//var UserSearch = req.body.search;
-	//if (UserSearch == '') {
-	/*
-	const generateMonths = (count) => {
-
-let
-  date = moment(),
-  month = date.month(),
-  months = 12 + count,
-  result = [];
-
-  while (month < months) {
-    result.push( date.format("MMMM YYYY") );
-    date.add(1 ,'month');
-    month++;
-  }
-  return result;
-}
-
-console.log(generateMonths(24));
-
-	
-	  //data = [12];
-	 // SELECT @HorsePopulation := @HorsePopulation + 1 HorsePopulation, UpdateTimeStamp FROM (
-
-
-	 // db.query("SELECT ho.HorseID, his.UpdateTimeStamp FROM `tbl_horse` ho, tbl_horse_history his, (SELECT @HorsePopulation := 0) m where ho.HorseID = his.HorseID group by ho.HorseID) as NumberOfHorses GROUP BY HorseID", function(err, result, fields) {
-	//	  });	
-	*/	  
-	db.query("SELECT Count(HorseID) as number FROM tbl_horse", function(err, result, fields) {
+	var items = [];
+	var horseIdentify = '-999'
+	var oldData = '-999'
+	var population = 0
+	var rowNumber = 0
+	console.log("select UpdateTimeStamp, HorseID, HorseHistoryID, DischargeDate from tbl_horse_history Order by HorseID")
+	db.query("select DATE_FORMAT(UpdateTimeStamp,'%d-%m-%y') as UpdateTimeStamp, HorseID, HorseHistoryID, DischargeDate from tbl_horse_history Order by HorseID", function(err, result, fields) {
+		if (err) throw err
 		
-		if (err) throw err;
-		
-		result.forEach(function(horseNumber) {
+		result.forEach(function(userDetail) {
 			
-		//data = [result];
-		console.log(horseNumber.number)
-		res.render('reports', {title: 'Reports',
-							datai: JSON.stringify(horseNumber.number)
-							});	
+			//console.log(userDetail.DischargeDate);
+			if(userDetail.DischargeDate != oldData || userDetail.HorseID != horseIdentify )
+			{
+				
+				if(userDetail.DischargeDate == null){
+					population =  1;
+				}else{
+					population = - 1;	
+				}
+				
+				items.push([]);
+				items[rowNumber][0] = userDetail.HorseID;
+				items[rowNumber][1] = userDetail.UpdateTimeStamp;
+				items[rowNumber][2] = population;
+				rowNumber = rowNumber + 1;
+				oldData = userDetail.DischargeDate;
+				horseIdentify = userDetail.HorseID;
+			}
+			});
+		
+		console.log(items)
+		
+		items.sort(function(x, y){
+			return x.timestamp - y.timestamp;
+		})
+		//items.sort(sortFunction);
+		//console.log(items)
+		
+		horsePopulation = items
+		var NumberOfHorses = [];
+		var TimeForNumberOfHorses = [];
+		var count = 0
+		horsePopulation.forEach(function(population, index) {
+			if(index >0){
+				count = count + population[2]
+				NumberOfHorses.push(count);
+			}else{
+				NumberOfHorses.push(population[2]);
+				count = population[2];
+			}
+			TimeForNumberOfHorses.push(population[1]);	
 		});
+	
+		//console.log(NumberOfHorses);
+		//console.log(TimeForNumberOfHorses);
+		res.render('reports', {title: 'Reports',
+							horseDurationPoint: JSON.stringify(NumberOfHorses),
+							horseTimePoint: JSON.stringify(TimeForNumberOfHorses)
+							});	
 	})
-	//}	
-	//data: result
-	//res.render('index', {title: 'HCU Web', horses: result});
+	
+	
+	
 	
 
 });
@@ -341,4 +360,9 @@ router.get('/logout', (req, res) => {
 	res.redirect('/login');
 });
 
+
+function functionName() {
+   // function body
+   // optional return; 
+} 
 module.exports = router;
