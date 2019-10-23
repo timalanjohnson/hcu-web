@@ -304,7 +304,7 @@ router.get('/reports', isAuthenticated, (req, res) => {
 			}
 			});
 		
-		console.log(items)
+		//console.log(items)
 		var averageDays = GetAverageDuration(items)
 
 //https://stackoverflow.com/questions/52125611/sort-array-by-a-date-string-in-multidimensional-array
@@ -319,27 +319,40 @@ router.get('/reports', isAuthenticated, (req, res) => {
 
 		  items.sort(compare_dates)
 
-		//items.sort(sortFunction);
-		//console.log("_____________")
-		//console.log(items)
-		
 		horsePopulation = items
+		//Slice or Splice does not work correctly, Make a new array to solve the problem
+		var OldNumberOfHorses = [];
+		var OldTimeForNumberOfHorses = [];
 		var NumberOfHorses = [];
 		var TimeForNumberOfHorses = [];
 		var count = 0
 		horsePopulation.forEach(function(population, index) {
 			if(index >0){
 				count = count + population[2]
-				NumberOfHorses.push(count);
+				OldNumberOfHorses.push(count);
 			}else{
-				NumberOfHorses.push(population[2]);
+				OldNumberOfHorses.push(population[2]);
 				count = population[2];
 			}
-			TimeForNumberOfHorses.push(population[1]);	
+			OldTimeForNumberOfHorses.push(population[1]);	
 		});
+
+		var i;
+		for (i = 0; i < OldTimeForNumberOfHorses.length; i++) {
+
+			if(i< OldTimeForNumberOfHorses.length+1){
+
+				if(OldTimeForNumberOfHorses[i] != OldTimeForNumberOfHorses[i+1]){
+					NumberOfHorses.push(OldNumberOfHorses[i]);
+					TimeForNumberOfHorses.push(OldTimeForNumberOfHorses[i]);
+				}
+			}
+			
+		}
+
 	
-		//console.log(NumberOfHorses);
-		//console.log(TimeForNumberOfHorses);
+		console.log(NumberOfHorses);
+		console.log(TimeForNumberOfHorses);
 		res.render('reports', {title: 'Reports',
 							horseDurationPoint: JSON.stringify(NumberOfHorses),
 							horseTimePoint: JSON.stringify(TimeForNumberOfHorses),
