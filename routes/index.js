@@ -270,7 +270,7 @@ console.log(generateMonths(24));
 		//data = [result];
 		console.log(horseNumber.number)
 		res.render('reports', {title: 'Reports',
-							datai: JSON.stringify(horseNumber.number)
+							datai: JSON.stringify([4,5,6,8,9,10])
 							});	
 		});
 	})
