@@ -244,8 +244,6 @@ router.post('/users', isAuthenticated, (req, res) => {
 
 // Reports Page
 router.get('/reports', isAuthenticated, (req, res) => {
-	
-	data = [12,8,18,9,7,15];
 	var db = require('../db.js');
 	var items = [];
 	var horseIdentify = '-999'
@@ -312,6 +310,7 @@ router.get('/reports', isAuthenticated, (req, res) => {
 	
 	
 	
+
 });
 
 

@@ -3,6 +3,7 @@ extends layout
 block content
 	div.area
 		h2 Reports
+
 		div.area.sub-grid
 			div.area
 				h3 Horses on premise
@@ -16,6 +17,7 @@ block content
 	div.area.sub-grid
 		canvas#myChart(width='100' height = '30')
 		
+
 	script.
 			
 			
@@ -26,13 +28,16 @@ block content
 			var myChart = new Chart(ctx, {
 				type: 'line',
 				data: {
+					
 					labels: TimePoint,
 					datasets: [{
 						label: 'Number of horses',
 						data: horsePoint,
+
 						backgroundColor: [
 
-							'rgba(255, 159, 64, 1)'
+							//'rgba(255, 159, 64, 1)'
+
 						],
 						borderColor: [
 							'rgba(255, 99, 132, 1)'
