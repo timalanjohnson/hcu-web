@@ -2,275 +2,317 @@ extends layout
 
 block content
 
-	div.area.sub-grid
-		table.table.table-striped
-			each horse in horses
-				tr
-					th ID
-					td= horse.HorseID
-				tr
-					th Name
-					td= horse.Name
-				
-				tr
-					th Age
-					td= horse.Age
-					
-				tr
-					th Micro-Chip
-					if(horse.mircochipCode != "")
-						
-						td= horse.mircochipCode
-					else
-						td
-							input(
-									type="text"
-									id="mircochipCode"
-									name="mircochipCode"
-									value= ""
-								).form-control
-				tr
-					th Is Desceased
-					td= horse.isDesceased
-					
-				tr
-					th Breed
-					td= horse.Breed	
-				tr
-					th Colour
-					td= horse.Colour
-				tr
-					th Found By:
-					td= horse.FoundBy
-				
-		each his, index in horsesHis
-			if(index === 0)
-				form(action=his.HorseID+"/update-horse" method="POST")
-					table.table.table-striped
-						if(his.DischargeDate == null)
-							
-							tr
-								th Owner
-								td
-									input(
-										required
-										type="text"
-										id="Owner"
-										name="Owner"
-										value= his.Owner
-									).form-control
-								
-							tr
-								th Notes
-								td
-									input(
-										type="text"
-										id="notes"
-										name="notes"
-										value= his.Note
-									).form-control
-									
-							
-							tr
-								th Admission Date
-								td= his.AdmissionDate
-							tr
-								th Condition
-								td
-									input(
-										required
-										type="text"
-										id="Condition"
-										name="Condition"
-										value= his.HorseCondition
-									).form-control
-								
-							tr
-								th Treatment
-								td
-									input(
-										type="text"
-										id="Treatment"
-										name="Treatment"
-										value= his.treatment
-									).form-control
-								
-							tr
-								th Carer
-								td
-									input(
-										required
-										type="text"
-										id="Carer"
-										name="Carer"
-										value= his.Carer
-									).form-control
-								
-							tr
-								th Weight
-								td
-									input(
-										
-										required
-										type="number"
-										id="Weight"
-										name="Weight"
-										value= his.Weight
-										max="1600"
-										min="30"
-									).form-control
-									
-							tr
-								th Height
-								td
-									input(
-										required
-										type="number"
-										id="Height"
-										name="Height"
-										value= his.Height
-										max="300"
-										min="30"
-									).form-control
-							tr
-								th Discharge Date:
-								td
-									label(for="date") 
-									input(
-										required
-										type="date"
-										id="DischargeDate"
-										name="DischargeDate"
-										value= his.DischargeDate
-										min = his.AdmissionDate
-									).form-control
-
-							tr
-								th Gender
-								td
-									input(
-										required
-										type="text"
-										id="Gender"
-										name="Gender"
-										value= his.Gender
-									).form-control
-							
-						
+	each horse in horses
+		if(horse.isDesceased == "0")
+			div.area.sub-grid
+				table.table.table-striped
 			
-						else
+				
+					form(action=horse.HorseID+"/update-horse" method="POST")
+					
+						tr
+							th ID
+							td= horse.HorseID
+						tr
+							th Name
+							td= horse.Name
+						
+						tr
+							th Age
+							td= horse.Age
 							
-							tr
-								th Owner
-								td
-									input(
-										required
-										type="text"
-										id="Owner"
-										name="Owner"
-										value= his.Owner
-									).form-control
+						tr
+							th Micro-Chip
+							if(horse.mircochipCode != "")
 								
-							tr
-								th Notes
+								td= horse.mircochipCode
+							else
 								td
 									input(
-										type="text"
-										id="notes"
-										name="notes"
-										value= his.Note
-									).form-control
-									
-							
-							tr
-								th Admission Date
-								td 
-									label(for="date") 
-										input(
-											required
-											type="date"
-											id="AdmissionDate"
-											name="AdmissionDate"
-											
-											min = his.DischargeDate
+											type="text"
+											id="mircochipCode"
+											name="mircochipCode"
+											value= ""
 										).form-control
-							tr
-								th Condition
+						tr
+							th Is Desceased
+							if(horse.isDesceased != "")
+								td Yes
+							else
 								td
 									input(
-										required
-										type="text"
-										id="Condition"
-										name="Condition"
-										value= his.HorseCondition
-									).form-control
-								
-							tr
-								th Treatment
-								td
-									input(
-										type="text"
-										id="Treatment"
-										name="Treatment"
-										value= his.treatment
-									).form-control
-								
-							tr
-								th Carer
-								td
-									input(
-										required
-										type="text"
-										id="Carer"
-										name="Carer"
-										value= his.Carer
-									).form-control
-								
-							tr
-								th Weight
-								td
-									input(
-										required
-										type="number"
-										id="Weight"
-										name="Weight"
-										value= his.Weight
-										max="1600"
-										min="30"
-									).form-control
-									
-							tr
-								th Height
-								td
-									input(
-										required
-										type="number"
-										id="Height"
-										name="Height"
-										value= his.Height
-										max="300"
-										min="30"
-									).form-control
-							tr
-								th Discharge Date:
-								td= his.DischargeDate
-									
-
-							tr
-								th Gender
-								td
-									input(
-										required
-										type="text"
-										id="Gender"
-										name="Gender"
-										value= his.Gender
-									).form-control
+											type="checkbox"
+											id="desceased"
+											name="desceased"
+											value= "desceased"
+										).form-control
+							
+						tr
+							th Breed
+							td= horse.Breed	
+						tr
+							th Colour
+							td= horse.Colour
+						tr
+							th Found By:
+							td= horse.FoundBy
+						
+						each his, index in horsesHis
+							if(index === 0)
+							
+								table.table.table-striped
+									if(his.DischargeDate == null)
+										
+										tr
+											th Owner
+											td
+												input(
+													required
+													type="text"
+													id="Owner"
+													name="Owner"
+													value= his.Owner
+												).form-control
 											
-					div.right-align.button-group
-						a.btn.btn-light(href="/") Cancel
-						input(type="submit" value="Update").btn.btn-primary
+										tr
+											th Notes
+											td
+												input(
+													type="text"
+													id="notes"
+													name="notes"
+													value= his.Note
+												).form-control
+												
+										
+										tr
+											th Admission Date
+											td= his.AdmissionDate
+										tr
+											th Condition
+											td
+												input(
+													required
+													type="text"
+													id="Condition"
+													name="Condition"
+													value= his.HorseCondition
+												).form-control
+											
+										tr
+											th Treatment
+											td
+												input(
+													type="text"
+													id="Treatment"
+													name="Treatment"
+													value= his.treatment
+												).form-control
+											
+										tr
+											th Carer
+											td
+												input(
+													required
+													type="text"
+													id="Carer"
+													name="Carer"
+													value= his.Carer
+												).form-control
+											
+										tr
+											th Weight
+											td
+												input(
+													
+													required
+													type="number"
+													id="Weight"
+													name="Weight"
+													value= his.Weight
+													max="1600"
+													min="30"
+												).form-control
+												
+										tr
+											th Height
+											td
+												input(
+													required
+													type="number"
+													id="Height"
+													name="Height"
+													value= his.Height
+													max="300"
+													min="30"
+												).form-control
+										tr
+											th Discharge Date:
+											td
+												label(for="date") 
+												input(
+													type="date"
+													id="DischargeDate"
+													name="DischargeDate"
+													value= his.DischargeDate
+													min = his.AdmissionDate
+												).form-control
 
+										tr
+											th Gender
+											td
+												input(
+													required
+													type="text"
+													id="Gender"
+													name="Gender"
+													value= his.Gender
+												).form-control
+									else
+										
+										tr
+											th Owner
+											td
+												input(
+													required
+													type="text"
+													id="Owner"
+													name="Owner"
+													value= his.Owner
+												).form-control
+											
+										tr
+											th Notes
+											td
+												input(
+													type="text"
+													id="notes"
+													name="notes"
+													value= his.Note
+												).form-control
+												
+										
+										tr
+											th Admission Date
+											td 
+												label(for="date") 
+													input(
+														required
+														type="date"
+														id="AdmissionDate"
+														name="AdmissionDate"
+														
+														min = his.DischargeDate
+													).form-control
+										tr
+											th Condition
+											td
+												input(
+													required
+													type="text"
+													id="Condition"
+													name="Condition"
+													value= his.HorseCondition
+												).form-control
+											
+										tr
+											th Treatment
+											td
+												input(
+													type="text"
+													id="Treatment"
+													name="Treatment"
+													value= his.treatment
+												).form-control
+											
+										tr
+											th Carer
+											td
+												input(
+													required
+													type="text"
+													id="Carer"
+													name="Carer"
+													value= his.Carer
+												).form-control
+											
+										tr
+											th Weight
+											td
+												input(
+													required
+													type="number"
+													id="Weight"
+													name="Weight"
+													value= his.Weight
+													max="1600"
+													min="30"
+												).form-control
+												
+										tr
+											th Height
+											td
+												input(
+													required
+													type="number"
+													id="Height"
+													name="Height"
+													value= his.Height
+													max="300"
+													min="30"
+												).form-control
+										tr
+											th Discharge Date:
+											td= his.DischargeDate
+												
+
+										tr
+											th Gender
+											td
+												input(
+													required
+													type="text"
+													id="Gender"
+													name="Gender"
+													value= his.Gender
+												).form-control
+														
+								div.right-align.button-group
+									a.btn.btn-light(href="/") Cancel
+									input(type="submit" value="Update").btn.btn-primary
+		else
+			div.area
+				table.table.table-striped
+					tr
+						th ID
+							td= horse.HorseID
+					tr
+						th Name
+							td= horse.Name
+					
+					tr
+						th Age
+							td= horse.Age
+						
+					tr
+						th Micro-Chip
+							td= horse.mircochipCode
+					tr
+						th Is Desceased
+							td Yes		
+					tr
+						th Breed
+							td= horse.Breed	
+					tr
+						th Colour
+							td= horse.Colour
+					tr
+						th Found By:
+							td= horse.FoundBy
+									
+												
+									
+									
 	div.area
 		h3(style="padding-left: 16px;") History
 		each his in horsesHis
@@ -339,3 +381,23 @@ block content
 			today = yyyy+'-'+mm+'-'+dd;
 			document.getElementById("AdmissionDate").setAttribute("max", today);
 			document.getElementById("DischargeDate").setAttribute("max", today);
+
+		script.
+			//var checkBox = document.querySelector('input[type="checkbox"]');
+			var checkBox = document.getElementById("desceased");
+			var discharge = document.getElementById("DischargeDate");
+
+			function toggleRequired() {
+
+				if (discharge.hasAttribute('required') !== true) {
+					
+					discharge.setAttribute('required','required');
+					alert("You wont be able to change the Information in the future!!!");
+				}
+
+				else {
+					discharge.removeAttribute('required');  
+				}
+			}
+
+			checkBox.addEventListener('change',toggleRequired,false);
