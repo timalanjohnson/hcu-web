@@ -25,7 +25,7 @@ router.get('/', isAuthenticated, (req, res) => {
 
 	var db = require('../db.js');
 
-
+//Gets all the horses and orders them by the most recent horse which has been updated on
 	db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID )",function(err, result, fields) {
 
 		if (err) throw err;
@@ -39,9 +39,11 @@ router.get('/', isAuthenticated, (req, res) => {
 //search Function
 router.post('/search', isAuthenticated, (req, res) => {
 	var db = require('../db.js');
+	//get the input search text from the search bar
 	var UserSearch = req.body.search;
 	if (UserSearch == '') {
-
+		//Displays the horse details
+		//The user can search by HorseID, HorseName, Note, Age and condition
 		db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID )", function(err, result, fields) {
 
 			if (err) throw err;
@@ -66,9 +68,12 @@ router.get('/horse/:horseID', isAuthenticated, function(req, res) {
 
 
 	//console.log("SELECT ho.HorseID, ho.Name, ho.Age,  ho.isDesceased, ho.mircochipCode, ho.Breed, ho.Colour, ho.FoundBy FROM tbl_horse ho where ho.HorseID = '"+ horseID +"';")
+	
+	//Displays all the horse details
 	db.query("SELECT ho.HorseID, ho.Name, ho.Age,  ho.isDesceased, ho.mircochipCode, ho.Breed, ho.Colour, ho.FoundBy FROM tbl_horse ho where ho.HorseID = '"+ horseID +"';", function(err, horseTable, fields) {
 		if (err) throw err;
 		//console.log("SELECT his.HorseID,his.Note,his.Owner, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate, his.Gender, his.Weight, his.Height, his.HorseCondition, his.treatment FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and ho.HorseID = '"+ horseID +"';")
+// get the history of the horse which 
 db.query("SELECT concat(us.firstName ,' ', us.lastName) as name , his.HorseID, his.Note,his.Owner, DATE_FORMAT(his.AdmissionDate,'%Y-%m-%d') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%Y-%m-%d') as DischargeDate, his.Gender, his.Weight, his.Height, his.HorseCondition, his.treatment, his.Carer, DATE_FORMAT(his.UpdateTimeStamp,'%D-%M-%Y %H:%i') as UpdateTimeStamp FROM tbl_horse ho,tbl_user us, tbl_horse_history his where us.UserID = his.UserID and ho.HorseID = his.HorseID and ho.HorseID = '"+ horseID +"' ORDER BY his.HorseHistoryID DESC;", function(err, horseHistory, fields) {
 		if (err) throw err;
 			console.log(horseTable)
@@ -92,17 +97,19 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 	var horseID = req.params.horseID;
 	var AdmissionDate = '';
 	var UserID = "";
+	//Displays the horse
 	db.query("SELECT DATE_FORMAT(AdmissionDate,'%Y-%m-%d') as AdmissionDate from tbl_horse_history where HorseID= '"+ horseID +"' GROUP BY HorseID ORDER BY HorseHistoryID DESC", function(err, result, fields) {
 		if (err) throw err;
 			result.forEach(function(horse) {
 			console.log(result);
 			AdmissionDate = horse.AdmissionDate;
+			//checks the 
 			db.query("SELECT UserID from tbl_user where Username= '"+ session.user +"';", function(err, result, fields) {
 			if (err) throw err;
 				//console.log(result);
 				result.forEach(function(userDetail) { 
 						UserID = userDetail.UserID;
-						
+						//display the horse which have note been dicharged
 						if(req.body.DischargeDate == ""){
 							db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + horseID + "','" + UserID + "' ,'" + req.body.notes + "', '" + AdmissionDate + "', '" + req.body.Gender + "', '" + req.body.Weight + "', '" + req.body.Height +  "', '" + req.body.Condition + "', '" + req.body.Treatment  + "', '" + req.body.Owner + "', '" + req.body.Carer + "');", function (err) {
 											if (err) throw err
@@ -124,16 +131,11 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 											
 										})	
 							}
-								//AdmissionDate		req.body.DischargeDate  
-							
+								//AdmissionDate		req.body.DischargeDate  			
 						}
-					//console.log("Horse Updated.");
-					
+					//console.log("Horse Updated.");					
 				});
-			});
-			
-			
-			
+			});			
 		});
 	
 	});
@@ -154,7 +156,7 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 
 // Add Horse Page
 router.get('/add-horse', isAuthenticated, (req, res) => {
-
+//setting up the date 
 	var today = new Date();
 	var dd = String(today.getDate()).padStart(2, '0');
 	var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
@@ -172,6 +174,7 @@ router.post('/add-horse', (req, res) => {
 	var db = require('../db.js');
 	
 	var UserID = ""
+	//records user that manipulates the horse 
 	db.query("SELECT UserID from tbl_user where Username= '"+ session.user +"';", function(err, result, fields) {
 		if (err) throw err;
 			console.log(result);
@@ -217,7 +220,7 @@ router.get('/users', isAuthenticated, (req, res) => {
 });
 
 
-
+//add a user to the database
 router.post('/users', isAuthenticated, (req, res) => {
 	var username = req.body.username;
 	var password = req.body.password;
@@ -243,6 +246,8 @@ router.post('/users', isAuthenticated, (req, res) => {
 
 
 // Reports Page
+//Reports will show when horse when horse have arrived and have been discharged
+//Report wil the avg amount of days a horse stays 
 router.get('/reports', isAuthenticated, (req, res) => {
 	var db = require('../db.js');
 	var items = [];
@@ -257,7 +262,8 @@ router.get('/reports', isAuthenticated, (req, res) => {
 		result.forEach(function(userDetail) {
 			
 			//console.log(userDetail.DischargeDate);
-			if(userDetail.DischargeDate != oldData || userDetail.HorseID != horseIdentify )
+			//checks to see if the horse has been discharged or not 
+			if(userDetail.DischargeDate != 	 || userDetail.HorseID != horseIdentify )
 			{
 				
 				if(userDetail.DischargeDate == null){
