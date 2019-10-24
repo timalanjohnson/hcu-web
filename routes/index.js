@@ -97,6 +97,7 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 	var horseID = req.params.horseID;
 	var AdmissionDate = '';
 	var UserID = "";
+
 	//Displays the horse
 	db.query("SELECT DATE_FORMAT(AdmissionDate,'%Y-%m-%d') as AdmissionDate from tbl_horse_history where HorseID= '"+ horseID +"' GROUP BY HorseID ORDER BY HorseHistoryID DESC", function(err, result, fields) {
 		if (err) throw err;
@@ -109,7 +110,22 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 				//console.log(result);
 				result.forEach(function(userDetail) { 
 						UserID = userDetail.UserID;
-						//display the horse which have note been dicharged
+
+						//display the horse which have note been dicharged					
+						if(req.body.desceased != null){
+							db.query("UPDATE  `tbl_horse` SET `isDesceased`  = '1' where HorseID = '" +horseID+"';", function (err) {
+								if (err) throw err
+								
+							})
+						}
+
+						if(req.body.mircochipCode != null){
+							db.query("UPDATE  `tbl_horse` SET `mircochipCode` = '" + req.body.mircochipCode +  "' where HorseID = '" +horseID+"';", function (err) {
+								if (err) throw err
+								
+							})
+						}
+
 						if(req.body.DischargeDate == ""){
 							db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + horseID + "','" + UserID + "' ,'" + req.body.notes + "', '" + AdmissionDate + "', '" + req.body.Gender + "', '" + req.body.Weight + "', '" + req.body.Height +  "', '" + req.body.Condition + "', '" + req.body.Treatment  + "', '" + req.body.Owner + "', '" + req.body.Carer + "');", function (err) {
 											if (err) throw err
@@ -139,6 +155,7 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 		});
 	
 	});
+	
 	
 	
 	
@@ -186,12 +203,12 @@ router.post('/add-horse', (req, res) => {
 					//console.log("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + req.body.notes + "', '" + req.body.date + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height +  "', '" + req.body.condition + "', '" + req.body.treatment  + "', '" + req.body.owner + "', '" +req.body.carer+ "');")
 					db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + req.body.notes + "', '" + req.body.date + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height +  "', '" + req.body.condition + "', '" + req.body.treatment  + "', '" + req.body.owner + "', '" +req.body.carer+ "');", function (err) {
 						if (err) throw err
-					
+						res.redirect('/');
 					})
 					
 				})
 			});
-		res.redirect('/');
+		
 	});
 });
 
@@ -255,62 +272,97 @@ router.get('/reports', isAuthenticated, (req, res) => {
 	var oldData = '-999'
 	var population = 0
 	var rowNumber = 0
-	console.log("select UpdateTimeStamp, HorseID, HorseHistoryID, DischargeDate from tbl_horse_history Order by HorseID")
-	db.query("select DATE_FORMAT(UpdateTimeStamp,'%d-%m-%y') as UpdateTimeStamp, HorseID, HorseHistoryID, DischargeDate from tbl_horse_history Order by HorseID", function(err, result, fields) {
+	console.log("select DATE_FORMAT(UpdateTimeStamp,'%d-%m-%y') as UpdateTimeStamp, HorseID, HorseHistoryID, DATE_FORMAT(DischargeDate,'%d-%m-%y') as DischargeDate, DATE_FORMAT(AdmissionDate,'%d-%m-%y') as AdmissionDate from tbl_horse_history Order by HorseID")
+	db.query("select DATE_FORMAT(UpdateTimeStamp,'%d-%M-%Y') as UpdateTimeStamp, HorseID, HorseHistoryID, DATE_FORMAT(DischargeDate,'%d-%M-%Y') as DischargeDate, DATE_FORMAT(AdmissionDate,'%d-%M-%Y') as AdmissionDate from tbl_horse_history Order by HorseID", function(err, result, fields) {
 		if (err) throw err
 		
 		result.forEach(function(userDetail) {
 			
 			//console.log(userDetail.DischargeDate);
 			//checks to see if the horse has been discharged or not 
-			if(userDetail.DischargeDate != 	 || userDetail.HorseID != horseIdentify )
+			if(userDetail.DischargeDate != oldData	 || userDetail.HorseID != horseIdentify )
 			{
-				
+				items.push([]);
 				if(userDetail.DischargeDate == null){
 					population =  1;
+
+					items[rowNumber][0] = userDetail.HorseID;
+					items[rowNumber][1] = userDetail.AdmissionDate;
+					items[rowNumber][2] = population;
+					//items[rowNumber][3] = userDetail.DischargeDate;
+					//items[rowNumber][4] = userDetail.AdmissionDate;
 				}else{
-					population = - 1;	
+					population = - 1;
+					
+					items[rowNumber][0] = userDetail.HorseID;
+					items[rowNumber][1] = userDetail.DischargeDate;
+					items[rowNumber][2] = population;
+					//items[rowNumber][3] = userDetail.DischargeDate;
+					//items[rowNumber][4] = userDetail.AdmissionDate;
 				}
 				
-				items.push([]);
-				items[rowNumber][0] = userDetail.HorseID;
-				items[rowNumber][1] = userDetail.UpdateTimeStamp;
-				items[rowNumber][2] = population;
+				
+				
 				rowNumber = rowNumber + 1;
 				oldData = userDetail.DischargeDate;
 				horseIdentify = userDetail.HorseID;
 			}
 			});
 		
-		console.log(items)
-		
-		items.sort(function(x, y){
-			return x.timestamp - y.timestamp;
-		})
-		//items.sort(sortFunction);
 		//console.log(items)
-		
+		var averageDays = GetAverageDuration(items)
+
+//https://stackoverflow.com/questions/52125611/sort-array-by-a-date-string-in-multidimensional-array
+		compare_dates = function(date1,date2){
+
+			d1= new Date(date1[1]);
+			d2= new Date(date2[1]);			
+			if (d1>d2) return 1;
+			 else if (d1<d2)  return -1;
+			 else return 0;
+		  }
+
+		  items.sort(compare_dates)
+
 		horsePopulation = items
+		//Slice or Splice does not work correctly, Make a new array to solve the problem
+		var OldNumberOfHorses = [];
+		var OldTimeForNumberOfHorses = [];
 		var NumberOfHorses = [];
 		var TimeForNumberOfHorses = [];
 		var count = 0
 		horsePopulation.forEach(function(population, index) {
 			if(index >0){
 				count = count + population[2]
-				NumberOfHorses.push(count);
+				OldNumberOfHorses.push(count);
 			}else{
-				NumberOfHorses.push(population[2]);
+				OldNumberOfHorses.push(population[2]);
 				count = population[2];
 			}
-			TimeForNumberOfHorses.push(population[1]);	
+			OldTimeForNumberOfHorses.push(population[1]);	
 		});
+
+		var i;
+		for (i = 0; i < OldTimeForNumberOfHorses.length; i++) {
+
+			if(i< OldTimeForNumberOfHorses.length+1){
+
+				if(OldTimeForNumberOfHorses[i] != OldTimeForNumberOfHorses[i+1]){
+					NumberOfHorses.push(OldNumberOfHorses[i]);
+					TimeForNumberOfHorses.push(OldTimeForNumberOfHorses[i]);
+				}
+			}
+			
+		}
+
 	
-		//console.log(NumberOfHorses);
-		//console.log(TimeForNumberOfHorses);
+		console.log(NumberOfHorses);
+		console.log(TimeForNumberOfHorses);
 		res.render('reports', {title: 'Reports',
 
 							horseDurationPoint: JSON.stringify(NumberOfHorses),
-							horseTimePoint: JSON.stringify(TimeForNumberOfHorses)
+							horseTimePoint: JSON.stringify(TimeForNumberOfHorses),
+							HorseAverageStay: JSON.stringify(averageDays)
 							});	
 	})
 	
@@ -368,8 +420,47 @@ router.get('/logout', (req, res) => {
 });
 
 
-function functionName() {
-   // function body
-   // optional return; 
+function GetAverageDuration(DurationArray) {
+	//var firstDate = new Date("7/13/2016"),
+    //var secondDate = new Date("09/15/2017"),
+	var timeDifference = [];
+	
+	var i;
+	//get the date differnece (admission and discharge) with the same HorseID
+	for (i = 0; i < DurationArray.length; i++) {
+		if(DurationArray[i][2] == 1){
+			if(i < DurationArray.length-1){
+				//checks if the ID is the same & checks that the dates are from admission to dischare
+					if(DurationArray[i][0] == DurationArray[i+1][0] && DurationArray[i][2] != DurationArray[i+1][2]){
+						var firstDate = new Date(DurationArray[i][1])
+						var secondDate = new Date(DurationArray[i+1][1])
+						
+						//adds the time diff to the array
+						timeDifference.push(Math.abs(secondDate.getTime() - firstDate.getTime()));
+					}else{
+						var firstDate = new Date(DurationArray[i][1])
+						
+						timeDifference.push(Math.abs(new Date(Date.now()).getTime() - firstDate.getTime()));
+					}
+			}else{
+				var firstDate = new Date(DurationArray[i][1])
+					
+					timeDifference.push(Math.abs(new Date(Date.now()).getTime() - firstDate.getTime()));
+			}
+
+			
+		}
+		
+	};
+	var i;
+	//Records In miliseconds?
+	var AverageDays = 0
+	for (i = 0; i < timeDifference.length; i++) {
+		AverageDays = AverageDays + timeDifference[i]
+	};
+	AverageDays = AverageDays / timeDifference.length
+	
+	//Converts the miliseconds to days with no decimal place
+   return parseFloat(AverageDays/ (60*60*24*1000)).toFixed(0); 
 } 
 module.exports = router;

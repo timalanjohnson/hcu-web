@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.5
+-- version 4.8.4
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Oct 22, 2019 at 01:44 PM
--- Server version: 5.7.26
--- PHP Version: 7.2.18
+-- Generation Time: Oct 23, 2019 at 09:15 PM
+-- Server version: 5.7.24
+-- PHP Version: 7.2.14
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -39,14 +39,18 @@ CREATE TABLE IF NOT EXISTS `tbl_horse` (
   `Colour` varchar(255) DEFAULT NULL,
   `FoundBy` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`HorseID`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_horse`
 --
 
 INSERT INTO `tbl_horse` (`HorseID`, `Name`, `Age`, `isDesceased`, `mircochipCode`, `Breed`, `Colour`, `FoundBy`) VALUES
-(14, 'Takkies', '6', 0, '123456789', 'Horse Breed', 'Brown', 'James');
+(14, 'Takkies', '6', 0, '123456789', 'Horse Breed', 'Brown', 'James'),
+(18, 'Nike', '8', 0, '123456789', 'hanoverian', 'bay', 'thomas'),
+(19, 'James', '8', 0, '123456789', 'hanoverian', 'bay', 'thomas'),
+(20, 'Fox', '12', 1, '987654321', 'Some Race Horse Breed', 'bay', 'Michael'),
+(21, 'Tea', '21', 0, '258369147', 'Ford', 'White', 'Michael');
 
 -- --------------------------------------------------------
 
@@ -74,7 +78,7 @@ CREATE TABLE IF NOT EXISTS `tbl_horse_history` (
   KEY `HorseID` (`HorseID`),
   KEY `HorseID_2` (`HorseID`),
   KEY `UserIDFK` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=66 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_horse_history`
@@ -83,7 +87,20 @@ CREATE TABLE IF NOT EXISTS `tbl_horse_history` (
 INSERT INTO `tbl_horse_history` (`HorseHistoryID`, `HorseID`, `UserID`, `AdmissionDate`, `DischargeDate`, `Note`, `Owner`, `Gender`, `Weight`, `Height`, `HorseCondition`, `treatment`, `Carer`, `UpdateTimeStamp`) VALUES
 (1, 14, 1, '2019-10-21', NULL, 'Pay Boet', 'Tim', 'Horse Gender', 500, 175, 'Poor', 'Money', '', '2019-10-22 11:45:40'),
 (3, 14, 1, '2019-10-21', NULL, 'Pay Boet', 'Tim', 'Horse Gender', 500, 175, 'Better', 'Money', 'James', '2019-10-22 14:42:37'),
-(65, 14, 1, '2019-10-21', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 500, 175, 'Fixed', 'Money', 'James', '2019-10-22 15:08:02');
+(65, 14, 1, '2019-10-21', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 500, 175, 'Fixed', 'Money', 'James', '2019-10-22 15:08:02'),
+(66, 18, 1, '2019-10-22', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-22 21:36:07'),
+(67, 19, 1, '2019-10-22', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-22 21:38:00'),
+(68, 19, 1, '2019-10-22', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-22 21:38:13'),
+(69, 14, 1, '2019-10-21', '2019-10-28', 'Thanks for the Payment', 'Tim', 'Horse Gender', 500, 175, 'Fixed', 'Money', 'James', '2019-10-22 23:23:36'),
+(70, 19, 1, '2019-10-22', '2019-10-23', 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 16:22:30'),
+(71, 19, 1, '2019-10-23', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 16:23:44'),
+(72, 18, 1, '2019-10-22', '2019-10-23', 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Fixed', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 18:44:47'),
+(73, 18, 1, '2019-10-23', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Fixed', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 18:45:33'),
+(74, 19, 1, '2019-10-22', '2019-10-24', 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 21:27:53'),
+(75, 18, 1, '2019-10-22', '2019-10-25', 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Fixed', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 21:28:03'),
+(76, 20, 1, '2019-10-02', NULL, 'Deep cut on the hind foot', 'Glen', 'Stallion', 650, 182, 'Could be worse', 'put on drip and pain killers for discomfort.', 'Jame', '2019-10-23 22:04:17'),
+(77, 20, 1, '2019-10-02', '2019-10-24', 'Deep cut on the hind foot', 'Glen', 'Stallion', 650, 182, 'Could be worse', 'put on drip and pain killers for discomfort.', 'Jame', '2019-10-23 22:50:17'),
+(78, 21, 1, '2019-10-23', NULL, 'Think We can make a Mil', 'Linda', 'Mare', 870, 210, 'Amazing', 'Make the horse watch TV', 'Jame', '2019-10-23 23:06:34');
 
 -- --------------------------------------------------------
 
