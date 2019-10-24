@@ -1,6 +1,7 @@
 extends layout
 
 block content
+
 	div.area
 		h2 Reports
 
@@ -11,6 +12,7 @@ block content
 			div.area
 				h3 Average Duration
 				h4=HorseAverageStay[1] + ' Days'
+
 		block content
 	script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js")
 	div.area.sub-grid
@@ -25,11 +27,13 @@ block content
 			var ctx = document.getElementById('myChart').getContext('2d');
 			ctx.fillRect(0, 0, 4, 4);
 			var myChart = new Chart(ctx, {
+			
 				type: 'line',
 				data: {
 
 					labels: TimePoint,
 					datasets: [{
+
 						label: 'Number of horses',
 						data: horsePoint,
 
@@ -43,7 +47,7 @@ block content
 							
 						],
 						borderWidth: 1
-					},]
+					}]
 				},
 				
 				options: {
@@ -56,3 +60,4 @@ block content
 					}
 				}
 			});
+			
