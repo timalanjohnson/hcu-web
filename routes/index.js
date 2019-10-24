@@ -1,12 +1,18 @@
 const express = require('express');
 const router = express.Router();
 
+
+
+// Default sessions variable
 var session = [
 		{active: 'false', user: 'Tom', userType: 'admin'}
 	];
 
 
 
+// This function checks if the user is logged in.
+// If the user is logged in, it proceeds to render the page.
+// If the user is not logged in, it redirects to the login page.
 function isAuthenticated(req, res, next) {
 	// Do checks
 	if (session.active == "true"){
@@ -25,7 +31,7 @@ router.get('/', isAuthenticated, (req, res) => {
 
 	var db = require('../db.js');
 
-//Gets all the horses and orders them by the most recent horse which has been updated on
+	//Gets all the horses and orders them by the most recent horse which has been updated on
 	db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID )",function(err, result, fields) {
 
 		if (err) throw err;
@@ -73,8 +79,8 @@ router.get('/horse/:horseID', isAuthenticated, function(req, res) {
 	db.query("SELECT ho.HorseID, ho.Name, ho.Age,  ho.isDesceased, ho.mircochipCode, ho.Breed, ho.Colour, ho.FoundBy FROM tbl_horse ho where ho.HorseID = '"+ horseID +"';", function(err, horseTable, fields) {
 		if (err) throw err;
 		//console.log("SELECT his.HorseID,his.Note,his.Owner, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate, his.Gender, his.Weight, his.Height, his.HorseCondition, his.treatment FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and ho.HorseID = '"+ horseID +"';")
-// get the history of the horse which 
-db.query("SELECT concat(us.firstName ,' ', us.lastName) as name , his.HorseID, his.Note,his.Owner, DATE_FORMAT(his.AdmissionDate,'%Y-%m-%d') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%Y-%m-%d') as DischargeDate, his.Gender, his.Weight, his.Height, his.HorseCondition, his.treatment, his.Carer, DATE_FORMAT(his.UpdateTimeStamp,'%D-%M-%Y %H:%i') as UpdateTimeStamp FROM tbl_horse ho,tbl_user us, tbl_horse_history his where us.UserID = his.UserID and ho.HorseID = his.HorseID and ho.HorseID = '"+ horseID +"' ORDER BY his.HorseHistoryID DESC;", function(err, horseHistory, fields) {
+		// get the history of the horse which 
+	db.query("SELECT concat(us.firstName ,' ', us.lastName) as name , his.HorseID, his.Note,his.Owner, DATE_FORMAT(his.AdmissionDate,'%Y-%m-%d') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%Y-%m-%d') as DischargeDate, his.Gender, his.Weight, his.Height, his.HorseCondition, his.treatment, his.Carer, DATE_FORMAT(his.UpdateTimeStamp,'%D-%M-%Y %H:%i') as UpdateTimeStamp FROM tbl_horse ho,tbl_user us, tbl_horse_history his where us.UserID = his.UserID and ho.HorseID = his.HorseID and ho.HorseID = '"+ horseID +"' ORDER BY his.HorseHistoryID DESC;", function(err, horseHistory, fields) {
 		if (err) throw err;
 			console.log(horseTable)
 			console.log(horseHistory)
@@ -93,25 +99,29 @@ db.query("SELECT concat(us.firstName ,' ', us.lastName) as name , his.HorseID, h
 
 // Update horse details
 router.post('/horse/:horseID/update-horse', (req, res) => {
+
 	var db = require('../db.js');
 	var horseID = req.params.horseID;
 	var AdmissionDate = '';
 	var UserID = "";
 
 	//Displays the horse
-	db.query("SELECT DATE_FORMAT(AdmissionDate,'%Y-%m-%d') as AdmissionDate from tbl_horse_history where HorseID= '"+ horseID +"' GROUP BY HorseID ORDER BY HorseHistoryID DESC", function(err, result, fields) {
+	db.query("SELECT DATE_FORMAT(AdmissionDate,'%Y-%m-%d') as AdmissionDate from tbl_horse_history where HorseID= '"+ horseID +"' ORDER BY HorseHistoryID DESC Limit 1", function(err, result, fields) {
 		if (err) throw err;
 			result.forEach(function(horse) {
 			console.log(result);
 			AdmissionDate = horse.AdmissionDate;
-			//checks the 
+
+			//checks which user is logged in
+			console.log("SELECT UserID from tbl_user where Username= '"+ session.user +"';");
 			db.query("SELECT UserID from tbl_user where Username= '"+ session.user +"';", function(err, result, fields) {
 			if (err) throw err;
 				//console.log(result);
 				result.forEach(function(userDetail) { 
 						UserID = userDetail.UserID;
 
-						//display the horse which have note been dicharged					
+						//display the horse which have note been dicharged
+						console.log("UPDATE  `tbl_horse` SET `isDesceased`  = '1' where HorseID = '" +horseID+"';")					
 						if(req.body.desceased != null){
 							db.query("UPDATE  `tbl_horse` SET `isDesceased`  = '1' where HorseID = '" +horseID+"';", function (err) {
 								if (err) throw err
@@ -119,6 +129,7 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 							})
 						}
 
+						// Check if microchip exists.
 						if(req.body.mircochipCode != null){
 							db.query("UPDATE  `tbl_horse` SET `mircochipCode` = '" + req.body.mircochipCode +  "' where HorseID = '" +horseID+"';", function (err) {
 								if (err) throw err
@@ -126,6 +137,7 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 							})
 						}
 
+						// Check if horse is deceased.
 						if(req.body.DischargeDate == ""){
 							db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + horseID + "','" + UserID + "' ,'" + req.body.notes + "', '" + AdmissionDate + "', '" + req.body.Gender + "', '" + req.body.Weight + "', '" + req.body.Height +  "', '" + req.body.Condition + "', '" + req.body.Treatment  + "', '" + req.body.Owner + "', '" + req.body.Carer + "');", function (err) {
 											if (err) throw err
@@ -155,10 +167,6 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 		});
 	
 	});
-	
-	
-	
-	
 	
 	res.redirect('/');
 	/*Takes you to the index page when you done updating
@@ -194,28 +202,21 @@ router.post('/add-horse', (req, res) => {
 	//records user that manipulates the horse 
 	db.query("SELECT UserID from tbl_user where Username= '"+ session.user +"';", function(err, result, fields) {
 		if (err) throw err;
-			console.log(result);
-			result.forEach(function(userDetail) { 
-				UserID = userDetail.UserID;
-				console.log("INSERT INTO `tbl_horse` (`HorseID`, `Age`, `mircochipCode` , `Breed`, `Colour`,`FoundBy`, `Name`) VALUES (NULL, '" + req.body.age + "', '" + req.body.chipData + "', '" + req.body.breed + "', '" + req.body.colour + "', '" + req.body.finder + "', '" + req.body.name  + "');")
-				db.query("INSERT INTO `tbl_horse` (`HorseID`, `Age`, `mircochipCode` , `Breed`, `Colour`,`FoundBy`, `Name`) VALUES (NULL, '" + req.body.age + "', '" + req.body.chipData + "', '" + req.body.breed + "', '" + req.body.colour + "', '" + req.body.finder + "', '" + req.body.name  + "');", function (err, result) {
-				if (err) throw err
-					//console.log("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + req.body.notes + "', '" + req.body.date + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height +  "', '" + req.body.condition + "', '" + req.body.treatment  + "', '" + req.body.owner + "', '" +req.body.carer+ "');")
-					db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + req.body.notes + "', '" + req.body.date + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height +  "', '" + req.body.condition + "', '" + req.body.treatment  + "', '" + req.body.owner + "', '" +req.body.carer+ "');", function (err) {
-						if (err) throw err
-						res.redirect('/');
-					})
-					
+		console.log(result);
+		result.forEach(function(userDetail) { 
+			UserID = userDetail.UserID;
+			console.log("INSERT INTO `tbl_horse` (`HorseID`, `Age`, `mircochipCode` , `Breed`, `Colour`,`FoundBy`, `Name`) VALUES (NULL, '" + req.body.age + "', '" + req.body.chipData + "', '" + req.body.breed + "', '" + req.body.colour + "', '" + req.body.finder + "', '" + req.body.name  + "');")
+			db.query("INSERT INTO `tbl_horse` (`HorseID`, `Age`, `mircochipCode` , `Breed`, `Colour`,`FoundBy`, `Name`) VALUES (NULL, '" + req.body.age + "', '" + req.body.chipData + "', '" + req.body.breed + "', '" + req.body.colour + "', '" + req.body.finder + "', '" + req.body.name  + "');", function (err, result) {
+			if (err) throw err
+				//console.log("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + req.body.notes + "', '" + req.body.date + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height +  "', '" + req.body.condition + "', '" + req.body.treatment  + "', '" + req.body.owner + "', '" +req.body.carer+ "');")
+				db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + req.body.notes + "', '" + req.body.date + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height +  "', '" + req.body.condition + "', '" + req.body.treatment  + "', '" + req.body.owner + "', '" +req.body.carer+ "');", function (err) {
+					if (err) throw err
+					res.redirect('/');
 				})
-			});
-		
+				
+			})
+		});
 	});
-});
-
-
-// Edit Horse Page
-router.get('/edit-horse', isAuthenticated, (req, res) => {
-	res.render('edit-horse', {title: 'Edit Horse'});
 });
 
 
@@ -239,6 +240,8 @@ router.get('/users', isAuthenticated, (req, res) => {
 
 //add a user to the database
 router.post('/users', isAuthenticated, (req, res) => {
+
+	// Get the user entered values
 	var username = req.body.username;
 	var password = req.body.password;
 	var firstname = req.body.firstname;
@@ -250,21 +253,20 @@ router.post('/users', isAuthenticated, (req, res) => {
 
 	var db = require('../db.js');
 
+	// Insert new user into the database
 	db.query("INSERT INTO `tbl_user` (`UserID`, `Username`, `Password`, `firstName`, `lastName`, `emailAddress`, `Status`, `UserType`, `Address`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?);", [username, password, firstname, lastname, email, status, level, address], function(err){
 		if (err) throw err
-	})
 
-	db.query("SELECT * FROM tbl_user", function(err, result, fields) {
-		if (err) throw err;
-		res.render('users', {title: 'Users', data: result});
-	});
+		// Redirect to the users page.
+		res.redirect('/users');
+	})
 });
 
 
 
 // Reports Page
-//Reports will show when horse when horse have arrived and have been discharged
-//Report wil the avg amount of days a horse stays 
+// Reports will show when horse when horse have arrived and have been discharged
+// Report will show the average amount of days a horse stays 
 router.get('/reports', isAuthenticated, (req, res) => {
 	var db = require('../db.js');
 	var items = [];
@@ -312,7 +314,7 @@ router.get('/reports', isAuthenticated, (req, res) => {
 		//console.log(items)
 		var averageDays = GetAverageDuration(items)
 
-//https://stackoverflow.com/questions/52125611/sort-array-by-a-date-string-in-multidimensional-array
+		//https://stackoverflow.com/questions/52125611/sort-array-by-a-date-string-in-multidimensional-array
 		compare_dates = function(date1,date2){
 
 			d1= new Date(date1[1]);
@@ -322,9 +324,10 @@ router.get('/reports', isAuthenticated, (req, res) => {
 			 else return 0;
 		  }
 
-		  items.sort(compare_dates)
+		items.sort(compare_dates)
 
 		horsePopulation = items
+
 		//Slice or Splice does not work correctly, Make a new array to solve the problem
 		var OldNumberOfHorses = [];
 		var OldTimeForNumberOfHorses = [];
@@ -345,7 +348,7 @@ router.get('/reports', isAuthenticated, (req, res) => {
 		var i;
 		for (i = 0; i < OldTimeForNumberOfHorses.length; i++) {
 
-			if(i< OldTimeForNumberOfHorses.length+1){
+			if(i < OldTimeForNumberOfHorses.length+1){
 
 				if(OldTimeForNumberOfHorses[i] != OldTimeForNumberOfHorses[i+1]){
 					NumberOfHorses.push(OldNumberOfHorses[i]);
@@ -355,21 +358,15 @@ router.get('/reports', isAuthenticated, (req, res) => {
 			
 		}
 
-	
 		console.log(NumberOfHorses);
 		console.log(TimeForNumberOfHorses);
-		res.render('reports', {title: 'Reports',
-
-							horseDurationPoint: JSON.stringify(NumberOfHorses),
-							horseTimePoint: JSON.stringify(TimeForNumberOfHorses),
-							HorseAverageStay: JSON.stringify(averageDays)
-							});	
+		res.render('reports', {
+			title: 'Reports',
+			horseDurationPoint: JSON.stringify(NumberOfHorses),
+			horseTimePoint: JSON.stringify(TimeForNumberOfHorses),
+			HorseAverageStay: JSON.stringify(averageDays)
+		});	
 	})
-	
-	
-	
-	
-
 });
 
 
@@ -420,9 +417,10 @@ router.get('/logout', (req, res) => {
 });
 
 
-function GetAverageDuration(DurationArray) {
-	//var firstDate = new Date("7/13/2016"),
-    //var secondDate = new Date("09/15/2017"),
+
+// Get the average amount of time that a horse spends in the system. 
+function GetAverageDuration(DurationArray) { 
+
 	var timeDifference = [];
 	
 	var i;
@@ -442,25 +440,25 @@ function GetAverageDuration(DurationArray) {
 						
 						timeDifference.push(Math.abs(new Date(Date.now()).getTime() - firstDate.getTime()));
 					}
-			}else{
-				var firstDate = new Date(DurationArray[i][1])
-					
-					timeDifference.push(Math.abs(new Date(Date.now()).getTime() - firstDate.getTime()));
-			}
-
-			
-		}
-		
+			} else {
+				var firstDate = new Date(DurationArray[i][1]);	
+				timeDifference.push(Math.abs(new Date(Date.now()).getTime() - firstDate.getTime()));
+			}	
+		}	
 	};
+	
 	var i;
+	
 	//Records In miliseconds?
 	var AverageDays = 0
+	
 	for (i = 0; i < timeDifference.length; i++) {
 		AverageDays = AverageDays + timeDifference[i]
 	};
+
 	AverageDays = AverageDays / timeDifference.length
 	
 	//Converts the miliseconds to days with no decimal place
-   return parseFloat(AverageDays/ (60*60*24*1000)).toFixed(0); 
+	return parseFloat(AverageDays/ (60*60*24*1000)).toFixed(0); 
 } 
 module.exports = router;

@@ -2,20 +2,18 @@ extends layout
 
 block content
 
-	div.area
-		h2 Reports
+	h2.area-alt Reports
 
-		div.area.sub-grid
-			div.area
-				h3 Horses on premise
-				h4=horseDurationPoint[horseDurationPoint.length - 2]
-			div.area
-				h3 Average Duration
-				h4=HorseAverageStay[1] + ' Days'
-
-		block content
-	script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js")
 	div.area.sub-grid
+		div.area
+			h3 Horses on premise
+			h4=horseDurationPoint[horseDurationPoint.length - 2]
+		div.area
+			h3 Average Duration
+			h4=HorseAverageStay[1] + ' Days'
+
+	script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js")
+	div.area
 		canvas#myChart(width='100' height = '30')
 		
 
