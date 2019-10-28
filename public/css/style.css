@@ -140,3 +140,7 @@ nav .button-group > *:last-child {
 	padding-bottom: 16px;
 	justify-self: flex-end;
 }
+
+thead, th, td {
+	vertical-align: middle !important;
+}

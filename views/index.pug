@@ -17,7 +17,7 @@ block content
 			input(type="submit" value="Search").btn.btn-primary
 
 
-		table.table.table-striped
+		table.table.table-striped.table-sm
 			thead.thead-dark
 				th Name
 				th Age
@@ -36,6 +36,6 @@ block content
 					td= horse.AdmissionDate
 					td= horse.DischargeDate
 					td 
-						a(href="horse/"+horse.HorseID) Details
+						a(href="horse/"+horse.HorseID).btn.btn-info Details
 						
 						
