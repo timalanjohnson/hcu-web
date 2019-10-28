@@ -238,6 +238,7 @@ router.get('/users', isAuthenticated, (req, res) => {
 });
 
 
+
 //add a user to the database
 router.post('/users', isAuthenticated, (req, res) => {
 
@@ -367,6 +368,13 @@ router.get('/reports', isAuthenticated, (req, res) => {
 			HorseAverageStay: JSON.stringify(averageDays)
 		});	
 	})
+});
+
+
+
+// Help Page
+router.get('/help', isAuthenticated, (req, res) => {
+	res.render('help', {title: 'Help'});
 });
 
 
