@@ -5,9 +5,8 @@ block content
 	each horse in horses
 		if(horse.isDesceased == "0")
 			div.area.sub-grid
-				table.table.table-striped
-			
-				
+				table.table.table-striped.table-sm
+
 					form(action=horse.HorseID+"/update-horse" method="POST")
 					
 						tr
@@ -60,7 +59,7 @@ block content
 						each his, index in horsesHis
 							if(index === 0)
 							
-								table.table.table-striped
+								table.table.table-striped.table-sm
 									if(his.DischargeDate == null)
 										
 										tr
@@ -77,13 +76,12 @@ block content
 										tr
 											th Notes
 											td
-												input(
+												textarea(
 													type="text"
 													id="notes"
 													name="notes"
-													value= his.Note
 												).form-control
-												
+													=his.Note
 										
 										tr
 											th Admission Date
@@ -91,13 +89,16 @@ block content
 										tr
 											th Condition
 											td
-												input(
+												select(
 													required
-													type="text"
 													id="Condition"
 													name="Condition"
-													value= his.HorseCondition
 												).form-control
+													option(value=his.HorseCondition) 
+														=his.HorseCondition
+													option(value="Healthy") Healthy
+													option(value="Stable") Stable
+													option(value="Critical") Critical
 											
 										tr
 											th Treatment
@@ -149,7 +150,6 @@ block content
 										tr
 											th Discharge Date:
 											td
-												label(for="date") 
 												input(
 													type="date"
 													id="DischargeDate"
@@ -195,25 +195,26 @@ block content
 										tr
 											th Admission Date
 											td 
-												label(for="date") 
-													input(
-														required
-														type="date"
-														id="AdmissionDate"
-														name="AdmissionDate"
-														
-														min = his.DischargeDate
-													).form-control
+												input(
+													required
+													type="date"
+													id="AdmissionDate"
+													name="AdmissionDate"
+													min = his.DischargeDate
+												).form-control
 										tr
 											th Condition
 											td
-												input(
+												select(
 													required
-													type="text"
 													id="Condition"
 													name="Condition"
-													value= his.HorseCondition
 												).form-control
+													option(value=his.HorseCondition) 
+														=his.HorseCondition
+													option(value="Healthy") Healthy
+													option(value="Stable") Stable
+													option(value="Critical") Critical
 											
 										tr
 											th Treatment
@@ -282,7 +283,7 @@ block content
 									input(type="submit" value="Update").btn.btn-primary
 		else
 			div.area
-				table.table.table-striped
+				table.table.table-striped.table-sm
 					tr
 						th ID
 							td= horse.HorseID
@@ -320,12 +321,12 @@ block content
 
 
 			div.area
-				table.table.table-striped
+				table.table.table-striped.table-sm
 					thead.thead-dark
 						th Updated On: 
 						th=his.UpdateTimeStamp
 					tr
-						th Editted By:
+						th Edited By:
 						td=his.name
 					tr
 						th Owner

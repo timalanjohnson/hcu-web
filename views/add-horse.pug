@@ -103,12 +103,14 @@ block content
 					).form-control
 				div.form-group
 					label(for="condition") Condition:
-					input(
-						type="text"
+					select(
 						required
 						id="condition"
 						name="condition"
 					).form-control
+						option(value="Healthy") Healthy
+						option(value="Stable") Stable
+						option(value="Critical") Critical
 				div.form-group
 					label(for="notes") Notes:
 					input(

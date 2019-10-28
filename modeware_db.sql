@@ -1,15 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.4
+-- version 4.6.4
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3306
--- Generation Time: Oct 23, 2019 at 09:15 PM
--- Server version: 5.7.24
--- PHP Version: 7.2.14
+-- Host: 127.0.0.1
+-- Generation Time: Oct 28, 2019 at 09:57 AM
+-- Server version: 5.7.14
+-- PHP Version: 7.0.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
-START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -28,18 +26,16 @@ SET time_zone = "+00:00";
 -- Table structure for table `tbl_horse`
 --
 
-DROP TABLE IF EXISTS `tbl_horse`;
-CREATE TABLE IF NOT EXISTS `tbl_horse` (
-  `HorseID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tbl_horse` (
+  `HorseID` int(11) NOT NULL,
   `Name` varchar(45) DEFAULT NULL,
   `Age` varchar(255) DEFAULT NULL,
   `isDesceased` tinyint(4) NOT NULL DEFAULT '0',
   `mircochipCode` varchar(45) DEFAULT NULL,
   `Breed` varchar(255) DEFAULT NULL,
   `Colour` varchar(255) DEFAULT NULL,
-  `FoundBy` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`HorseID`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=latin1;
+  `FoundBy` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_horse`
@@ -50,7 +46,8 @@ INSERT INTO `tbl_horse` (`HorseID`, `Name`, `Age`, `isDesceased`, `mircochipCode
 (18, 'Nike', '8', 0, '123456789', 'hanoverian', 'bay', 'thomas'),
 (19, 'James', '8', 0, '123456789', 'hanoverian', 'bay', 'thomas'),
 (20, 'Fox', '12', 1, '987654321', 'Some Race Horse Breed', 'bay', 'Michael'),
-(21, 'Tea', '21', 0, '258369147', 'Ford', 'White', 'Michael');
+(22, 'Bonnie', '30', 0, '', 'Mustang', 'White', 'Bonnie'),
+(23, 'Mercedes', '12', 0, '', 'German', 'Silver', 'Lewis Hamilton');
 
 -- --------------------------------------------------------
 
@@ -58,27 +55,22 @@ INSERT INTO `tbl_horse` (`HorseID`, `Name`, `Age`, `isDesceased`, `mircochipCode
 -- Table structure for table `tbl_horse_history`
 --
 
-DROP TABLE IF EXISTS `tbl_horse_history`;
-CREATE TABLE IF NOT EXISTS `tbl_horse_history` (
-  `HorseHistoryID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tbl_horse_history` (
+  `HorseHistoryID` int(11) NOT NULL,
   `HorseID` int(11) NOT NULL,
   `UserID` int(11) NOT NULL,
   `AdmissionDate` date NOT NULL,
   `DischargeDate` date DEFAULT NULL,
-  `Note` varchar(255) NOT NULL,
+  `Note` varchar(1024) NOT NULL,
   `Owner` varchar(255) NOT NULL,
   `Gender` varchar(255) NOT NULL,
   `Weight` int(11) NOT NULL,
   `Height` int(11) NOT NULL,
   `HorseCondition` varchar(255) NOT NULL,
-  `treatment` varchar(255) NOT NULL,
+  `treatment` varchar(1024) NOT NULL,
   `Carer` varchar(255) NOT NULL,
-  `UpdateTimeStamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`HorseHistoryID`),
-  KEY `HorseID` (`HorseID`),
-  KEY `HorseID_2` (`HorseID`),
-  KEY `UserIDFK` (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=79 DEFAULT CHARSET=latin1;
+  `UpdateTimeStamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_horse_history`
@@ -98,9 +90,24 @@ INSERT INTO `tbl_horse_history` (`HorseHistoryID`, `HorseID`, `UserID`, `Admissi
 (73, 18, 1, '2019-10-23', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Fixed', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 18:45:33'),
 (74, 19, 1, '2019-10-22', '2019-10-24', 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 21:27:53'),
 (75, 18, 1, '2019-10-22', '2019-10-25', 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Fixed', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 21:28:03'),
-(76, 20, 1, '2019-10-02', NULL, 'Deep cut on the hind foot', 'Glen', 'Stallion', 650, 182, 'Could be worse', 'put on drip and pain killers for discomfort.', 'Jame', '2019-10-23 22:04:17'),
-(77, 20, 1, '2019-10-02', '2019-10-24', 'Deep cut on the hind foot', 'Glen', 'Stallion', 650, 182, 'Could be worse', 'put on drip and pain killers for discomfort.', 'Jame', '2019-10-23 22:50:17'),
-(78, 21, 1, '2019-10-23', NULL, 'Think We can make a Mil', 'Linda', 'Mare', 870, 210, 'Amazing', 'Make the horse watch TV', 'Jame', '2019-10-23 23:06:34');
+(80, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 29, 'Bad', 'Food', 'James', '2019-10-24 09:54:11'),
+(81, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'Bad', 'Food', 'James', '2019-10-24 09:55:10'),
+(82, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'undefined', 'Food', 'James', '2019-10-28 10:13:49'),
+(83, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'undefined', 'Food', 'James', '2019-10-28 10:20:14'),
+(84, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'undefined', 'Food', 'James', '2019-10-28 10:35:10'),
+(85, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'undefined', 'Food', 'James', '2019-10-28 10:35:16'),
+(86, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'undefined', 'Food', 'James', '2019-10-28 10:41:38'),
+(87, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'undefined', 'Food', 'James', '2019-10-28 10:42:53'),
+(88, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'undefined', 'Food', 'James', '2019-10-28 10:46:58'),
+(89, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'undefined', 'Food', 'James', '2019-10-28 10:48:09'),
+(90, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'Better', 'Food', 'James', '2019-10-28 10:50:30'),
+(91, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Healthy', 'Food and water', 'Bonnie', '2019-10-28 11:14:11'),
+(92, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Stable', 'Food and water', 'Bonnie', '2019-10-28 11:18:10'),
+(93, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Critical', 'Food and water', 'Bonnie', '2019-10-28 11:27:40'),
+(94, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Healthy', 'Food and water', 'Bonnie', '2019-10-28 11:39:55'),
+(95, 14, 1, '2019-10-28', NULL, 'Thanks for the Payment', 'Tim', 'Horse Gender', 500, 175, 'Healthy', 'Money', 'James', '2019-10-28 11:40:19'),
+(96, 18, 1, '2019-10-27', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Stable', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-28 11:40:31'),
+(97, 19, 1, '2019-10-25', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Stable', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-28 11:40:41');
 
 -- --------------------------------------------------------
 
@@ -108,13 +115,11 @@ INSERT INTO `tbl_horse_history` (`HorseHistoryID`, `HorseID`, `UserID`, `Admissi
 -- Table structure for table `tbl_medicine`
 --
 
-DROP TABLE IF EXISTS `tbl_medicine`;
-CREATE TABLE IF NOT EXISTS `tbl_medicine` (
-  `MedicationID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tbl_medicine` (
+  `MedicationID` int(11) NOT NULL,
   `Description` varchar(45) NOT NULL,
   `Cost` decimal(2,0) NOT NULL,
-  `inStock` int(11) NOT NULL,
-  PRIMARY KEY (`MedicationID`)
+  `inStock` int(11) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -123,13 +128,11 @@ CREATE TABLE IF NOT EXISTS `tbl_medicine` (
 -- Table structure for table `tbl_notification`
 --
 
-DROP TABLE IF EXISTS `tbl_notification`;
-CREATE TABLE IF NOT EXISTS `tbl_notification` (
-  `NotificatinID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tbl_notification` (
+  `NotificatinID` int(11) NOT NULL,
   `Description` varchar(45) NOT NULL,
   `NotifiyDate` date NOT NULL,
-  `reoccurance` varchar(45) NOT NULL,
-  PRIMARY KEY (`NotificatinID`)
+  `reoccurance` varchar(45) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -138,14 +141,12 @@ CREATE TABLE IF NOT EXISTS `tbl_notification` (
 -- Table structure for table `tbl_stable`
 --
 
-DROP TABLE IF EXISTS `tbl_stable`;
-CREATE TABLE IF NOT EXISTS `tbl_stable` (
-  `StableID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tbl_stable` (
+  `StableID` int(11) NOT NULL,
   `Name` varchar(45) NOT NULL,
   `StableNumber` int(11) NOT NULL,
   `StablePopulation` int(11) NOT NULL,
-  `Available` tinyint(4) NOT NULL,
-  PRIMARY KEY (`StableID`)
+  `Available` tinyint(4) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -154,9 +155,8 @@ CREATE TABLE IF NOT EXISTS `tbl_stable` (
 -- Table structure for table `tbl_user`
 --
 
-DROP TABLE IF EXISTS `tbl_user`;
-CREATE TABLE IF NOT EXISTS `tbl_user` (
-  `UserID` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `tbl_user` (
+  `UserID` int(11) NOT NULL,
   `Username` varchar(45) NOT NULL,
   `Password` varchar(45) NOT NULL,
   `firstName` varchar(45) NOT NULL,
@@ -164,17 +164,95 @@ CREATE TABLE IF NOT EXISTS `tbl_user` (
   `emailAddress` varchar(45) NOT NULL,
   `Status` varchar(45) NOT NULL,
   `UserType` varchar(45) NOT NULL,
-  `Address` varchar(45) NOT NULL,
-  PRIMARY KEY (`UserID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  `Address` varchar(45) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_user`
 --
 
 INSERT INTO `tbl_user` (`UserID`, `Username`, `Password`, `firstName`, `lastName`, `emailAddress`, `Status`, `UserType`, `Address`) VALUES
-(1, 'admin', 'admin', 'James', 'Mohr', 'james.mohr@gmail.com', 'Single', 'VET', 'Varkens vlei Rd');
+(1, 'admin', 'admin', 'James', 'Mohr', 'james.mohr@gmail.com', 'Single', 'admin', 'Varkens vlei Rd'),
+(2, 'tim', 'tim', 'Tim', 'Johnson', 'timjohnson.za@gmail.com', ' ', 'carer', ' '),
+(3, 'bonnie', 'bonnie', 'Bonnie', 'True', 'bonnie.true@email.com', ' ', 'carer', ' ');
 
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `tbl_horse`
+--
+ALTER TABLE `tbl_horse`
+  ADD PRIMARY KEY (`HorseID`);
+
+--
+-- Indexes for table `tbl_horse_history`
+--
+ALTER TABLE `tbl_horse_history`
+  ADD PRIMARY KEY (`HorseHistoryID`),
+  ADD KEY `HorseID` (`HorseID`),
+  ADD KEY `HorseID_2` (`HorseID`),
+  ADD KEY `UserIDFK` (`UserID`);
+
+--
+-- Indexes for table `tbl_medicine`
+--
+ALTER TABLE `tbl_medicine`
+  ADD PRIMARY KEY (`MedicationID`);
+
+--
+-- Indexes for table `tbl_notification`
+--
+ALTER TABLE `tbl_notification`
+  ADD PRIMARY KEY (`NotificatinID`);
+
+--
+-- Indexes for table `tbl_stable`
+--
+ALTER TABLE `tbl_stable`
+  ADD PRIMARY KEY (`StableID`);
+
+--
+-- Indexes for table `tbl_user`
+--
+ALTER TABLE `tbl_user`
+  ADD PRIMARY KEY (`UserID`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `tbl_horse`
+--
+ALTER TABLE `tbl_horse`
+  MODIFY `HorseID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+--
+-- AUTO_INCREMENT for table `tbl_horse_history`
+--
+ALTER TABLE `tbl_horse_history`
+  MODIFY `HorseHistoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
+--
+-- AUTO_INCREMENT for table `tbl_medicine`
+--
+ALTER TABLE `tbl_medicine`
+  MODIFY `MedicationID` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `tbl_notification`
+--
+ALTER TABLE `tbl_notification`
+  MODIFY `NotificatinID` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `tbl_stable`
+--
+ALTER TABLE `tbl_stable`
+  MODIFY `StableID` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT for table `tbl_user`
+--
+ALTER TABLE `tbl_user`
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 --
 -- Constraints for dumped tables
 --
@@ -185,7 +263,6 @@ INSERT INTO `tbl_user` (`UserID`, `Username`, `Password`, `firstName`, `lastName
 ALTER TABLE `tbl_horse_history`
   ADD CONSTRAINT `HorseHistory_FK` FOREIGN KEY (`HorseID`) REFERENCES `tbl_horse` (`HorseID`),
   ADD CONSTRAINT `UserIDFK` FOREIGN KEY (`UserID`) REFERENCES `tbl_user` (`UserID`);
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
