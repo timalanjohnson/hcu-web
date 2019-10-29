@@ -127,11 +127,20 @@ block content
 					).form-control
 				div.form-group
 					label(for="carer") Carer:
+					input(
+						type="file"
+						id="uploadImage"
+						name="uploadImage"
+					).form-control
+				div.form-group
+					label(for="carer") Carer:
 					select(
 						required
 						id="carer"
 						name="carer"
 					).form-control
+
+
 						each carer in carers
 							option(value=carer.firstName + " " + carer.lastName) 
 								=carer.firstName + " " + carer.lastName + " (" + carer.username + ")"

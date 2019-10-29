@@ -110,7 +110,8 @@ router.get('/', isAuthenticated, (req, res) => {
 router.post('/search', isAuthenticated, (req, res) => {
 	var db = require('../db.js');
 	//get the input search text from the search bar
-	var UserSearch = req.body.search;
+	
+	var UserSearch = cleanString(req.body.search);
 	if (UserSearch == '') {
 		//Displays the horse details
 		//The user can search by HorseID, HorseName, Note, Age and condition
@@ -177,10 +178,11 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 			result.forEach(function(horse) {
 			console.log(result);
 			AdmissionDate = horse.AdmissionDate;
+			var username = cleanString(req.session.username)
 
 			//checks which user is logged in
-			console.log("SELECT UserID from tbl_user where Username= '"+ req.session.username +"';");
-			db.query("SELECT UserID from tbl_user where Username= '"+ req.session.username +"';", function(err, result, fields) {
+		
+			db.query("SELECT UserID from tbl_user where Username= '"+ username +"';", function(err, result, fields) {
 			if (err) throw err;
 				//console.log(result);
 				result.forEach(function(userDetail) { 
@@ -257,7 +259,11 @@ router.get('/add-horse', isAuthenticated, (req, res) => {
 // Add Horse to the database
 router.post('/add-horse', (req, res) => {
 	var db = require('../db.js');
-	
+
+
+
+
+
 	var UserID = ""
 	//records user that manipulates the horse 
 	db.query("SELECT UserID from tbl_user where Username= '"+ req.session.username +"';", function(err, result, fields) {
