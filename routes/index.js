@@ -2,11 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 
-
-// Default sessions variable
-var session = [
-		{active: 'false', user: 'Tom', userType: 'admin'}
-	];
+// TODO: refactor session.user
 
 
 
@@ -15,7 +11,7 @@ var session = [
 // If the user is not logged in, it redirects to the login page.
 function isAuthenticated(req, res, next) {
 	// Do checks
-	if (session.active == "true"){
+	if (req.session.loggedin){
 		return next();
 	}
 
@@ -24,11 +20,50 @@ function isAuthenticated(req, res, next) {
 
 
 
+// Login Page
+router.get('/login', (req, res) => {
+	res.render('login', {title: 'Login'});
+});
+
+
+
+router.post('/login', (req, res) => {
+	console.log(req.body);
+
+	// Get user entered values for username and password
+	var username = req.body.username;
+	var password = req.body.password;
+
+	var dbResult = 0;
+
+	//connect to Db
+	var db = require('../db.js');
+
+	if (username && password) {
+		db.query("SELECT * FROM tbl_user WHERE username = ? AND password = ?",[username, password], function (err, result, fields) {
+			if (err) throw err;
+
+			console.log(result);
+
+			if (result.length > 0) {
+				req.session.loggedin = true;
+				req.session.username = username;
+				res.redirect('/')
+			} else {
+				res.redirect('login', {title: 'HCU Web'});
+			}
+			res.end();
+		});
+	} else {
+		res.send('Please enter Username and Password!');
+		res.end();
+	}
+});
+
+
+
 // Index Page
 router.get('/', isAuthenticated, (req, res) => {
-	
-	console.log(session);
-
 	var db = require('../db.js');
 
 	//Gets all the horses and orders them by the most recent horse which has been updated on
@@ -113,8 +148,8 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 			AdmissionDate = horse.AdmissionDate;
 
 			//checks which user is logged in
-			console.log("SELECT UserID from tbl_user where Username= '"+ session.user +"';");
-			db.query("SELECT UserID from tbl_user where Username= '"+ session.user +"';", function(err, result, fields) {
+			console.log("SELECT UserID from tbl_user where Username= '"+ session.username +"';");
+			db.query("SELECT UserID from tbl_user where Username= '"+ session.username +"';", function(err, result, fields) {
 			if (err) throw err;
 				//console.log(result);
 				result.forEach(function(userDetail) { 
@@ -200,7 +235,7 @@ router.post('/add-horse', (req, res) => {
 	
 	var UserID = ""
 	//records user that manipulates the horse 
-	db.query("SELECT UserID from tbl_user where Username= '"+ session.user +"';", function(err, result, fields) {
+	db.query("SELECT UserID from tbl_user where Username= '"+ session.username +"';", function(err, result, fields) {
 		if (err) throw err;
 		console.log(result);
 		result.forEach(function(userDetail) { 
@@ -379,48 +414,8 @@ router.get('/help', isAuthenticated, (req, res) => {
 
 
 
-// Login Page
-router.get('/login', (req, res) => {
-	res.render('login', {title: 'Login'});
-});
-
-
-
-router.post('/login', (req, res) => {
-	console.log(req.body);
-
-	// Get user entered values for username and password
-	var username = req.body.username;
-	var password = req.body.password;
-
-	var dbResult = 0;
-
-	//connect to Db
-	var db = require('../db.js');
-
-	//Query Db based on user and pass parameters
-	db.query("SELECT COUNT(*) AS count FROM tbl_user where username = ? AND password = ?",[username, password], function (err, result, fields) {
-		if (err) throw err;
-			console.log(result);
-			dbResult = result[0].count;
-			console.log(dbResult);
-
-		//check if result is 1
-		if (dbResult == 1) {
-			session.active = "true";
-			session.user = req.body.username;
-			res.redirect('/');
-		} else {
-			res.render('login', {title: 'HCU Web'});
-		}
-	});
-});
-
-
-
 // Logout
 router.get('/logout', (req, res) => {
-	session.active = "false"
 	res.redirect('/login');
 });
 
