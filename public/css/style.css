@@ -144,3 +144,9 @@ nav .button-group > *:last-child {
 thead, th, td {
 	vertical-align: middle !important;
 }
+
+.table .thead-dark th {
+    color: #fff;
+    background-color: #414b64;
+    border-color: #454d55;
+}
