@@ -1,5 +1,20 @@
 const express = require('express');
 const router = express.Router();
+const db = require('../db.js');
+var carers;
+
+
+
+// Populate carers array
+function populateCarers(){
+	db.query("SELECT username, firstName, lastName FROM `tbl_user` WHERE UserType = 'carer'", function (err, result) {
+		if (err) throw err;
+		carers = result;
+	});
+}
+
+populateCarers();
+
 
 
 // TODO: refactor session.user
@@ -67,7 +82,7 @@ router.get('/', isAuthenticated, (req, res) => {
 	var db = require('../db.js');
 
 	//Gets all the horses and orders them by the most recent horse which has been updated on
-	db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID )",function(err, result, fields) {
+	db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID) ORDER By his.UpdateTimeStamp DESC",function(err, result, fields) {
 
 		if (err) throw err;
 		res.render('index', {title: 'HCU Web', horses: result});
@@ -122,7 +137,8 @@ router.get('/horse/:horseID', isAuthenticated, function(req, res) {
 			res.render('horse', {
 				title: "Horse "+horseID,
 				horses: horseTable,
-				horsesHis: horseHistory
+				horsesHis: horseHistory,
+				carers: carers
 			});
 		
 		});
@@ -148,8 +164,8 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 			AdmissionDate = horse.AdmissionDate;
 
 			//checks which user is logged in
-			console.log("SELECT UserID from tbl_user where Username= '"+ session.username +"';");
-			db.query("SELECT UserID from tbl_user where Username= '"+ session.username +"';", function(err, result, fields) {
+			console.log("SELECT UserID from tbl_user where Username= '"+ req.session.username +"';");
+			db.query("SELECT UserID from tbl_user where Username= '"+ req.session.username +"';", function(err, result, fields) {
 			if (err) throw err;
 				//console.log(result);
 				result.forEach(function(userDetail) { 
@@ -204,27 +220,21 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 	});
 	
 	res.redirect('/');
-	/*Takes you to the index page when you done updating
-	db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID", function(err, result, fields) {
-		if (err) throw err;
-	res.render('index', {title: 'HCU Web', horses: result});
-	});
-	*/
 });
 
 
 
 // Add Horse Page
 router.get('/add-horse', isAuthenticated, (req, res) => {
-//setting up the date 
+	//setting up the date 
 	var today = new Date();
 	var dd = String(today.getDate()).padStart(2, '0');
 	var mm = String(today.getMonth() + 1).padStart(2, '0'); //January is 0!
 	var yyyy = today.getFullYear();
 	today = yyyy + '-' + mm + '-' + dd; 
-	console.log(today);
 
-	res.render('add-horse', {title: 'Add Horse', today: today});
+	// Render the page with date and carer variables
+	res.render('add-horse', {title: 'Add Horse', today: today, carers: carers});
 });
 
 
@@ -235,7 +245,7 @@ router.post('/add-horse', (req, res) => {
 	
 	var UserID = ""
 	//records user that manipulates the horse 
-	db.query("SELECT UserID from tbl_user where Username= '"+ session.username +"';", function(err, result, fields) {
+	db.query("SELECT UserID from tbl_user where Username= '"+ req.session.username +"';", function(err, result, fields) {
 		if (err) throw err;
 		console.log(result);
 		result.forEach(function(userDetail) { 

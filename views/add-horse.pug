@@ -127,11 +127,14 @@ block content
 					).form-control
 				div.form-group
 					label(for="carer") Carer:
-					input(
-						type="text"
+					select(
+						required
 						id="carer"
 						name="carer"
 					).form-control
+						each carer in carers
+							option(value=carer.firstName + " " + carer.lastName) 
+								=carer.firstName + " " + carer.lastName + " (" + carer.username + ")"
 			div.right-align.button-group
 				a.btn.btn-light(href="/") Cancel
 				input(type="submit" value="Submit").btn.btn-primary

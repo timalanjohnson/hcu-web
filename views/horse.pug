@@ -87,7 +87,7 @@ block content
 											th Admission Date
 											td= his.AdmissionDate
 										tr
-											th Condition
+											th Condition A
 											td
 												select(
 													required
@@ -111,15 +111,18 @@ block content
 												).form-control
 											
 										tr
-											th Carer
+											th Carer A
 											td
-												input(
+												select(
 													required
-													type="text"
 													id="Carer"
 													name="Carer"
-													value= his.Carer
 												).form-control
+													option(value=his.Carer) 
+														=his.Carer
+													each carer in carers
+														option(value=carer.firstName + " " + carer.lastName) 
+															=carer.firstName + " " + carer.lastName + " (" + carer.username + ")"
 											
 										tr
 											th Weight (KG)
