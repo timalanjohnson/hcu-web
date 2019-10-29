@@ -15,7 +15,6 @@ function populateCarers(){
 
 populateCarers();
 
-
 // Function to strip illegal characters from input strings
 function cleanString(str){
 	str = str.replace(/['\]['|&:;$%@*"<>()+,]/g, "");
@@ -23,9 +22,9 @@ function cleanString(str){
 }
 
 // Example
-var string = "Hello: [|&;$%@\"<>()+,] bru * ";
-var cleaned = cleanString(string);
-console.log(cleaned);
+// var string = "Hello: [|&;$%@\"<>()+,] bru * ";
+// var cleaned = cleanString(string);
+// console.log(cleaned);
 
 
 
@@ -70,11 +69,14 @@ router.post('/login', (req, res) => {
 		db.query("SELECT * FROM tbl_user WHERE username = ? AND password = ?",[username, password], function (err, result, fields) {
 			if (err) throw err;
 
-			console.log(result);
+			var test = result;
+
+			console.log(result[0].Username);
 
 			if (result.length > 0) {
 				req.session.loggedin = true;
 				req.session.username = username;
+				req.session.level = result[0].UserType;
 				res.redirect('/')
 			} else {
 				res.redirect('login', {title: 'HCU Web'});
@@ -97,7 +99,7 @@ router.get('/', isAuthenticated, (req, res) => {
 	db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID) ORDER By his.UpdateTimeStamp DESC",function(err, result, fields) {
 
 		if (err) throw err;
-		res.render('index', {title: 'HCU Web', horses: result});
+		res.render('index', {title: 'HCU Web', horses: result, level: req.session.level});
 	});
 	
 });
@@ -115,14 +117,14 @@ router.post('/search', isAuthenticated, (req, res) => {
 		db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID )", function(err, result, fields) {
 
 			if (err) throw err;
-		res.render('index', {title: 'HCU Web', horses: result});
+		res.render('index', {title: 'HCU Web', horses: result, level: req.session.level});
 		});
 	} else {
 
 		db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID ) and (ho.HorseID LIKE '%"+ UserSearch+"%' OR ho.Name LIKE '%"+ UserSearch+"%' OR ho.Age LIKE '%"+ UserSearch+"%' OR his.Note LIKE '%"+ UserSearch+"%' OR his.HorseCondition LIKE '%"+ UserSearch+"%')  ORDER BY his.HorseHistoryID DESC;", function(err, result, fields) {
 
 			if (err) throw err;
-			res.render('index', {title: 'HCU Web', horses: result});
+			res.render('index', {title: 'HCU Web', horses: result, level: req.session.level});
 		});
 	}
 });
@@ -150,7 +152,8 @@ router.get('/horse/:horseID', isAuthenticated, function(req, res) {
 				title: "Horse "+horseID,
 				horses: horseTable,
 				horsesHis: horseHistory,
-				carers: carers
+				carers: carers,
+				level: req.session.level
 			});
 		
 		});
@@ -246,7 +249,7 @@ router.get('/add-horse', isAuthenticated, (req, res) => {
 	today = yyyy + '-' + mm + '-' + dd; 
 
 	// Render the page with date and carer variables
-	res.render('add-horse', {title: 'Add Horse', today: today, carers: carers});
+	res.render('add-horse', {title: 'Add Horse', today: today, carers: carers, level: req.session.level});
 });
 
 
@@ -286,11 +289,11 @@ router.get('/users', isAuthenticated, (req, res) => {
 		db.query("SELECT * FROM tbl_user", function(err, result, fields) {
 			if (err) throw err;
 
-			res.render('users', {title: 'Users', data: result});
+			res.render('users', {title: 'Users', data: result, level: req.session.level});
 		});
 	} catch (error) {
 		console.log(error);
-		res.render('404', {title: 'Users'});
+		res.render('404', {title: 'Users', level: req.session.level});
 	}
 });
 
@@ -422,7 +425,8 @@ router.get('/reports', isAuthenticated, (req, res) => {
 			title: 'Reports',
 			horseDurationPoint: JSON.stringify(NumberOfHorses),
 			horseTimePoint: JSON.stringify(TimeForNumberOfHorses),
-			HorseAverageStay: JSON.stringify(averageDays)
+			HorseAverageStay: JSON.stringify(averageDays), 
+			level: req.session.level
 		});	
 	})
 });
@@ -431,7 +435,7 @@ router.get('/reports', isAuthenticated, (req, res) => {
 
 // Help Page
 router.get('/help', isAuthenticated, (req, res) => {
-	res.render('help', {title: 'Help'});
+	res.render('help', {title: 'Help', level: req.session.level});
 });
 
 

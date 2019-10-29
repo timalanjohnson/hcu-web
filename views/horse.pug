@@ -87,7 +87,7 @@ block content
 											th Admission Date
 											td= his.AdmissionDate
 										tr
-											th Condition A
+											th Condition
 											td
 												select(
 													required
@@ -111,7 +111,7 @@ block content
 												).form-control
 											
 										tr
-											th Carer A
+											th Carer
 											td
 												select(
 													required
@@ -121,8 +121,8 @@ block content
 													option(value=his.Carer) 
 														=his.Carer
 													each carer in carers
-														option(value=carer.firstName + " " + carer.lastName) 
-															=carer.firstName + " " + carer.lastName + " (" + carer.username + ")"
+														option(value=carer.username) 
+															=carer.username
 											
 										tr
 											th Weight (KG)
@@ -232,13 +232,16 @@ block content
 										tr
 											th Carer
 											td
-												input(
+												select(
 													required
-													type="text"
 													id="Carer"
 													name="Carer"
-													value= his.Carer
 												).form-control
+													option(value=his.Carer) 
+														=his.Carer
+													each carer in carers
+														option(value=carer.username) 
+															=carer.username
 											
 										tr
 											th Weight
@@ -283,7 +286,10 @@ block content
 														
 								div.right-align.button-group
 									a.btn.btn-light(href="/") Cancel
-									input(type="submit" value="Update").btn.btn-primary
+									if level == "admin"
+										input(type="submit" value="Update").btn.btn-primary
+									else
+										p Only admins save make changes.
 		else
 			div.area
 				table.table.table-striped.table-sm

@@ -20,6 +20,7 @@ block content
 							td= row.emailAddress
 							td= row.UserType
 
+		if level == "admin"
 			div.area
 				h2 Add User
 				form(action="users" method="POST")

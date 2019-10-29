@@ -14,7 +14,8 @@ html
 
 					nav
 						div.button-group
-							a.btn.btn-primary(href="/add-horse") Add Horse
+							if level == "admin"
+								a.btn.btn-primary(href="/add-horse") Add Horse
 							a.btn.btn-light(href="/") Browse Horses
 							a.btn.btn-light(href="/reports") Reports
 							a.btn.btn-light(href="/users") Users
