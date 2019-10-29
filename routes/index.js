@@ -16,6 +16,18 @@ function populateCarers(){
 populateCarers();
 
 
+// Function to strip illegal characters from input strings
+function cleanString(str){
+	str = str.replace(/['\]['|&:;$%@*"<>()+,]/g, "");
+	return str;
+}
+
+// Example
+var string = "Hello: [|&;$%@\"<>()+,] bru * ";
+var cleaned = cleanString(string);
+console.log(cleaned);
+
+
 
 // TODO: refactor session.user
 
@@ -46,7 +58,7 @@ router.post('/login', (req, res) => {
 	console.log(req.body);
 
 	// Get user entered values for username and password
-	var username = req.body.username;
+	var username = cleanString(req.body.username);
 	var password = req.body.password;
 
 	var dbResult = 0;
