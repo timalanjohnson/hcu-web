@@ -3,7 +3,7 @@ extends layout
 block content
 	div.area-alt
 		h2 Add Horse
-		form(action="add-horse" method="POST").horse-sub-grid
+		form(action="add-horse" method="POST" enctype="multipart/form-data").horse-sub-grid
 			div.area
 				h3 Details
 				div.form-group
@@ -142,8 +142,16 @@ block content
 
 
 						each carer in carers
-							option(value=carer.firstName + " " + carer.lastName) 
-								=carer.firstName + " " + carer.lastName + " (" + carer.username + ")"
+							option(value=carer.username) 
+								=carer.username
+				div.form-group
+					label(for="image") Image:
+					input(
+						type="file"
+						id="image"
+						name="image"
+					).form-control
+
 			div.right-align.button-group
 				a.btn.btn-light(href="/") Cancel
 				input(type="submit" value="Submit").btn.btn-primary

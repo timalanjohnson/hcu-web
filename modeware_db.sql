@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 28, 2019 at 09:57 AM
+-- Generation Time: Oct 30, 2019 at 09:14 AM
 -- Server version: 5.7.14
 -- PHP Version: 7.0.10
 
@@ -19,6 +19,21 @@ SET time_zone = "+00:00";
 --
 -- Database: `modeware_db`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `notification_data`
+-- (See below for the actual view)
+--
+CREATE TABLE `notification_data` (
+`AdmissionDate` date
+,`DischargeDate` date
+,`Name` varchar(45)
+,`Carer` varchar(255)
+,`emailAddress` varchar(45)
+,`firstName` varchar(45)
+);
 
 -- --------------------------------------------------------
 
@@ -107,7 +122,16 @@ INSERT INTO `tbl_horse_history` (`HorseHistoryID`, `HorseID`, `UserID`, `Admissi
 (94, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Healthy', 'Food and water', 'Bonnie', '2019-10-28 11:39:55'),
 (95, 14, 1, '2019-10-28', NULL, 'Thanks for the Payment', 'Tim', 'Horse Gender', 500, 175, 'Healthy', 'Money', 'James', '2019-10-28 11:40:19'),
 (96, 18, 1, '2019-10-27', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Stable', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-28 11:40:31'),
-(97, 19, 1, '2019-10-25', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Stable', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-28 11:40:41');
+(97, 19, 1, '2019-10-25', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Stable', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-28 11:40:41'),
+(98, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Healthy', 'Food and water', 'tim', '2019-10-29 11:17:48'),
+(99, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Healthy', 'Food and water', 'bonnie', '2019-10-29 11:26:11'),
+(100, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Healthy', 'Food and water', 'Tim Johnson', '2019-10-29 11:28:49'),
+(101, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Healthy', 'Food and water', 'tim', '2019-10-29 20:18:49'),
+(102, 19, 1, '2019-10-25', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Stable', 'put on drip and pain killers for discomfort.', 'tim', '2019-10-29 20:19:36'),
+(103, 18, 1, '2019-10-27', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Stable', 'put on drip and pain killers for discomfort.', 'tim', '2019-10-29 20:19:42'),
+(104, 14, 1, '2019-10-28', NULL, 'Thanks for the Payment', 'Tim', 'Horse Gender', 500, 175, 'Healthy', 'Money', 'bonnie', '2019-10-29 20:19:48'),
+(105, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'Better', 'Food', 'bonnie', '2019-10-29 20:19:54'),
+(106, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'Critical', 'Food', 'bonnie', '2019-10-29 20:20:20');
 
 -- --------------------------------------------------------
 
@@ -176,6 +200,15 @@ INSERT INTO `tbl_user` (`UserID`, `Username`, `Password`, `firstName`, `lastName
 (2, 'tim', 'tim', 'Tim', 'Johnson', 'timjohnson.za@gmail.com', ' ', 'carer', ' '),
 (3, 'bonnie', 'bonnie', 'Bonnie', 'True', 'bonnie.true@email.com', ' ', 'carer', ' ');
 
+-- --------------------------------------------------------
+
+--
+-- Structure for view `notification_data`
+--
+DROP TABLE IF EXISTS `notification_data`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `notification_data`  AS  select `tbl_horse_history`.`AdmissionDate` AS `AdmissionDate`,`tbl_horse_history`.`DischargeDate` AS `DischargeDate`,`tbl_horse`.`Name` AS `Name`,`tbl_horse_history`.`Carer` AS `Carer`,`tbl_user`.`emailAddress` AS `emailAddress`,`tbl_user`.`firstName` AS `firstName` from ((`tbl_horse_history` join `tbl_horse`) join `tbl_user`) where ((`tbl_horse`.`HorseID` = `tbl_horse_history`.`HorseID`) and isnull(`tbl_horse_history`.`DischargeDate`) and (`tbl_user`.`firstName` = `tbl_horse_history`.`Carer`)) group by `tbl_horse_history`.`HorseID` ;
+
 --
 -- Indexes for dumped tables
 --
@@ -232,7 +265,7 @@ ALTER TABLE `tbl_horse`
 -- AUTO_INCREMENT for table `tbl_horse_history`
 --
 ALTER TABLE `tbl_horse_history`
-  MODIFY `HorseHistoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=98;
+  MODIFY `HorseHistoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
 --
 -- AUTO_INCREMENT for table `tbl_medicine`
 --

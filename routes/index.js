@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path');
 const db = require('../db.js');
+const upload = require('../helpers/uploadMiddleware');
+const Resize = require('../helpers/Resize');
 var carers;
 
 
@@ -58,8 +61,8 @@ router.post('/login', (req, res) => {
 
 	// Get user entered values for username and password
 	var username = cleanString(req.body.username);
-	var password = req.body.password;
-
+	var password = cleanString(req.body.password);
+	
 	var dbResult = 0;
 
 	//connect to Db
@@ -110,8 +113,8 @@ router.get('/', isAuthenticated, (req, res) => {
 router.post('/search', isAuthenticated, (req, res) => {
 	var db = require('../db.js');
 	//get the input search text from the search bar
-	
 	var UserSearch = cleanString(req.body.search);
+	
 	if (UserSearch == '') {
 		//Displays the horse details
 		//The user can search by HorseID, HorseName, Note, Age and condition
@@ -135,8 +138,8 @@ router.post('/search', isAuthenticated, (req, res) => {
 // Horse Details Page
 router.get('/horse/:horseID', isAuthenticated, function(req, res) {
 	var db = require('../db.js');
-	var horseID = req.params.horseID;
-
+	var horseID = cleanString(req.params.horseID);
+	 
 
 	//console.log("SELECT ho.HorseID, ho.Name, ho.Age,  ho.isDesceased, ho.mircochipCode, ho.Breed, ho.Colour, ho.FoundBy FROM tbl_horse ho where ho.HorseID = '"+ horseID +"';")
 	
@@ -168,10 +171,13 @@ router.get('/horse/:horseID', isAuthenticated, function(req, res) {
 router.post('/horse/:horseID/update-horse', (req, res) => {
 
 	var db = require('../db.js');
-	var horseID = req.params.horseID;
+	var horseID = cleanString(req.params.horseID);
 	var AdmissionDate = '';
 	var UserID = "";
-
+	UserID = cleanString(UserID);
+	var username = cleanString(req.session.username);
+	var mircochip = cleanString(req.body.mircochipCode);
+	
 	//Displays the horse
 	db.query("SELECT DATE_FORMAT(AdmissionDate,'%Y-%m-%d') as AdmissionDate from tbl_horse_history where HorseID= '"+ horseID +"' ORDER BY HorseHistoryID DESC Limit 1", function(err, result, fields) {
 		if (err) throw err;
@@ -181,7 +187,7 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 			var username = cleanString(req.session.username)
 
 			//checks which user is logged in
-		
+			console.log("SELECT UserID from tbl_user where Username= '"+ username +"';");
 			db.query("SELECT UserID from tbl_user where Username= '"+ username +"';", function(err, result, fields) {
 			if (err) throw err;
 				//console.log(result);
@@ -199,7 +205,7 @@ router.post('/horse/:horseID/update-horse', (req, res) => {
 
 						// Check if microchip exists.
 						if(req.body.mircochipCode != null){
-							db.query("UPDATE  `tbl_horse` SET `mircochipCode` = '" + req.body.mircochipCode +  "' where HorseID = '" +horseID+"';", function (err) {
+							db.query("UPDATE  `tbl_horse` SET `mircochipCode` = '" + mircochip +  "' where HorseID = '" +horseID+"';", function (err) {
 								if (err) throw err
 								
 							})
@@ -257,25 +263,49 @@ router.get('/add-horse', isAuthenticated, (req, res) => {
 
 
 // Add Horse to the database
-router.post('/add-horse', (req, res) => {
+router.post('/add-horse', upload.single('image'), async (req, res) => {
 	var db = require('../db.js');
-
-
-
-
-
+	var username = req.session.username;
+	var age = cleanString(req.body.age);
+	var chipData = cleanString(req.body.chipData);
+	var breed = cleanString(req.body.breed);
+	var colour = cleanString(req.body.colour);
+	var finder = cleanString(req.body.finder);
+	var name = cleanString(req.body.name);
+	
+	// var insertId = cleanString(result.insertId);
+	var notes = cleanString(req.body.notes);
+	var date = cleanString(req.body.date);
+	var gender = cleanString(req.body.gender);
+	var weight = cleanString(req.body.weight);
+	var height  = cleanString(req.body.height);
+	var condition = cleanString(req.body.condition);
+	var treatment = cleanString(req.body.treatment);
+	var carer = cleanString(req.body.carer);
+	var owner = cleanString(req.body.owner);
 	var UserID = ""
+
+	const imagePath = path.join(__dirname, '../public/images');
+	const fileUpload = new Resize(imagePath);
+	if (!req.file) {
+		res.status(401).json({error: 'Please provide an image'});
+	}
+	const filename = await fileUpload.save(req.file.buffer);
+	console.log(filename);
+	//return ress.tatus(200).json({ name: filename });
+
+
 	//records user that manipulates the horse 
-	db.query("SELECT UserID from tbl_user where Username= '"+ req.session.username +"';", function(err, result, fields) {
+	db.query("SELECT UserID from tbl_user where Username= '"+ username +"';", function(err, result, fields) {
 		if (err) throw err;
 		console.log(result);
 		result.forEach(function(userDetail) { 
 			UserID = userDetail.UserID;
-			console.log("INSERT INTO `tbl_horse` (`HorseID`, `Age`, `mircochipCode` , `Breed`, `Colour`,`FoundBy`, `Name`) VALUES (NULL, '" + req.body.age + "', '" + req.body.chipData + "', '" + req.body.breed + "', '" + req.body.colour + "', '" + req.body.finder + "', '" + req.body.name  + "');")
-			db.query("INSERT INTO `tbl_horse` (`HorseID`, `Age`, `mircochipCode` , `Breed`, `Colour`,`FoundBy`, `Name`) VALUES (NULL, '" + req.body.age + "', '" + req.body.chipData + "', '" + req.body.breed + "', '" + req.body.colour + "', '" + req.body.finder + "', '" + req.body.name  + "');", function (err, result) {
+			console.log("INSERT INTO `tbl_horse` (`HorseID`, `Age`, `mircochipCode` , `Breed`, `Colour`,`FoundBy`, `Name`) VALUES (NULL, '" + age + "', '" + chipData + "', '" + breed + "', '" + colour + "', '" + finder + "', '" + name  + "');")
+			db.query("INSERT INTO `tbl_horse` (`HorseID`, `Age`, `mircochipCode` , `Breed`, `Colour`,`FoundBy`, `Name`) VALUES (NULL, '" + age + "', '" + chipData + "', '" + breed + "', '" + colour + "', '" + finder + "', '" + name  + "');", function (err, result) {
 			if (err) throw err
 				//console.log("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + req.body.notes + "', '" + req.body.date + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height +  "', '" + req.body.condition + "', '" + req.body.treatment  + "', '" + req.body.owner + "', '" +req.body.carer+ "');")
-				db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + req.body.notes + "', '" + req.body.date + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height +  "', '" + req.body.condition + "', '" + req.body.treatment  + "', '" + req.body.owner + "', '" +req.body.carer+ "');", function (err) {
+				db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + notes + "', '" + date + "', '" + gender + "', '" + weight + "', '" + height +  "', '" + condition + "', '" + treatment  + "', '" + owner + "', '" +carer+ "');", function (err) {
 					if (err) throw err
 					res.redirect('/');
 				})
@@ -309,14 +339,16 @@ router.get('/users', isAuthenticated, (req, res) => {
 router.post('/users', isAuthenticated, (req, res) => {
 
 	// Get the user entered values
-	var username = req.body.username;
-	var password = req.body.password;
-	var firstname = req.body.firstname;
-	var lastname = req.body.lastname;
-	var email = req.body.email;
+	var username = cleanString(req.body.username);
+	var password = cleanString(req.body.password);
+	var firstname = cleanString(req.body.firstname);
+	var lastname = cleanString(req.body.lastname);
+	var email = cleanString(req.body.email);
 	var status = ' ';
-	var level = req.body.level;
-	var address = ' ';
+	var status =cleanString(status);
+	var level = cleanString(req.body.level);
+	var address = ' '; 
+	var address = cleanString(address);
 
 	var db = require('../db.js');
 
