@@ -1,5 +1,5 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.4
+-- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
@@ -8,6 +8,8 @@
 -- PHP Version: 7.0.10
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -23,34 +25,21 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Stand-in structure for view `notification_data`
--- (See below for the actual view)
---
-CREATE TABLE `notification_data` (
-`AdmissionDate` date
-,`DischargeDate` date
-,`Name` varchar(45)
-,`Carer` varchar(255)
-,`emailAddress` varchar(45)
-,`firstName` varchar(45)
-);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `tbl_horse`
 --
 
-CREATE TABLE `tbl_horse` (
-  `HorseID` int(11) NOT NULL,
+DROP TABLE IF EXISTS `tbl_horse`;
+CREATE TABLE IF NOT EXISTS `tbl_horse` (
+  `HorseID` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(45) DEFAULT NULL,
   `Age` varchar(255) DEFAULT NULL,
   `isDesceased` tinyint(4) NOT NULL DEFAULT '0',
   `mircochipCode` varchar(45) DEFAULT NULL,
   `Breed` varchar(255) DEFAULT NULL,
   `Colour` varchar(255) DEFAULT NULL,
-  `FoundBy` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `FoundBy` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`HorseID`)
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_horse`
@@ -75,68 +64,59 @@ INSERT INTO `tbl_horse` (`HorseID`, `Name`, `Age`, `isDesceased`, `mircochipCode
 -- Table structure for table `tbl_horse_history`
 --
 
-CREATE TABLE `tbl_horse_history` (
-  `HorseHistoryID` int(11) NOT NULL,
+DROP TABLE IF EXISTS `tbl_horse_history`;
+CREATE TABLE IF NOT EXISTS `tbl_horse_history` (
+  `HorseHistoryID` int(11) NOT NULL AUTO_INCREMENT,
   `HorseID` int(11) NOT NULL,
   `UserID` int(11) NOT NULL,
   `AdmissionDate` date NOT NULL,
   `DischargeDate` date DEFAULT NULL,
-  `Note` varchar(1024) NOT NULL,
+  `Note` varchar(255) NOT NULL,
   `Owner` varchar(255) NOT NULL,
   `Gender` varchar(255) NOT NULL,
   `Weight` int(11) NOT NULL,
   `Height` int(11) NOT NULL,
   `HorseCondition` varchar(255) NOT NULL,
-  `treatment` varchar(1024) NOT NULL,
+  `treatment` varchar(255) NOT NULL,
   `Carer` varchar(255) NOT NULL,
-  `UpdateTimeStamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  `UpdateTimeStamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `Image` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`HorseHistoryID`),
+  KEY `HorseID` (`HorseID`),
+  KEY `HorseID_2` (`HorseID`),
+  KEY `UserIDFK` (`UserID`)
+) ENGINE=InnoDB AUTO_INCREMENT=88 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_horse_history`
 --
 
-INSERT INTO `tbl_horse_history` (`HorseHistoryID`, `HorseID`, `UserID`, `AdmissionDate`, `DischargeDate`, `Note`, `Owner`, `Gender`, `Weight`, `Height`, `HorseCondition`, `treatment`, `Carer`, `UpdateTimeStamp`) VALUES
-(1, 14, 1, '2019-10-21', NULL, 'Pay Boet', 'Tim', 'Horse Gender', 500, 175, 'Poor', 'Money', '', '2019-10-22 11:45:40'),
-(3, 14, 1, '2019-10-21', NULL, 'Pay Boet', 'Tim', 'Horse Gender', 500, 175, 'Better', 'Money', 'James', '2019-10-22 14:42:37'),
-(65, 14, 1, '2019-10-21', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 500, 175, 'Fixed', 'Money', 'James', '2019-10-22 15:08:02'),
-(66, 18, 1, '2019-10-22', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-22 21:36:07'),
-(67, 19, 1, '2019-10-22', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-22 21:38:00'),
-(68, 19, 1, '2019-10-22', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-22 21:38:13'),
-(69, 14, 1, '2019-10-21', '2019-10-28', 'Thanks for the Payment', 'Tim', 'Horse Gender', 500, 175, 'Fixed', 'Money', 'James', '2019-10-22 23:23:36'),
-(70, 19, 1, '2019-10-22', '2019-10-23', 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 16:22:30'),
-(71, 19, 1, '2019-10-23', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 16:23:44'),
-(72, 18, 1, '2019-10-22', '2019-10-23', 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Fixed', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 18:44:47'),
-(73, 18, 1, '2019-10-23', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Fixed', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 18:45:33'),
-(74, 19, 1, '2019-10-22', '2019-10-24', 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 21:27:53'),
-(75, 18, 1, '2019-10-22', '2019-10-25', 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Fixed', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 21:28:03'),
-(80, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 29, 'Bad', 'Food', 'James', '2019-10-24 09:54:11'),
-(81, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'Bad', 'Food', 'James', '2019-10-24 09:55:10'),
-(82, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'undefined', 'Food', 'James', '2019-10-28 10:13:49'),
-(83, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'undefined', 'Food', 'James', '2019-10-28 10:20:14'),
-(84, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'undefined', 'Food', 'James', '2019-10-28 10:35:10'),
-(85, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'undefined', 'Food', 'James', '2019-10-28 10:35:16'),
-(86, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'undefined', 'Food', 'James', '2019-10-28 10:41:38'),
-(87, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'undefined', 'Food', 'James', '2019-10-28 10:42:53'),
-(88, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'undefined', 'Food', 'James', '2019-10-28 10:46:58'),
-(89, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'undefined', 'Food', 'James', '2019-10-28 10:48:09'),
-(90, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'Better', 'Food', 'James', '2019-10-28 10:50:30'),
-(91, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Healthy', 'Food and water', 'Bonnie', '2019-10-28 11:14:11'),
-(92, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Stable', 'Food and water', 'Bonnie', '2019-10-28 11:18:10'),
-(93, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Critical', 'Food and water', 'Bonnie', '2019-10-28 11:27:40'),
-(94, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Healthy', 'Food and water', 'Bonnie', '2019-10-28 11:39:55'),
-(95, 14, 1, '2019-10-28', NULL, 'Thanks for the Payment', 'Tim', 'Horse Gender', 500, 175, 'Healthy', 'Money', 'James', '2019-10-28 11:40:19'),
-(96, 18, 1, '2019-10-27', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Stable', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-28 11:40:31'),
-(97, 19, 1, '2019-10-25', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Stable', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-28 11:40:41'),
-(98, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Healthy', 'Food and water', 'tim', '2019-10-29 11:17:48'),
-(99, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Healthy', 'Food and water', 'bonnie', '2019-10-29 11:26:11'),
-(100, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Healthy', 'Food and water', 'Tim Johnson', '2019-10-29 11:28:49'),
-(101, 23, 1, '2019-10-28', NULL, 'Horse is healthy. Recommend only food and water.', 'Toto Wolff', 'Male', 824, 240, 'Healthy', 'Food and water', 'tim', '2019-10-29 20:18:49'),
-(102, 19, 1, '2019-10-25', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Stable', 'put on drip and pain killers for discomfort.', 'tim', '2019-10-29 20:19:36'),
-(103, 18, 1, '2019-10-27', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Stable', 'put on drip and pain killers for discomfort.', 'tim', '2019-10-29 20:19:42'),
-(104, 14, 1, '2019-10-28', NULL, 'Thanks for the Payment', 'Tim', 'Horse Gender', 500, 175, 'Healthy', 'Money', 'bonnie', '2019-10-29 20:19:48'),
-(105, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'Better', 'Food', 'bonnie', '2019-10-29 20:19:54'),
-(106, 22, 1, '2019-10-24', NULL, 'Very cool', 'Bonnie', 'Female', 500, 35, 'Critical', 'Food', 'bonnie', '2019-10-29 20:20:20');
+INSERT INTO `tbl_horse_history` (`HorseHistoryID`, `HorseID`, `UserID`, `AdmissionDate`, `DischargeDate`, `Note`, `Owner`, `Gender`, `Weight`, `Height`, `HorseCondition`, `treatment`, `Carer`, `UpdateTimeStamp`, `Image`) VALUES
+(1, 14, 1, '2019-10-21', NULL, 'Pay Boet', 'Tim', 'Horse Gender', 500, 175, 'Poor', 'Money', '', '2019-10-22 11:45:40', NULL),
+(3, 14, 1, '2019-10-21', NULL, 'Pay Boet', 'Tim', 'Horse Gender', 500, 175, 'Better', 'Money', 'James', '2019-10-22 14:42:37', NULL),
+(65, 14, 1, '2019-10-21', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 500, 175, 'Fixed', 'Money', 'James', '2019-10-22 15:08:02', NULL),
+(66, 18, 1, '2019-10-22', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-22 21:36:07', NULL),
+(67, 19, 1, '2019-10-22', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-22 21:38:00', NULL),
+(68, 19, 1, '2019-10-22', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-22 21:38:13', NULL),
+(69, 14, 1, '2019-10-21', '2019-10-28', 'Thanks for the Payment', 'Tim', 'Horse Gender', 500, 175, 'Fixed', 'Money', 'James', '2019-10-22 23:23:36', NULL),
+(70, 19, 1, '2019-10-22', '2019-10-23', 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 16:22:30', NULL),
+(71, 19, 1, '2019-10-23', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 16:23:44', NULL),
+(72, 18, 1, '2019-10-22', '2019-10-23', 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Fixed', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 18:44:47', NULL),
+(73, 18, 1, '2019-10-23', NULL, 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Fixed', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 18:45:33', NULL),
+(74, 19, 1, '2019-10-22', '2019-10-24', 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'poor', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 21:27:53', NULL),
+(75, 18, 1, '2019-10-22', '2019-10-25', 'I need a cheque', 'Some Old Guy', 'gelding', 500, 160, 'Fixed', 'put on drip and pain killers for discomfort.', 'Michael', '2019-10-23 21:28:03', NULL),
+(76, 20, 1, '2019-10-02', NULL, 'Deep cut on the hind foot', 'Glen', 'Stallion', 650, 182, 'Could be worse', 'put on drip and pain killers for discomfort.', 'Jame', '2019-10-23 22:04:17', NULL),
+(77, 20, 1, '2019-10-02', '2019-10-24', 'Deep cut on the hind foot', 'Glen', 'Stallion', 650, 182, 'Could be worse', 'put on drip and pain killers for discomfort.', 'Jame', '2019-10-23 22:50:17', NULL),
+(78, 21, 1, '2019-10-23', NULL, 'Think We can make a Mil', 'Linda', 'Mare', 870, 210, 'Amazing', 'Make the horse watch TV', 'Jame', '2019-10-23 23:06:34', NULL),
+(79, 21, 1, '2019-10-23', NULL, 'Think We can make a Mil', 'Linda', 'Mare', 870, 210, 'Amazing', 'Make the horse watch TV', 'notadmin', '2019-10-30 15:51:32', 'null'),
+(80, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Critical', 'Feed Him Meat', 'notadmin', '2019-10-30 16:04:11', '59054d09-eeef-4eca-8fe0-17d40c0834fc.png'),
+(81, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Critical', 'He loves Snow?', 'notadmin', '2019-10-30 19:34:55', 'null'),
+(82, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Healthy', 'He loves Snow?', 'notadmin', '2019-10-30 19:44:38', 'null'),
+(83, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Healthy', 'He loves Snow?', 'notadmin', '2019-10-30 19:52:39', 'null'),
+(84, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Healthy', 'He loves Snow?', 'notadmin', '2019-10-30 20:04:04', 'null'),
+(85, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Healthy', 'He loves Snow?', 'notadmin', '2019-10-30 20:08:29', 'null'),
+(86, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Healthy', 'He loves Snow?', 'notadmin', '2019-10-30 20:33:55', 'null'),
+(87, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Healthy', 'He loves Snow?', 'notadmin', '2019-10-30 20:35:48', 'null');
 
 -- --------------------------------------------------------
 
@@ -144,11 +124,13 @@ INSERT INTO `tbl_horse_history` (`HorseHistoryID`, `HorseID`, `UserID`, `Admissi
 -- Table structure for table `tbl_medicine`
 --
 
-CREATE TABLE `tbl_medicine` (
-  `MedicationID` int(11) NOT NULL,
+DROP TABLE IF EXISTS `tbl_medicine`;
+CREATE TABLE IF NOT EXISTS `tbl_medicine` (
+  `MedicationID` int(11) NOT NULL AUTO_INCREMENT,
   `Description` varchar(45) NOT NULL,
   `Cost` decimal(2,0) NOT NULL,
-  `inStock` int(11) NOT NULL
+  `inStock` int(11) NOT NULL,
+  PRIMARY KEY (`MedicationID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -157,11 +139,13 @@ CREATE TABLE `tbl_medicine` (
 -- Table structure for table `tbl_notification`
 --
 
-CREATE TABLE `tbl_notification` (
-  `NotificatinID` int(11) NOT NULL,
+DROP TABLE IF EXISTS `tbl_notification`;
+CREATE TABLE IF NOT EXISTS `tbl_notification` (
+  `NotificatinID` int(11) NOT NULL AUTO_INCREMENT,
   `Description` varchar(45) NOT NULL,
   `NotifiyDate` date NOT NULL,
-  `reoccurance` varchar(45) NOT NULL
+  `reoccurance` varchar(45) NOT NULL,
+  PRIMARY KEY (`NotificatinID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -170,12 +154,14 @@ CREATE TABLE `tbl_notification` (
 -- Table structure for table `tbl_stable`
 --
 
-CREATE TABLE `tbl_stable` (
-  `StableID` int(11) NOT NULL,
+DROP TABLE IF EXISTS `tbl_stable`;
+CREATE TABLE IF NOT EXISTS `tbl_stable` (
+  `StableID` int(11) NOT NULL AUTO_INCREMENT,
   `Name` varchar(45) NOT NULL,
   `StableNumber` int(11) NOT NULL,
   `StablePopulation` int(11) NOT NULL,
-  `Available` tinyint(4) NOT NULL
+  `Available` tinyint(4) NOT NULL,
+  PRIMARY KEY (`StableID`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -184,8 +170,9 @@ CREATE TABLE `tbl_stable` (
 -- Table structure for table `tbl_user`
 --
 
-CREATE TABLE `tbl_user` (
-  `UserID` int(11) NOT NULL,
+DROP TABLE IF EXISTS `tbl_user`;
+CREATE TABLE IF NOT EXISTS `tbl_user` (
+  `UserID` int(11) NOT NULL AUTO_INCREMENT,
   `Username` varchar(45) NOT NULL,
   `Password` varchar(45) NOT NULL,
   `firstName` varchar(45) NOT NULL,
@@ -194,6 +181,7 @@ CREATE TABLE `tbl_user` (
   `Status` varchar(45) NOT NULL,
   `UserType` varchar(45) NOT NULL,
   `Address` varchar(45) NOT NULL,
+  PRIMARY KEY (`UserID`)
   `phone` varchar(18) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -302,6 +290,7 @@ ALTER TABLE `tbl_user`
 ALTER TABLE `tbl_horse_history`
   ADD CONSTRAINT `HorseHistory_FK` FOREIGN KEY (`HorseID`) REFERENCES `tbl_horse` (`HorseID`),
   ADD CONSTRAINT `UserIDFK` FOREIGN KEY (`UserID`) REFERENCES `tbl_user` (`UserID`);
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

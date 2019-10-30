@@ -34,7 +34,7 @@ block content
 											value= ""
 										).form-control
 						tr
-							th Is Desceased
+							th Is Deceased
 							if(horse.isDesceased != "")
 								td Yes
 							else
@@ -109,7 +109,14 @@ block content
 													name="Treatment"
 													value= his.treatment
 												).form-control
-											
+										tr
+											th Image:
+											td
+												input(
+													type="file"
+													id="image"
+													name="image"
+												).form-control
 										tr
 											th Carer
 											td
@@ -375,6 +382,14 @@ block content
 					tr
 						th Gender
 						td=his.Gender
+					if his.Image != Null
+						tr
+							th Image
+							td
+								img(src='/images/'+his.Image)
+							
+							
+					
 					
 		script.
 			var today = new Date();
