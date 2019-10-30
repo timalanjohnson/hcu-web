@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 30, 2019 at 09:14 AM
+-- Generation Time: Oct 30, 2019 at 06:28 PM
 -- Server version: 5.7.14
 -- PHP Version: 7.0.10
 
@@ -62,7 +62,12 @@ INSERT INTO `tbl_horse` (`HorseID`, `Name`, `Age`, `isDesceased`, `mircochipCode
 (19, 'James', '8', 0, '123456789', 'hanoverian', 'bay', 'thomas'),
 (20, 'Fox', '12', 1, '987654321', 'Some Race Horse Breed', 'bay', 'Michael'),
 (22, 'Bonnie', '30', 0, '', 'Mustang', 'White', 'Bonnie'),
-(23, 'Mercedes', '12', 0, '', 'German', 'Silver', 'Lewis Hamilton');
+(23, 'Mercedes', '12', 0, '', 'German', 'Silver', 'Lewis Hamilton'),
+(24, 'Tim', '23', 0, '', 'Arabian', 'Black', 'Tom'),
+(25, 'James', '23', 0, '', 'Arabian', 'Black', 'Tom'),
+(26, 'ugh', '23', 0, '', 'asdf', 'kowdgdn', 'sadg'),
+(27, 'James', '23', 0, '', 'asdf', 'Black', 'Tom'),
+(28, 'Tim Johnson', '4', 0, '', 'asdf', 'asdf', '7801');
 
 -- --------------------------------------------------------
 
@@ -188,17 +193,18 @@ CREATE TABLE `tbl_user` (
   `emailAddress` varchar(45) NOT NULL,
   `Status` varchar(45) NOT NULL,
   `UserType` varchar(45) NOT NULL,
-  `Address` varchar(45) NOT NULL
+  `Address` varchar(45) NOT NULL,
+  `phone` varchar(18) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `tbl_user`
 --
 
-INSERT INTO `tbl_user` (`UserID`, `Username`, `Password`, `firstName`, `lastName`, `emailAddress`, `Status`, `UserType`, `Address`) VALUES
-(1, 'admin', 'admin', 'James', 'Mohr', 'james.mohr@gmail.com', 'Single', 'admin', 'Varkens vlei Rd'),
-(2, 'tim', 'tim', 'Tim', 'Johnson', 'timjohnson.za@gmail.com', ' ', 'carer', ' '),
-(3, 'bonnie', 'bonnie', 'Bonnie', 'True', 'bonnie.true@email.com', ' ', 'carer', ' ');
+INSERT INTO `tbl_user` (`UserID`, `Username`, `Password`, `firstName`, `lastName`, `emailAddress`, `Status`, `UserType`, `Address`, `phone`) VALUES
+(1, 'admin', 'admin', 'James', 'Mohr', 'james.mohr@gmail.com', 'Single', 'admin', 'Varkens vlei Rd', '0'),
+(2, 'tim', 'tim', 'Tim', 'Johnson', 'timjohnson.za@gmail.com', ' Active', 'carer', ' ', '0715320381'),
+(3, 'bonnie', 'bonnie', 'Bonnie', 'True', 'bonnie.true@email.com', ' ', 'carer', ' ', '0');
 
 -- --------------------------------------------------------
 
@@ -260,12 +266,12 @@ ALTER TABLE `tbl_user`
 -- AUTO_INCREMENT for table `tbl_horse`
 --
 ALTER TABLE `tbl_horse`
-  MODIFY `HorseID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+  MODIFY `HorseID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 --
 -- AUTO_INCREMENT for table `tbl_horse_history`
 --
 ALTER TABLE `tbl_horse_history`
-  MODIFY `HorseHistoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=107;
+  MODIFY `HorseHistoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=112;
 --
 -- AUTO_INCREMENT for table `tbl_medicine`
 --
@@ -285,7 +291,7 @@ ALTER TABLE `tbl_stable`
 -- AUTO_INCREMENT for table `tbl_user`
 --
 ALTER TABLE `tbl_user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- Constraints for dumped tables
 --

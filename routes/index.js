@@ -334,6 +334,7 @@ router.post('/users', isAuthenticated, (req, res) => {
 	var status = ' ';
 	var status =cleanString(status);
 	var level = cleanString(req.body.level);
+	var phone = cleanString(req.body.phone);
 	var address = ' '; 
 	var address = cleanString(address);
 
@@ -341,7 +342,7 @@ router.post('/users', isAuthenticated, (req, res) => {
 	
 	try {
 		// Insert new user into the database
-		db.query("INSERT INTO `tbl_users` (`UserID`, `Username`, `Password`, `firstName`, `lastName`, `emailAddress`, `Status`, `UserType`, `Address`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?);", [username, password, firstname, lastname, email, status, level, address], function(err){
+		db.query("INSERT INTO `tbl_users` (`UserID`, `Username`, `Password`, `firstName`, `lastName`, `emailAddress`, `Status`, `UserType`, `Address`, `phone`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?);", [username, password, firstname, lastname, email, status, level, address, phone], function(err){
 			if (err) console.log(err)
 		})
 
@@ -387,9 +388,10 @@ router.post('/user/:userID/update-user', (req, res) => {
 	var level = cleanString(req.body.level);
 	var address = cleanString(req.body.address);
 	var userId = cleanString(req.params.userID);
+	var phone = cleanString(req.body.phone);
 
 	try {
-		db.query("UPDATE `tbl_user` SET `Password` = ?, `firstName` = ?, `lastName` = ?, `emailAddress` = ?, `UserType` = ?, `Address` = ? WHERE `tbl_user`.`UserID` = ?;",[password, fname, lname, email, level, address, userId], function(err, result) {
+		db.query("UPDATE `tbl_user` SET `Password` = ?, `firstName` = ?, `lastName` = ?, `emailAddress` = ?, `UserType` = ?, `Address` = ?, `phone` = ? WHERE `tbl_user`.`UserID` = ?;",[password, fname, lname, email, level, address, phone, userId], function(err, result) {
 			if (err) console.log(err);
 		})
 	} catch (e) {

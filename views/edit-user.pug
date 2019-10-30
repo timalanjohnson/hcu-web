@@ -59,6 +59,7 @@ block content
 						type="text"
 						id="phone"
 						name="phone"
+						value=row.phone
 					).form-control
 				div.form-group
 					label(for="address") Address:
@@ -77,7 +78,7 @@ block content
 						option(value="carer") Carer
 					
 				div.right-align.button-group
-					a.btn.btn-light(href="/") Cancel
+					a.btn.btn-light(href="/users") Cancel
 					if level == "admin"
 						input(type="submit" value="Update").btn.btn-primary
 					else
