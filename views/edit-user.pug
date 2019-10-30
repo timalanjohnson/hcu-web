@@ -1,0 +1,85 @@
+extends layout
+
+block content
+
+	div.area
+		each row in data
+			h1 
+				=row.firstName + " " + row.lastName
+
+			form(action=row.UserID + "/update-user" method="POST")
+				div.form-group
+					label(for="firstname") First Name:
+					input(
+						required
+						type="text"
+						id="firstname"
+						name="firstname"
+						value=row.firstName
+					).form-control
+				div.form-group
+					label(for="lastname") Last Name:
+					input(
+						required
+						type="text"
+						id="lastname"
+						name="lastname"
+						value=row.lastName
+					).form-control
+				div.form-group
+					label(for="username") Username:
+					input(
+						readonly
+						type="text"
+						id="username"
+						name="username"
+						value=row.Username
+					).form-control-plaintext
+				div.form-group
+					label(for="email") Email:
+					input(
+						required
+						type="email"
+						id="email"
+						name="email"
+						value=row.emailAddress
+					).form-control
+				div.form-group
+					label(for="password") Password:
+					input(
+						required
+						type="password"
+						id="password"
+						name="password"
+						value=row.Password
+					).form-control
+				div.form-group
+					label(for="phone") Phone Number:
+					input(
+						type="text"
+						id="phone"
+						name="phone"
+					).form-control
+				div.form-group
+					label(for="address") Address:
+					input(
+						type="text"
+						id="address"
+						name="address"
+						value=row.Address
+					).form-control
+				div.form-group
+					label(for="level") Level:
+					select(name="level").form-control
+						option(value=row.UserType) 
+							=row.UserType
+						option(value="admin") Admin
+						option(value="carer") Carer
+					
+				div.right-align.button-group
+					a.btn.btn-light(href="/") Cancel
+					if level == "admin"
+						input(type="submit" value="Update").btn.btn-primary
+					else
+						p Only admins save make changes.
+				

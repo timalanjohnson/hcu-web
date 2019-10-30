@@ -12,6 +12,7 @@ block content
 						th Name
 						th Email
 						th Level
+						th
 
 					each row in data
 						tr
@@ -19,6 +20,8 @@ block content
 							td= row.firstName + " " + row.lastName
 							td= row.emailAddress
 							td= row.UserType
+							td 
+								a(href="user/"+row.UserID).btn.btn-info Edit
 
 			if level == "admin"
 				div.area

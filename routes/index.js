@@ -355,6 +355,52 @@ router.post('/users', isAuthenticated, (req, res) => {
 
 
 
+// Edit User Details Page
+router.get('/user/:userID', isAuthenticated, function(req, res) {
+	var db = require('../db.js');
+	var userID = cleanString(req.params.userID);
+	 
+	//Displays all the horse details
+	db.query("SELECT * FROM tbl_user WHERE UserID = '"+ userID +"';", function(err, result, fields) {
+		if (err) console.log(err);
+		
+		console.log(result);
+
+		res.render('edit-user', {
+			title: "User " + userID,
+			data: result,
+			level: req.session.level
+		});
+			
+	});
+});
+
+
+
+// Update horse details
+router.post('/user/:userID/update-user', (req, res) => {
+
+	var password = req.body.password;
+	var fname = cleanString(req.body.firstname);
+	var lname = cleanString(req.body.lastname);
+	var email = req.body.email;
+	var level = cleanString(req.body.level);
+	var address = cleanString(req.body.address);
+	var userId = cleanString(req.params.userID);
+
+	try {
+		db.query("UPDATE `tbl_user` SET `Password` = ?, `firstName` = ?, `lastName` = ?, `emailAddress` = ?, `UserType` = ?, `Address` = ? WHERE `tbl_user`.`UserID` = ?;",[password, fname, lname, email, level, address, userId], function(err, result) {
+			if (err) console.log(err);
+		})
+	} catch (e) {
+		console.log(e);
+	} finally {
+		res.redirect('/users')
+	}
+});
+
+
+
 // Reports Page
 // Reports will show when horse when horse have arrived and have been discharged
 // Report will show the average amount of days a horse stays 
