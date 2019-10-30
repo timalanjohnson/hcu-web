@@ -181,8 +181,8 @@ CREATE TABLE IF NOT EXISTS `tbl_user` (
   `Status` varchar(45) NOT NULL,
   `UserType` varchar(45) NOT NULL,
   `Address` varchar(45) NOT NULL,
+  `phone` varchar(18) NOT NULL,
   PRIMARY KEY (`UserID`)
-  `phone` varchar(18) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -210,8 +210,8 @@ CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW 
 --
 -- Indexes for table `tbl_horse`
 --
-ALTER TABLE `tbl_horse`
-  ADD PRIMARY KEY (`HorseID`);
+--ALTER TABLE `tbl_horse`
+--  ADD PRIMARY KEY (`HorseID`);
 
 --
 -- Indexes for table `tbl_horse_history`
