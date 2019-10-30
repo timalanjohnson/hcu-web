@@ -1,6 +1,9 @@
 const express = require('express');
 const router = express.Router();
+const path = require('path');
 const db = require('../db.js');
+const upload = require('../helpers/uploadMiddleware');
+const Resize = require('../helpers/Resize');
 var carers;
 
 
@@ -259,9 +262,9 @@ router.get('/add-horse', isAuthenticated, (req, res) => {
 
 
 // Add Horse to the database
-router.post('/add-horse', (req, res) => {
+router.post('/add-horse', upload.single('image'), async (req, res) => {
 	var db = require('../db.js');
-	var username = cleanString(req.session.username);
+	var username = req.session.username;
 	var age = cleanString(req.body.age);
 	var chipData = cleanString(req.body.chipData);
 	var breed = cleanString(req.body.breed);
@@ -269,7 +272,7 @@ router.post('/add-horse', (req, res) => {
 	var finder = cleanString(req.body.finder);
 	var name = cleanString(req.body.name);
 	
-	var insertId = cleanString(result.insertId);
+	// var insertId = cleanString(result.insertId);
 	var notes = cleanString(req.body.notes);
 	var date = cleanString(req.body.date);
 	var gender = cleanString(req.body.gender);
@@ -280,6 +283,17 @@ router.post('/add-horse', (req, res) => {
 	var carer = cleanString(req.body.carer);
 	var owner = cleanString(req.body.owner);
 	var UserID = ""
+
+	const imagePath = path.join(__dirname, '../public/images');
+	const fileUpload = new Resize(imagePath);
+	if (!req.file) {
+		res.status(401).json({error: 'Please provide an image'});
+	}
+	const filename = await fileUpload.save(req.file.buffer);
+	console.log(filename);
+	//return ress.tatus(200).json({ name: filename });
+
+
 	//records user that manipulates the horse 
 	db.query("SELECT UserID from tbl_user where Username= '"+ username +"';", function(err, result, fields) {
 		if (err) throw err;
@@ -290,7 +304,7 @@ router.post('/add-horse', (req, res) => {
 			db.query("INSERT INTO `tbl_horse` (`HorseID`, `Age`, `mircochipCode` , `Breed`, `Colour`,`FoundBy`, `Name`) VALUES (NULL, '" + age + "', '" + chipData + "', '" + breed + "', '" + colour + "', '" + finder + "', '" + name  + "');", function (err, result) {
 			if (err) throw err
 				//console.log("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + req.body.notes + "', '" + req.body.date + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height +  "', '" + req.body.condition + "', '" + req.body.treatment  + "', '" + req.body.owner + "', '" +req.body.carer+ "');")
-				db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + insertId + "' ,'" + UserID + "' ,'" + notes + "', '" + date + "', '" + gender + "', '" + weight + "', '" + height +  "', '" + condition + "', '" + treatment  + "', '" + owner + "', '" +carer+ "');", function (err) {
+				db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + notes + "', '" + date + "', '" + gender + "', '" + weight + "', '" + height +  "', '" + condition + "', '" + treatment  + "', '" + owner + "', '" +carer+ "');", function (err) {
 					if (err) throw err
 					res.redirect('/');
 				})
