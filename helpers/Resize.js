@@ -1,3 +1,5 @@
+// Source: https://github.com/KrunalLathiya/NodeImageUploadResize
+
 const sharp = require('sharp');
 const uuidv4 = require('uuid/v4');
 const path = require('path');

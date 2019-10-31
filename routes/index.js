@@ -192,6 +192,19 @@ router.post('/horse/:horseID/update-horse', upload.single('image'), async(req, r
 	var username = req.session.username;
 	var mircochip = cleanString(req.body.mircochipCode);
 	
+	var notes = cleanString(req.body.notes);
+	var AdmissionDateUser = req.body.AdmissionDate;
+	var DischargeDateUser = req.body.DischargeDate;
+	var gender = cleanString(req.body.Gender);
+	var weight = cleanString(req.body.Weight);
+	var height  = cleanString(req.body.Height);
+	var condition = cleanString(req.body.Condition);
+	var treatment = cleanString(req.body.Treatment);
+	var carer = cleanString(req.body.Carer);
+	var owner = cleanString(req.body.Owner);
+	
+
+	
 	//Displays the horse
 	db.query("SELECT DATE_FORMAT(AdmissionDate,'%Y-%m-%d') as AdmissionDate from tbl_horse_history where HorseID= '"+ horseID +"' ORDER BY HorseHistoryID DESC Limit 1", function(err, result, fields) {
 		if (err) console.log(err);
@@ -225,18 +238,18 @@ router.post('/horse/:horseID/update-horse', upload.single('image'), async(req, r
 
 						// Check if horse is deceased.
 						if(req.body.DischargeDate == ""){
-							db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`, `Image`) VALUES ('" + horseID + "','" + UserID + "' ,'" + req.body.notes + "', '" + AdmissionDate + "', '" + req.body.Gender + "', '" + req.body.Weight + "', '" + req.body.Height +  "', '" + req.body.Condition + "', '" + req.body.Treatment  + "', '" + req.body.Owner + "', '" + req.body.Carer+ "', '" + filename + "');", function (err) {
+							db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`, `Image`) VALUES ('" + horseID + "','" + UserID + "' ,'" + notes + "', '" + AdmissionDate + "', '" + gender + "', '" + weight + "', '" + height +  "', '" + condition + "', '" + treatment  + "', '" + owner + "', '" + carer+ "', '" + filename + "');", function (err) {
 											if (err) console.log(err)
 											
 										})
 						}else{
 							if(req.body.DischargeDate == null){
-								db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`, `Image`) VALUES ('" + horseID + "','" + UserID + "' ,'" + req.body.notes + "', '" + req.body.AdmissionDate + "', '" + req.body.Gender + "', '" + req.body.Weight + "', '" + req.body.Height +  "', '" + req.body.Condition + "', '" + req.body.Treatment  + "', '" + req.body.Owner + "', '" + req.body.Carer + "', '" + filename+ "');", function (err) {
+								db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`, `Image`) VALUES ('" + horseID + "','" + UserID + "' ,'" + notes + "', '" + AdmissionDateUser + "', '" + gender + "', '" + weight + "', '" + height +  "', '" + condition + "', '" + treatment  + "', '" + owner + "', '" + carer + "', '" + filename+ "');", function (err) {
 											if (err) console.log(err)
 											
 										})
-							}else{
-								db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `DischargeDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`, `Image`) VALUES ('" + horseID + "','" + UserID + "' ,'" + req.body.notes + "', '" + AdmissionDate + "', '" + req.body.DischargeDate + "', '" + req.body.Gender + "', '" + req.body.Weight + "', '" + req.body.Height +  "', '" + req.body.Condition + "', '" + req.body.Treatment  + "', '" + req.body.Owner + "', '" + req.body.Carer + "', '" + filename+ "');", function (err) {
+							}else{																																																																																				
+								db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `DischargeDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`, `Image`) VALUES ('" + horseID + "','" + UserID + "' ,'" + notes + "', '" + AdmissionDate + "', '" + DischargeDateUser + "', '" + gender + "', '" + weight + "', '" + height +  "', '" + condition + "', '" + treatment  + "', '" + owner + "', '" + carer + "', '" + filename+ "');", function (err) {
 											if (err) console.log(err)
 											
 										})	
@@ -524,9 +537,10 @@ router.get('/reports', isAuthenticated,(req, res) => {
 		var counted = false
 		result.forEach(function(horse, horseIndex) {
 			horseCondition.forEach(function(condition, conditionIndex) {
-				if(condition[1] == horse.HorseCondition){
+				
+				if(condition[0] == horse.HorseCondition){
 					counted = true
-					horseCondition[conditionIndex][1] = int(horseCondition[conditionIndex][1]) + 1
+					horseCondition[conditionIndex][1] = horseCondition[conditionIndex][1] + 1
 				}
 			});	
 			if(counted == false){
@@ -536,7 +550,7 @@ router.get('/reports', isAuthenticated,(req, res) => {
 			}
 		});
 
-	db.query("SELECT his.Carer, count(ho.HorseID) as numberOfHorses FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID) and DischargeDate is NULL GROUP BY ho.HorseID",function(err, HorsePerCarer, fields) {
+	db.query("SELECT his.Carer, count(ho.HorseID) as numberOfHorses FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID) and DischargeDate is NULL GROUP BY his.Carer",function(err, HorsePerCarer, fields) {
 		if (err) console.log(err);	
 
 	//Sends the Data to the Reports page
