@@ -14,11 +14,18 @@ block content
 
 		div.area
 			h3 Horse Conditions
-			each horseCond in horseCondition
-				
-				br
-				h4=horseCond[0]
-				h4=horseCond[1]
+			table.table.table-sm
+				each horseCond in horseCondition
+					tr
+						td=horseCond[0]
+						td=horseCond[1]
+		div.area
+			h3 Carer
+			table.table.table-sm
+				each Carer in HorsePerCarer
+					tr
+						td=Carer.Carer
+						td=Carer.numberOfHorses
 	script(src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js")
 	div.area
 		canvas#myChart(width='100' height = '30')
