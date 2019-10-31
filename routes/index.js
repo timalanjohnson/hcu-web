@@ -580,20 +580,25 @@ router.get('/reports', isAuthenticated,(req, res) => {
 				horseCondition[(horseCondition.length)-1][1] =  1
 			}
 		});
+
+	db.query("SELECT his.Carer, count(ho.HorseID) as numberOfHorses FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID) and DischargeDate is NULL GROUP BY ho.HorseID",function(err, HorsePerCarer, fields) {
+		if (err) console.log(err);	
+
 	//Sends the Data to the Reports page
 	//console.log("horseCondition")
 	//console.log(horseCondition);
 	//console.log(NumberOfHorses);
 	//console.log(TimeForNumberOfHorses);
-	res.render('reports', {
-		title: 'Reports',
-		horseDurationPoint: JSON.stringify(NumberOfHorses),
-		horseTimePoint: JSON.stringify(TimeForNumberOfHorses),
-		HorseAverageStay: JSON.stringify(averageDays),
-		horseCondition: horseCondition,
-		level: req.session.level
-	});	
-
+		res.render('reports', {
+			title: 'Reports',
+			horseDurationPoint: JSON.stringify(NumberOfHorses),
+			horseTimePoint: JSON.stringify(TimeForNumberOfHorses),
+			HorseAverageStay: JSON.stringify(averageDays),
+			horseCondition: horseCondition,
+			HorsePerCarer: HorsePerCarer,
+			level: req.session.level
+});	
+	});
 
 });
 
