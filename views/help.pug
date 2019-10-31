@@ -2,24 +2,153 @@ extends layout
 
 block content
 	div.area
-		h1 User Manual
-		
-		p Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-		
-		ol
-			li
-				a(href="#1") Section
-			li
-				a(href="#2") Section
-			li
-				a(href="#1") Section
-			li
-				a(href="#1") Section
-		
-		h3(id="1") Section
+		div(style="max-width: 720px; line-height: 2em;").help-page
+			h1 User Manual
+			
+			p Quick Links
+			
+			ol
+				li
+					a(href="#Introduction") Introduction
+				li
+					a(href="#GettingStarted") Getting Started
+				li
+					a(href="#Home") Home 
+				li
+					a(href="#AddHorses") AddHorses
+				li
+					a(href="#EditHorses") EditHorses
+				li
+					a(href="#Users") Users
+			
+			h3(id="Introduction") Introduction
 
-		p Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-		
-		h3(id="2") Section
+			p This User Manual provides the information necessary for the SPCA to effectively used the Horse Care Unit. The Horse Care Unit is a simple application, which greatly assists the SPCA in caring for horses while they stay at the facilities in the SPCA. It will include all the pages that are created, and what each page can do to ensure there is no confusion. 
 
-		p Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+			p This system has been created to be easy to use and user friendly and be able to integrate easily with the existing programs available at the SPCA. Modeware is trying to promote the mission of the SPCA which is to end animal cruelty in South Africa by creating something to help make their job a little bit easier. 
+			
+			h3(id="GettingStarted") Getting Started
+
+			p When the application begins there will be a log in. The log in page allows users to log in. This is because there needs to be security as this system is dealing with giving medication to horses. So, it is required so that there is no way to access the program without the details being accepted first. 
+			
+			p There is a text box for the Username and for Password. Both need to be filled with the valid details to ensure that there can be access to the site. Once both fields are filled and the log in is correct, then click the log in button and it will take you to the home page of the system. 
+			
+			h3(id="Home") Home
+
+			p The home page of the system is the dashboard. There is a menu on the left side of the screen which has 4 different buttons to take the different pages.
+			
+			p There is a button for an add a new horse. This button is going to take to the adding a new horse page.
+			
+			p There is a button for browsing the horses which is to go back to the home page again.
+			
+			p There is a button to view the reports of the horses that have come into the SPCA over the year. 
+			
+			p There is a button to view the users and add a new user into the system.
+			
+			p There is a button to log out of the system. 
+
+			p The home page also has a container in which the user can view all the horses that are currently staying at the SPCA or have been discharged. All is in a table with the headings
+			
+			ul
+				li Name = Name of the Horse.
+				li Age = Age of the Horse.
+				li Description = Description of the Horse.
+				li Condition = The condition of the Horse.
+				li Admission Date = The date that the Horse was admitted into the SPCA. In date/ month/year. 
+				li Discharge Date = The Horse left the SPCA
+				li And a details button at the end to click. Once the word Details is clicked it will open a new page that will have in depth details about the horse.
+
+			p In the top right corner, there is a search bar where you can search the name of the horse that you are looking for to view the details that you require. Once you type the name, you press the search button to find the horse. 
+			
+			h3(id="AddHorses") Add Horses
+
+			p This is to add a new horse into the system. There are 15 different fields that need to be filled to allow a horse to be added to the database. 
+
+			ul
+				li Name = This is the name of the horse.
+				li Breed = The horse of the horse.
+				li Colour = The colour of the horse
+				li Age = The age of the horse
+				li Weight = What is the weight of the horse in KG.
+				li Height = What is the height of the horse in CM.
+				li Chip Data = What the number of the chip to be able to identify the horse. 
+				li Admission Date = This is the date that the horse is admitted to the SPCA. It will be automatically set for the current date.
+				li Found By = Who found the horse and bought it in to the SPCA.
+				li Owner = Who is the current owner of the horse.
+				li Condition = What is the condition of the horse.
+				li Notes = Any notes that need to be documented to ensure that the horse is properly cared for.
+				li Treatment = What is the medication or treatment that is being given to the horse.
+				li Carer = Who will be responsible for the horse while at the SPCA. 
+
+			p Once all these fields are filled in then click the button submit to save it to the database. It will then be displayed in the dashboard.
+
+			h3(id="EditHorses") Edit Horses
+
+			p A page will open with the details of the horse that was chosen. It has 18 fields, with the option of 10 fields being edited. 
+
+			p The fields that are unable to be changed are:
+
+			ul
+				li ID = Horses ID, individual number to be able to find the horse in the database
+				li Name = Name of the Horse.
+				li Age = Age of the horse.
+				li Microchip = The individual microchip number assigned to the horse.
+				li Breed = The breed of the horse
+				li Colour = Colour of horse
+				li Found By = The person who found the horse and bought it into the SPCA. 
+				li Admission Date = The date that the horse was admitted into the SPCA.  Needs to be wrote with the year first, the month, and then the day. 
+
+			p The fields that can be edited are: 
+
+			ul
+				li Owner = Can be changed in case the owner changes while at the SPCA.
+				li Notes = If any notes have been updated and needed to be known. 
+				li Condition = How the horse's condition is.
+				li Treatment = What is given to the horse to ensure a healthy recovery. 
+				li Carer = The person who is responsible for the care of the horse. 
+				li Weight = If the weight of the horse changes then it needs to be documented. 
+				li Height = if the horses height changes.
+				li Discharge date = When the horse is finally taken off the SPCA premises. Needs to be wrote with the year first, the month, and then the day.
+				li Gender = The gender of the horse.
+
+			p Once the fields that you need are filled out then there is a button that needs to be clicked to save that information for future. 
+
+			p Underneath there will be records of all the times that there was an edit to the horse, and the date and time that that happened. This is to have a clear history of the horse and the amount of times that there has been an update. 
+
+			p Once completed, to go back then click on the button in the side menu that says browse Horses. 
+
+			h3(id="Users") Users
+
+			p There is a table on the left-hand side that has all users who have access to the system, it will include the username, full name, email and the level that they are in the system. 
+
+			p Then on the right-hand side there is the option of adding a new user, with empty fields. There are 7 fields that need to be filled out to add a new user into the database.
+
+			p The field are:
+
+			ul
+				li First Name = The users first name 
+				li Last Name = The user last name
+				li Username = The name that will be used to access the system. 
+				li Email = The users email.
+				li Password = The private password that will be used to log in to the site to ensure security. 
+				li Phone Number = Phone number of user. 
+				li Level = The level that they are in the system, such as admin, vet or carer. 
+
+			p Once all the fields are filled in then the button Submit needs to be clicked and therefore the user is saved into the database. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
