@@ -162,7 +162,7 @@ router.get('/horse/:horseID', isAuthenticated, function(req, res) {
 
 
 // Update horse details
-router.post('/horse/:horseID/update-horse', upload.single('image'), (req, res) => {
+router.post('/horse/:horseID/update-horse', upload.single('image'), async(req, res) => {
 
 	var db = require('../db.js');
 	var filename = null;
@@ -173,7 +173,8 @@ router.post('/horse/:horseID/update-horse', upload.single('image'), (req, res) =
 		// Do nothing.
 		console.log("No image :(");
 	}else{
-		filename = fileUpload.save(req.file.buffer);
+		filename = await fileUpload.save(req.file.buffer);
+		console.log("filename");
 		console.log(filename);
 	}
 
@@ -270,7 +271,7 @@ router.get('/add-horse', isAuthenticated, (req, res) => {
 
 
 // Add Horse to the database
-router.post('/add-horse', upload.single('image'), (req, res) => {
+router.post('/add-horse', upload.single('image'), async(req, res) => {
 	var db = require('../db.js');
 
 	var filename = null;
@@ -300,7 +301,7 @@ router.post('/add-horse', upload.single('image'), (req, res) => {
 	if (!req.file) {
 		// Do nothing - res.status(401).json({error: 'Please provide an image'});
 	}else{
-		filename = fileUpload.save(req.file.buffer);
+		filename = await fileUpload.save(req.file.buffer);
 		console.log(filename);
 	}
 
@@ -479,22 +480,19 @@ router.post('/user/:userID/update-user', (req, res) => {
 // Reports Page
 // Reports will show when horse when horse have arrived and have been discharged
 // Report will show the average amount of days a horse stays 
-router.get('/reports', isAuthenticated, (req, res) => {
+router.get('/reports', isAuthenticated,(req, res) => {
 	var db = require('../db.js');
 	var items = [];
 	var horseIdentify = '-999'
 	var oldData = '-999'
 	var population = 0
 	var rowNumber = 0
+	var horseCondition = [];
 	
-	// console.log("select DATE_FORMAT(UpdateTimeStamp,'%d-%m-%y') as UpdateTimeStamp, HorseID, HorseHistoryID, DATE_FORMAT(DischargeDate,'%d-%m-%y') as DischargeDate, DATE_FORMAT(AdmissionDate,'%d-%m-%y') as AdmissionDate from tbl_horse_history Order by HorseID")
-	
+	//Used to get data for the graph
 	db.query("select DATE_FORMAT(UpdateTimeStamp,'%d-%M-%Y') as UpdateTimeStamp, HorseID, HorseHistoryID, DATE_FORMAT(DischargeDate,'%d-%M-%Y') as DischargeDate, DATE_FORMAT(AdmissionDate,'%d-%M-%Y') as AdmissionDate from tbl_horse_history Order by HorseID", function(err, result, fields) {
 		if (err) console.log(err)
-		
 		result.forEach(function(userDetail) {
-			
-			//console.log(userDetail.DischargeDate);
 			//checks to see if the horse has been discharged or not 
 			if(userDetail.DischargeDate != oldData	 || userDetail.HorseID != horseIdentify )
 			{
@@ -505,27 +503,19 @@ router.get('/reports', isAuthenticated, (req, res) => {
 					items[rowNumber][0] = userDetail.HorseID;
 					items[rowNumber][1] = userDetail.AdmissionDate;
 					items[rowNumber][2] = population;
-					//items[rowNumber][3] = userDetail.DischargeDate;
-					//items[rowNumber][4] = userDetail.AdmissionDate;
 				}else{
 					population = - 1;
 					
 					items[rowNumber][0] = userDetail.HorseID;
 					items[rowNumber][1] = userDetail.DischargeDate;
 					items[rowNumber][2] = population;
-					//items[rowNumber][3] = userDetail.DischargeDate;
-					//items[rowNumber][4] = userDetail.AdmissionDate;
 				}
-				
-				
-				
 				rowNumber = rowNumber + 1;
 				oldData = userDetail.DischargeDate;
 				horseIdentify = userDetail.HorseID;
 			}
 			});
 		
-		//console.log(items)
 		var averageDays = GetAverageDuration(items)
 
 		//https://stackoverflow.com/questions/52125611/sort-array-by-a-date-string-in-multidimensional-array
@@ -572,15 +562,46 @@ router.get('/reports', isAuthenticated, (req, res) => {
 			
 		}
 
-		console.log(NumberOfHorses);
-		console.log(TimeForNumberOfHorses);
-		res.render('reports', {
-			title: 'Reports',
-			horseDurationPoint: JSON.stringify(NumberOfHorses),
-			horseTimePoint: JSON.stringify(TimeForNumberOfHorses),
-			HorseAverageStay: JSON.stringify(averageDays), 
-			level: req.session.level
-		});	
+	//Gets all the horses and orders them by the most recent horse which has been updated on
+	db.query("SELECT ho.HorseID, ho.mircochipCode, ho.Name, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID) and DischargeDate is NULL",function(err, result, fields) {
+		if (err) console.log(err);
+		
+		var counted = false
+		result.forEach(function(horse, horseIndex) {
+			horseCondition.forEach(function(condition, conditionIndex) {
+				if(condition[1] == horse.HorseCondition){
+					counted = true
+					horseCondition[conditionIndex][1] = int(horseCondition[conditionIndex][1]) + 1
+				}
+			});	
+			if(counted == false){
+				horseCondition.push([]);
+				horseCondition[(horseCondition.length)-1][0] = horse.HorseCondition
+				horseCondition[(horseCondition.length)-1][1] =  1
+			}
+		});
+	//Sends the Data to the Reports page
+	//console.log("horseCondition")
+	//console.log(horseCondition);
+	//console.log(NumberOfHorses);
+	//console.log(TimeForNumberOfHorses);
+	res.render('reports', {
+		title: 'Reports',
+		horseDurationPoint: JSON.stringify(NumberOfHorses),
+		horseTimePoint: JSON.stringify(TimeForNumberOfHorses),
+		HorseAverageStay: JSON.stringify(averageDays),
+		horseCondition: horseCondition,
+		level: req.session.level
+	});	
+
+
+});
+
+
+
+
+
+		
 	})
 });
 
