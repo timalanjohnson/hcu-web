@@ -7,7 +7,7 @@ block content
 			div.area.sub-grid
 				table.table.table-striped.table-sm
 
-					form(action=horse.HorseID+"/update-horse" method="POST")
+					form(action=horse.HorseID+"/update-horse" method="POST" enctype="multipart/form-data")
 					
 						tr
 							th ID
@@ -111,7 +111,7 @@ block content
 												).form-control
 										tr
 											th Image:
-											td
+											td 
 												input(
 													type="file"
 													id="image"
