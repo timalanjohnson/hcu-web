@@ -1,7 +1,7 @@
 echo off
-title My Test Batch File
-:: See title at the top.
-npm install
+title Starting application.
+echo Install dependencies.
+call npm install
 echo Start server
-npm run watch
+call npm run watch
 pause
