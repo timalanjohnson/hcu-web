@@ -162,19 +162,19 @@ router.get('/horse/:horseID', isAuthenticated, function(req, res) {
 
 
 // Update horse details
-router.post('/horse/:horseID/update-horse', upload.single('image'), async (req, res) => {
+router.post('/horse/:horseID/update-horse', upload.single('image'), (req, res) => {
 
 	var db = require('../db.js');
-	var filename = null
-	const imagePath = path.join(__dirname, '../public/images');
-	const fileUpload = new Resize(imagePath);
-
+	var filename = null;
+	var imagePath = path.join(__dirname, '../public/images');
+	var fileUpload = new Resize(imagePath);
+	
 	if (!req.file) {
-		res.status(401).json({error: 'Please provide an image'});
-		console.log(req.file)
+		// Do nothing.
+		console.log("No image :(");
 	}else{
-		filename = await fileUpload.save(req.file.buffer);
-		console.log("The Files Name is Saved as: " + filename);
+		filename = fileUpload.save(req.file.buffer);
+		console.log(filename);
 	}
 
 	if(req.params.horseID != null){
@@ -209,7 +209,7 @@ router.post('/horse/:horseID/update-horse', upload.single('image'), async (req, 
 						//display the horse which have note been dicharged
 						if(req.body.desceased != null){
 							db.query("UPDATE  `tbl_horse` SET `isDesceased`  = '1' where HorseID = '" +horseID+"';", function (err) {
-								if (err) console.log(err)
+								if (err) console.log(err);
 								
 							})
 						}
@@ -217,7 +217,7 @@ router.post('/horse/:horseID/update-horse', upload.single('image'), async (req, 
 						// Check if microchip exists.
 						if(req.body.mircochipCode != null){
 							db.query("UPDATE  `tbl_horse` SET `mircochipCode` = '" + mircochip +  "' where HorseID = '" +horseID+"';", function (err) {
-								if (err) console.log(err)
+								if (err) console.log(err);
 								
 							})
 						}
@@ -270,10 +270,10 @@ router.get('/add-horse', isAuthenticated, (req, res) => {
 
 
 // Add Horse to the database
-router.post('/add-horse', upload.single('image'), async (req, res) => {
+router.post('/add-horse', upload.single('image'), (req, res) => {
 	var db = require('../db.js');
 
-	var filename = null
+	var filename = null;
 	var username = req.session.username;
 	var age = cleanString(req.body.age);
 	var chipData = cleanString(req.body.chipData);
@@ -294,13 +294,13 @@ router.post('/add-horse', upload.single('image'), async (req, res) => {
 	var owner = cleanString(req.body.owner);
 	var UserID = ""
 
-	const imagePath = path.join(__dirname, '../public/images');
-	const fileUpload = new Resize(imagePath);
+	var imagePath = path.join(__dirname, '../public/images');
+	var fileUpload = new Resize(imagePath);
 	
 	if (!req.file) {
-		res.status(401).json({error: 'Please provide an image'});
+		// Do nothing - res.status(401).json({error: 'Please provide an image'});
 	}else{
-		filename = await fileUpload.save(req.file.buffer);
+		filename = fileUpload.save(req.file.buffer);
 		console.log(filename);
 	}
 
