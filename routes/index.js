@@ -20,22 +20,15 @@ populateCarers();
 
 // Function to strip illegal characters from input strings
 function cleanString(str){
-	console.log(str)
 	try {
-		//removed , and . 
-		str = str.replace(/['\][|&:;$%@*"<>()+]/g, "");
+		//removed , and .  and '
+		str = str.replace(/[\][|&:;$%@*"<>()+]/g, "");
 	}catch(err) {
 		console.log(err)
-		console.log("Clean string failed, why?")
 		
 	}
 	return str;
 }
-
-// Example
-// var string = "Hello: [|&;$%@\"<>()+,] bru * ";
-// var cleaned = cleanString(string);
-// console.log(cleaned);
 
 
 
@@ -61,8 +54,6 @@ router.get('/login', (req, res) => {
 
 
 router.post('/login', (req, res) => {
-	//console.log(req.body);
-
 	// Get user entered values for username and password
 	var username = req.body.username;
 	var password = req.body.password;
@@ -74,8 +65,6 @@ router.post('/login', (req, res) => {
 
 	if (username && password) {
 		db.query("SELECT * FROM tbl_user WHERE username = ? AND password = ?",[username, password], function (err, result, fields) {
-			//if (err) console.log(err);
-
 			if (result.length > 0) {
 				req.session.loggedin = true;
 				req.session.username = username;
@@ -117,7 +106,7 @@ router.post('/search', isAuthenticated, (req, res) => {
 	if (UserSearch == '') {
 		//Displays the horse details
 		//The user can search by HorseID, HorseName, Note, Age and condition
-		db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID )", function(err, result, fields) {
+		db.query("SELECT ho.HorseID, ho.Name, ho.Age, his.Note, his.HorseCondition, DATE_FORMAT(his.AdmissionDate,'%D-%M-%Y') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%D-%M-%Y') as DischargeDate FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID) ORDER By his.UpdateTimeStamp DESC", function(err, result, fields) {
 			if (err) console.log(err);
 		res.render('index', {title: 'HCU Web', horses: result, level: req.session.level});
 		});
@@ -144,8 +133,6 @@ router.get('/horse/:horseID', isAuthenticated, function(req, res) {
 		// get the history of the horse which 
 	db.query("SELECT concat(us.firstName ,' ', us.lastName) as name , his.HorseID, his.Note,his.Owner, DATE_FORMAT(his.AdmissionDate,'%Y-%m-%d') as AdmissionDate, DATE_FORMAT(his.DischargeDate,'%Y-%m-%d') as DischargeDate, his.Gender, his.Weight, his.Height, his.HorseCondition, his.treatment, his.Carer, DATE_FORMAT(his.UpdateTimeStamp,'%D-%M-%Y %H:%i') as UpdateTimeStamp, his.Image FROM tbl_horse ho,tbl_user us, tbl_horse_history his where us.UserID = his.UserID and ho.HorseID = his.HorseID and ho.HorseID = '"+ horseID +"' ORDER BY his.HorseHistoryID DESC;", function(err, horseHistory, fields) {
 		if (err) throw err;
-			console.log(horseTable)
-			console.log(horseHistory)
 			res.render('horse', {
 				title: "Horse "+horseID,
 				horses: horseTable,
@@ -171,11 +158,8 @@ router.post('/horse/:horseID/update-horse', upload.single('image'), async(req, r
 	
 	if (!req.file) {
 		// Do nothing.
-		console.log("No image :(");
 	}else{
 		filename = await fileUpload.save(req.file.buffer);
-		console.log("filename");
-		console.log(filename);
 	}
 
 	if(req.params.horseID != null){
@@ -209,14 +193,12 @@ router.post('/horse/:horseID/update-horse', upload.single('image'), async(req, r
 	db.query("SELECT DATE_FORMAT(AdmissionDate,'%Y-%m-%d') as AdmissionDate from tbl_horse_history where HorseID= '"+ horseID +"' ORDER BY HorseHistoryID DESC Limit 1", function(err, result, fields) {
 		if (err) console.log(err);
 			result.forEach(function(horse) {
-			console.log(result);
 			AdmissionDate = horse.AdmissionDate;
 			var username = cleanString(req.session.username)
 
 			//checks which user is logged in
 			db.query("SELECT UserID from tbl_user where Username= '"+ username +"';", function(err, result, fields) {
 			if (err) console.log(err);
-				//console.log(result);
 				result.forEach(function(userDetail) { 
 						UserID = userDetail.UserID;
 
@@ -253,10 +235,8 @@ router.post('/horse/:horseID/update-horse', upload.single('image'), async(req, r
 											if (err) console.log(err)
 											
 										})	
-							}
-								//AdmissionDate		req.body.DischargeDate  			
-						}
-					//console.log("Horse Updated.");					
+							}			
+						}					
 				});
 			});			
 		});
@@ -293,11 +273,8 @@ router.post('/add-horse', upload.single('image'), async(req, res) => {
 	
 	if (!req.file) {
 		// Do nothing.
-		console.log("No image :(");
 	}else{
 		filename = await fileUpload.save(req.file.buffer);
-		console.log("filename");
-		console.log(filename);
 	}
 
 	var username = req.session.username;
@@ -327,13 +304,11 @@ router.post('/add-horse', upload.single('image'), async(req, res) => {
 	//records user that manipulates the horse 
 	db.query("SELECT UserID from tbl_user where Username= '"+ username +"';", function(err, result, fields) {
 		if (err) console.log(err);
-		console.log(result);
 		result.forEach(function(userDetail) { 
 			UserID = userDetail.UserID;
 			
 			db.query("INSERT INTO `tbl_horse` (`HorseID`, `Age`, `mircochipCode` , `Breed`, `Colour`,`FoundBy`, `Name`) VALUES (NULL, '" + age + "', '" + chipData + "', '" + breed + "', '" + colour + "', '" + finder + "', '" + name  + "');", function (err, result) {
 			if (err) console.log(err)
-				//console.log("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + req.body.notes + "', '" + req.body.date + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height +  "', '" + req.body.condition + "', '" + req.body.treatment  + "', '" + req.body.owner + "', '" +req.body.carer+ "');")
 				db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`, `Image`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + notes + "', '" + date + "', '" + gender + "', '" + weight + "', '" + height +  "', '" + condition + "', '" + treatment  + "', '" + owner + "', '" +carer + "','" + filename + "');", function (err) {
 					if (err) console.log(err)
 					res.redirect('/');
@@ -406,9 +381,6 @@ router.get('/user/:userID', isAuthenticated, function(req, res) {
 	//Displays all the horse details
 	db.query("SELECT * FROM tbl_user WHERE UserID = '"+ userID +"';", function(err, result, fields) {
 		if (err) console.log(err);
-		
-		console.log(result);
-
 		res.render('edit-user', {
 			title: "User " + userID,
 			data: result,
@@ -554,10 +526,6 @@ router.get('/reports', isAuthenticated,(req, res) => {
 		if (err) console.log(err);	
 
 	//Sends the Data to the Reports page
-	//console.log("horseCondition")
-	//console.log(horseCondition);
-	//console.log(NumberOfHorses);
-	//console.log(TimeForNumberOfHorses);
 		res.render('reports', {
 			title: 'Reports',
 			horseDurationPoint: JSON.stringify(NumberOfHorses),
