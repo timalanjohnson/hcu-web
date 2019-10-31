@@ -288,6 +288,18 @@ router.post('/add-horse', upload.single('image'), async(req, res) => {
 	var db = require('../db.js');
 
 	var filename = null;
+	var imagePath = path.join(__dirname, '../public/images');
+	var fileUpload = new Resize(imagePath);
+	
+	if (!req.file) {
+		// Do nothing.
+		console.log("No image :(");
+	}else{
+		filename = await fileUpload.save(req.file.buffer);
+		console.log("filename");
+		console.log(filename);
+	}
+
 	var username = req.session.username;
 	var age = cleanString(req.body.age);
 	var chipData = cleanString(req.body.chipData);
@@ -308,65 +320,8 @@ router.post('/add-horse', upload.single('image'), async(req, res) => {
 	var owner = cleanString(req.body.owner);
 	var UserID = ""
 
-	var imagePath = path.join(__dirname, '../public/images');
-	var fileUpload = new Resize(imagePath);
-	
-	if (!req.file) {
-		// Do nothing - res.status(401).json({error: 'Please provide an image'});
-	}else{
-		filename = await fileUpload.save(req.file.buffer);
-		console.log(filename);
-	}
-
 	var username = req.session.username;
 	
-	/*
-	if(req.body.age != null){
-		var age = cleanString(req.body.age);
-	}
-	if(req.body.chipData != null){
-		var chipData = cleanString(req.body.chipData);
-	}
-	if(req.body.breed != null){
-		var breed = cleanString(req.body.breed);
-	}
-	if(req.body.colour != null){
-		var colour = cleanString(req.body.colour);
-	}
-	if(req.body.finder != null){
-		var finder = cleanString(req.body.finder);
-	}
-	if(req.body.name != null){
-		var name = cleanString(req.body.name);
-	}
-	if(req.body.notes != null){
-		var notes = cleanString(req.body.notes);
-	}
-	if(req.body.date != null){
-		var date = cleanString(req.body.date);
-	}
-	if(req.body.gender != null){
-		var gender = cleanString(req.body.gender);
-	}
-	if(req.body.weight != null){
-		var weight = cleanString(req.body.weight);
-	}
-	if(req.body.height != null){
-		var height  = cleanString(req.body.height);
-	}
-	if(req.body.condition != null){
-		var condition = cleanString(req.body.condition);
-	}
-	if(req.body.treatment != null){
-		var treatment = cleanString(req.body.treatment);
-	}
-	if(req.body.carer != null){
-		var carer = cleanString(req.body.carer);
-	}
-	if(req.body.owner != null){
-		var owner = cleanString(req.body.owner);
-	}
-	*/
 	
 	var UserID = ""
 	//records user that manipulates the horse 
@@ -379,7 +334,7 @@ router.post('/add-horse', upload.single('image'), async(req, res) => {
 			db.query("INSERT INTO `tbl_horse` (`HorseID`, `Age`, `mircochipCode` , `Breed`, `Colour`,`FoundBy`, `Name`) VALUES (NULL, '" + age + "', '" + chipData + "', '" + breed + "', '" + colour + "', '" + finder + "', '" + name  + "');", function (err, result) {
 			if (err) console.log(err)
 				//console.log("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + req.body.notes + "', '" + req.body.date + "', '" + req.body.gender + "', '" + req.body.weight + "', '" + req.body.height +  "', '" + req.body.condition + "', '" + req.body.treatment  + "', '" + req.body.owner + "', '" +req.body.carer+ "');")
-				db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + notes + "', '" + date + "', '" + gender + "', '" + weight + "', '" + height +  "', '" + condition + "', '" + treatment  + "', '" + owner + "', '" +carer+ "');", function (err) {
+				db.query("INSERT INTO `tbl_horse_history` (`HorseID`, `UserID`, `Note`, `AdmissionDate`, `Gender`, `Weight`,  `Height`, `HorseCondition`, `treatment`,`Owner`, `Carer`, `Image`) VALUES ('" + result.insertId + "' ,'" + UserID + "' ,'" + notes + "', '" + date + "', '" + gender + "', '" + weight + "', '" + height +  "', '" + condition + "', '" + treatment  + "', '" + owner + "', '" +carer + "','" + filename + "');", function (err) {
 					if (err) console.log(err)
 					res.redirect('/');
 				})
