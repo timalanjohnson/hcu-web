@@ -22,8 +22,8 @@ populateCarers();
 function cleanString(str){
 	console.log(str)
 	try {
-		//removed , and . 
-		str = str.replace(/['\][|&:;$%@*"<>()+]/g, "");
+		//removed , and .  and '
+		str = str.replace(/[\][|&:;$%@*"<>()+]/g, "");
 	}catch(err) {
 		console.log(err)
 		console.log("Clean string failed, why?")
