@@ -582,9 +582,10 @@ router.get('/reports', isAuthenticated,(req, res) => {
 		var counted = false
 		result.forEach(function(horse, horseIndex) {
 			horseCondition.forEach(function(condition, conditionIndex) {
-				if(condition[1] == horse.HorseCondition){
+				
+				if(condition[0] == horse.HorseCondition){
 					counted = true
-					horseCondition[conditionIndex][1] = int(horseCondition[conditionIndex][1]) + 1
+					horseCondition[conditionIndex][1] = horseCondition[conditionIndex][1] + 1
 				}
 			});	
 			if(counted == false){
@@ -594,7 +595,7 @@ router.get('/reports', isAuthenticated,(req, res) => {
 			}
 		});
 
-	db.query("SELECT his.Carer, count(ho.HorseID) as numberOfHorses FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID) and DischargeDate is NULL GROUP BY ho.HorseID",function(err, HorsePerCarer, fields) {
+	db.query("SELECT his.Carer, count(ho.HorseID) as numberOfHorses FROM tbl_horse ho, tbl_horse_history his where ho.HorseID = his.HorseID and his.HorseHistoryID IN (SELECT MAX(HorseHistoryID) FROM tbl_horse_history as his, tbl_horse ho where his.HorseID = ho.HorseID GROUP BY ho.HorseID) and DischargeDate is NULL GROUP BY his.Carer",function(err, HorsePerCarer, fields) {
 		if (err) console.log(err);	
 
 	//Sends the Data to the Reports page
