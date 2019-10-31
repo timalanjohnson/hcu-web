@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Oct 30, 2019 at 06:28 PM
+-- Generation Time: Oct 31, 2019 at 08:49 AM
 -- Server version: 5.7.14
 -- PHP Version: 7.0.10
 
@@ -110,13 +110,12 @@ INSERT INTO `tbl_horse_history` (`HorseHistoryID`, `HorseID`, `UserID`, `Admissi
 (78, 21, 1, '2019-10-23', NULL, 'Think We can make a Mil', 'Linda', 'Mare', 870, 210, 'Amazing', 'Make the horse watch TV', 'Jame', '2019-10-23 23:06:34', NULL),
 (79, 21, 1, '2019-10-23', NULL, 'Think We can make a Mil', 'Linda', 'Mare', 870, 210, 'Amazing', 'Make the horse watch TV', 'notadmin', '2019-10-30 15:51:32', 'null'),
 (80, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Critical', 'Feed Him Meat', 'notadmin', '2019-10-30 16:04:11', '59054d09-eeef-4eca-8fe0-17d40c0834fc.png'),
-(81, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Critical', 'He loves Snow?', 'notadmin', '2019-10-30 19:34:55', 'null'),
-(82, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Healthy', 'He loves Snow?', 'notadmin', '2019-10-30 19:44:38', 'null'),
-(83, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Healthy', 'He loves Snow?', 'notadmin', '2019-10-30 19:52:39', 'null'),
-(84, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Healthy', 'He loves Snow?', 'notadmin', '2019-10-30 20:04:04', 'null'),
-(85, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Healthy', 'He loves Snow?', 'notadmin', '2019-10-30 20:08:29', 'null'),
-(86, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Healthy', 'He loves Snow?', 'notadmin', '2019-10-30 20:33:55', 'null'),
-(87, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Healthy', 'He loves Snow?', 'notadmin', '2019-10-30 20:35:48', 'null');
+
+(92, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Healthy', 'He loves Snow? Is this even a horse', 'notadmin', '2019-10-31 07:12:50', '00a77476-d569-4d70-b1d1-d1e6596d04ad.png'),
+(93, 22, 1, '2019-10-30', NULL, '17891235 FNB Please send POP', 'Tim', 'Horse Gender', 466, 177, 'Healthy', 'The horse is a glove now?', 'notadmin', '2019-10-31 07:16:30', '3d5768cb-e6c2-4e7e-be59-59e7970c4c0c.png'),
+(94, 22, 1, '2019-10-30', '2019-10-31', 'gave him the wrong meds', 'Tim', 'Horse Gender', 466, 177, 'Healthy', 'Well there is nothing to do now', 'notadmin', '2019-10-31 07:25:19', 'e1d41042-77bc-4f3b-aa6c-7c8c293ce6e5.png'),
+(95, 21, 1, '2019-10-23', NULL, 'Think We can make a Mil', 'Linda', 'Mare', 870, 210, 'Amazing', 'Make the horse watch TV', 'notadmin', '2019-10-31 10:29:04', '[object Promise]');
+
 
 -- --------------------------------------------------------
 
@@ -181,8 +180,7 @@ CREATE TABLE IF NOT EXISTS `tbl_user` (
   `Status` varchar(45) NOT NULL,
   `UserType` varchar(45) NOT NULL,
   `Address` varchar(45) NOT NULL,
-  `phone` varchar(18) NOT NULL,
-  PRIMARY KEY (`UserID`)
+  `phone` varchar(18) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -190,9 +188,10 @@ CREATE TABLE IF NOT EXISTS `tbl_user` (
 --
 
 INSERT INTO `tbl_user` (`UserID`, `Username`, `Password`, `firstName`, `lastName`, `emailAddress`, `Status`, `UserType`, `Address`, `phone`) VALUES
-(1, 'admin', 'admin', 'James', 'Mohr', 'james.mohr@gmail.com', 'Single', 'admin', 'Varkens vlei Rd', '0'),
-(2, 'tim', 'tim', 'Tim', 'Johnson', 'timjohnson.za@gmail.com', ' Active', 'carer', ' ', '0715320381'),
-(3, 'bonnie', 'bonnie', 'Bonnie', 'True', 'bonnie.true@email.com', ' ', 'carer', ' ', '0');
+(1, 'admin', 'admin', 'James', 'Mohr', 'james.mohr@gmail.com', 'Single', 'admin', 'Varkens vlei Rd', ''),
+(2, 'notadmin', 'notadmin', 'Josh', 'Smit', 'jamesgmohr69@gmail.com', ' ', 'carer', ' ', ''),
+(3, 'Tim', 'asdf', 'Tim', 'Johnson', 'timjohnson.za@gmail.com', ' ', 'admin', ' ', '0715320381');
+
 
 -- --------------------------------------------------------
 
@@ -259,7 +258,8 @@ ALTER TABLE `tbl_horse`
 -- AUTO_INCREMENT for table `tbl_horse_history`
 --
 ALTER TABLE `tbl_horse_history`
-  MODIFY `HorseHistoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=112;
+  MODIFY `HorseHistoryID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
+
 --
 -- AUTO_INCREMENT for table `tbl_medicine`
 --
@@ -279,7 +279,8 @@ ALTER TABLE `tbl_stable`
 -- AUTO_INCREMENT for table `tbl_user`
 --
 ALTER TABLE `tbl_user`
-  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `UserID` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
 --
 -- Constraints for dumped tables
 --
