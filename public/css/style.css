@@ -150,3 +150,8 @@ thead, th, td {
     background-color: #414b64;
     border-color: #454d55;
 }
+
+.help-page > h3 {
+	margin-top: 48px;
+	margin-bottom: 24px;
+}
