@@ -5,7 +5,7 @@ var connection = mysql.createConnection({
     host     : 'localhost',
     user     : 'root',
     password : '',
-    database : 'modeware_db'
+    database : 'hcu'
 });
 
 connection.connect(function(err) {

@@ -361,6 +361,8 @@ router.post('/users', isAuthenticated, (req, res) => {
 		// Insert new user into the database
 		db.query("INSERT INTO `tbl_user` (`UserID`, `Username`, `Password`, `firstName`, `lastName`, `emailAddress`, `Status`, `UserType`, `Address`, `phone`) VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?);", [username, password, firstname, lastname, email, status, level, address, phone], function(err){
 			if (err) console.log(err)
+
+			populateCarers();
 		})
 
 	} catch(e) {
